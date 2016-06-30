@@ -1,0 +1,19 @@
+<ion-view view-title="SNS">
+  <ion-content>
+    <div class="row">
+      <button ng-click="close_users()" style="width:50%;height:40px">시작일이 비슷한</button>
+      <button ng-click="all_users()" style="width:50%;height:40px">모든 사람</button>
+    </div>
+    <ion-list>
+      <ion-item ng-repeat="user in users" type="item-text-wrap" href="#/tab/users/{{activity.id}}">
+        <div class="list">
+          <a class="item item-avatar" href="#">
+            <img src={{user.gender}}>
+            <h2>{{user.name}}</h2>
+            <p>Back off, man. I'm a scientist.</p>
+          </a>
+        </div>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

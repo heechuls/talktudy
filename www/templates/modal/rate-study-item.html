@@ -1,0 +1,17 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">{{modal.title}}</h1>
+        <button class="button button-clear button-primary" ng-click="modal.hide()">취소</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <ion-radio ng-model="modal.choice" ng-value="'passed'">Pass</ion-radio>
+            <ion-radio ng-model="modal.choice" ng-value="'failed'">Fail</ion-radio>
+            <label class="item item-input">
+              <span class="input-label">패스워드</span>
+              <input ng-model="password" type="text">
+            </label>
+            <button class="button button-full button-positive" ng-click="rateChange()">변경</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

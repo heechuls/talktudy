@@ -23,15 +23,15 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
+  $ionicConfigProvider.tabs.position('top'); // other values: top
   $stateProvider
 
-  // setup an abstract state for the tabs directive
     .state('tab', {
     url: '/tab',
     abstract: true,
@@ -40,22 +40,22 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
 
   // Each tab has its own nav history stack:
 
-  .state('tab.dash', {
-    url: '/dash',
+  .state('tab.profile', {
+    url: '/profile',
     views: {
-      'tab-dash': {
-        templateUrl: 'templates/tab-dash.html',
-        controller: 'DashCtrl'
+      'tab-profile': {
+        templateUrl: 'templates/tab-profile.html',
+        controller: 'ProfileCtrl'
       }
     }
   })
 
-  .state('tab.chats', {
-      url: '/chats',
+  .state('tab.activities', {
+      url: '/activities',
       views: {
-        'tab-chats': {
-          templateUrl: 'templates/tab-chats.html',
-          controller: 'ChatsCtrl'
+        'tab-activities': {
+          templateUrl: 'templates/tab-activities.html',
+          controller: 'ActivityCtrl'
         }
       }
     })
@@ -69,17 +69,37 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       }
     })
 
-  .state('tab.account', {
-    url: '/account',
+  .state('tab.study', {
+    url: '/study',
     views: {
-      'tab-account': {
-        templateUrl: 'templates/tab-account.html',
-        controller: 'AccountCtrl'
+      'tab-study': {
+        templateUrl: 'templates/tab-study.html',
+        controller: 'StudyCtrl'
       }
     }
-  });
+  })
+  .state('tab.sns', {
+    url: '/sns',
+    views: {
+      'tab-sns': {
+        templateUrl: 'templates/tab-sns.html',
+        controller: 'SNSCtrl'
+      }
+    }
+  })
+  .state('mainguide', {
+      url: '/mainguide',
+      templateUrl: 'templates/guide/main_guide.html',
+      controller: 'MainGuideCtrl'
+  })
+
+  .state('login', {
+      url: '/login',
+      templateUrl: 'templates/login.html',
+      controller: 'LoginCtrl'
+    });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/tab/dash');
+  $urlRouterProvider.otherwise('/login');
 
 });

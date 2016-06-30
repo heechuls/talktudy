@@ -1,0 +1,9 @@
+<ion-view view-title="전화영어">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="activity in activities" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
+        <h2>{{activity.date}} {{activity.content}}</h2>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
