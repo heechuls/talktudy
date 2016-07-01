@@ -1,9 +1,20 @@
 <ion-view view-title="활동">
   <ion-content>
+  <div class="bar bar-header bar-energized">
+  <h1 class="title">스터디 {{myprofile.remained_class}}회 남음    /    {{myprofile.remained_purchase}}원 구매</h1>
+  </div>
+    <div class="item item-divider">
+    Candy Bars
+  </div>
     <ion-list>
-      <ion-item ng-repeat="activity in activities" type="item-text-wrap" href="#/tab/activities/{{activity.id}}">
-        <h2>{{activity.date}} {{activity.content}}</h2>
+      <ion-item ng-repeat="activity in activities" type="item-text-wrap"">
+        <h2>{{activity.classid}} {{activity.purchase_cost}}원 구매</h2>
+        <i ng-repeat="item in activity.shop_item">
+          {{item.name}} {{item.count}}
+        </i>
       </ion-item>
     </ion-list>
   </ion-content>
+  <button class="button button-block button-calm" ng-click="purchase()" style="position: fixed;bottom: 0px;">구매</button>
 </ion-view>
+  

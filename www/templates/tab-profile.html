@@ -1,21 +1,19 @@
 
 
+
 <ion-view view-title="프로필">
+
   <ion-content>
     <div id='wrapper'>
       <div id='profile-img'>
         <img id="profile-image" src="\img\male.png" width="100px">
-        <script type="text/javascript">
-            alert(myprofile.gender);
-            document.getElementById("profile-image").src = "\img\female.png";
-        </script>
       </div>
 
       <div id='profile-name'>
         <p profile-name>{{myprofile.name}}</p>
       </div>
       <div id='profile-btn'>
-        <button class="button button-block button-calm" ng-click="history()" style="width:100px;height=50px">History</button>
+        <button class="button button-block button-calm" ng-click="history()" style="width:100px;height=50px;position:fixed;top:50px;right:50px">History</button>
       </div>
     </div>
     <div id='profile-level' class="row">
@@ -23,18 +21,29 @@
       <div class="col" width='50%' >Pronunciation</div>
     </div>
     <div id='profile-level' class="row">
-      <button  ng-click="history()" style="width:50%;height:40px" >{{myprofile.speaking_level}}</button>
-      <button  ng-click="history()" style="width:50%;height:40px" >{{myprofile.pronunciation_level}}</button>
+      <button  ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:20px" >{{myprofile.speaking_level}}</button>
+      <button  ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:20px" >{{myprofile.pronunciation_level}}</button>
     </div>
     <div id='profile-study' align='center'>
       <table class="heavyTable" id='profile-study-items ' class="tg" border="2px" align = 'center ' style="border-collapse:collapse; border:1px gray solid;">
         <tbody>
-          <tr ng-repeat="rows in study_items" >
-            <td ng-repeat="item in rows" ng-click="showModal(item)">{{item}}</td>
+          <tr ng-repeat="rows in study_items" ng-model="study_items">
+            <td ng-repeat="item in rows" ng-click="showStudyResultModal(item)" >
+              <div class="col" style="float:left">{{item.name}}</div>
+              <img id="pass_or_fail" class="col" src = {{item.path}} style="width:100px" style="float:left"></img>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
   </ion-content>
 </ion-view>
-
+<script type="text/javascript">
+    function getPassImagePath(result){
+        if(result == 0){
+            document.getElementById('pass_or_fail').src = "/img/female.png";
+        }
+        else document.getElementById('pass_or_fail').src = "/img/male.png";
+        alert("");
+    };   
+</script>

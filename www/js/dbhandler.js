@@ -75,6 +75,16 @@ var DBHandler = {
         return firebase.database().ref().update(update);
     },
 
+    addShopItem2: function(name, price, standard){
+        var ref = firebase.database().ref('shop_item');
+        var update = {};
+        update[name] = {
+            standard : standard,
+            price : price
+        }
+        return ref.update(update);
+    },
+    
     getPriceOfShopItem: function(name)
     {
         var ref = firebase.database().ref().child('shop_item')
@@ -115,14 +125,6 @@ var DBHandler = {
         });
     },
 
-    buyItem2: function(classid, userid, shop_item_id, purchaed_count)
-    {
-        var ref = firebase.database().ref().child('/purchaed_shop_item/');
-        var update = {};
-        update[classid + '/' + userid + '/' + shop_item_id] = purchaed_count;
-        return ref.update(update);
-    },
-
     //class activity record into study_activity
     participateClass: function(classid, userid, participated)
     {
@@ -137,15 +139,15 @@ var DBHandler = {
         return ref.update(update);
     },
 
-    buyItem: function(userid, classid, shop_item_id, purchased_count)
+    buyItem: function(userid, classid, shop_item_name, purchased_count, done)
     {
-        var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/shop_item/' + shop_item_id);
-        ref.once('value', function(snapshot){
-            if(snapshot.exists()){
+        var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/shop_item/' + shop_item_name);
+        ref.once('value', function (snapshot) {
+            if (snapshot.exists()) {
                 console.log(snapshot.val());
                 purchased_count += snapshot.val();
-        }
-        return ref.set(purchased_count);
+            }
+            return ref.set(purchased_count, done);
         });
     },
 
@@ -174,6 +176,7 @@ var DBHandler = {
         }
         return ref.update(update);
     },
+
     getStudyItems: function (ret) {
         var ref = firebase.database().ref().child('/study_item/');
         ref.once("value", function (allMessagesSnapshot) {
@@ -186,23 +189,45 @@ var DBHandler = {
             ret(retVal);
         });
     },
-    getStudyResult: function (ret, userid) {
+    getStudyResult: function (userid, done) {
         var ref = firebase.database().ref().child('/study_result/' + userid);
         ref.once("value", function (allMessagesSnapshot) {
             var retVal = new Array();
 
             allMessagesSnapshot.forEach(function (messageSnapshot) {
                 // Will be called with a messageSnapshot for each child under the /messages/ node
-                retVal.push(messageSnapshot.val());
+                var today = new Date();
+
+                var val = {
+                    name:messageSnapshot.val().name,
+                    result:messageSnapshot.val().result,
+                    date:messageSnapshot.val().date
+                }
+                if(val.result ==1){ //Passed
+                    var reviewedDate = new Date(messageSnapshot.val().date)
+                    reviewedDate.setDate(reviewedDate.getDate() + 15);               
+
+                    if(today < reviewedDate)
+                        val.path = "/img/pass.png";
+                    else val.path = "/img/female.png";
+                }
+                else if(val.result ==2) //Failed
+                    val.path = "/img/fail.png";
+                //if(val.result ==0) //Failed
+                //    val.path = "/img/fail.png";
+                //else Not Review is 0
+                retVal.push(val);
             });
-            ret(retVal);
+            if(done != null)
+                done(retVal);
         });
     },
-    getUserInfo: function (done, userid) {
+    getUserInfo: function (userid, done) {
         var ref = firebase.database().ref().child('/user/' + userid);
         ref.once("value", function (dataSnapshop) {
             if(dataSnapshop.exists()){
                 console.log(dataSnapshop.val());
+                MyProfile.userid = userid;
                 MyProfile.email = dataSnapshop.email;
                 MyProfile.gender = dataSnapshop.val().gender;
                 MyProfile.name = dataSnapshop.val().name;
@@ -210,25 +235,144 @@ var DBHandler = {
                 MyProfile.speaking_level = dataSnapshop.val().speaking_level;
                 MyProfile.pronunciation_level = dataSnapshop.val().pronunciation_level;
                 MyProfile.email = dataSnapshop.val().email;
-            }            
+                MyProfile.remained_purchase = dataSnapshop.val().remained_purchase;
+                MyProfile.remained_class = dataSnapshop.val().remained_class;
+            }
+            if(done != null)            
+                done();
         });
+    },
+    setStudyResultItem: function(userid, studyid, name){
+        var update = {};
+        update['/study_result/' + userid + "/" + studyid] = {
+            name : name,
+            result : 0,
+            date : new Date().toDateString()
+        };
+        return firebase.database().ref().update(update);
     },
     setStudyResultItems: function (userid) {
         var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
             "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
             "스포츠", "레저/취미", "패션", "로또", "여행", "맛집", "꿈", "미드", "친구", "북한", "결혼", "연애"];
         for (var i in study_items) {
-            addStudyItem2(i, study_items[i]);
+            this.setStudyResultItem(userid, i, study_items[i]);
         }
+    },
+    setStudyResult: function(userid, name, result, done){
+        var ref = firebase.database().ref("/study_result/" + userid);
+        ref.orderByChild("name").equalTo(name).on("child_added", function (snapshot) {
+            console.log(snapshot.key);
+            console.log(snapshot.val().result);
+            var update = {};
+            update["/study_result/" + userid + "/" + snapshot.key] = {
+                result : result,
+                date : new Date().toDateString(),
+                name : snapshot.val().name
+            }
+            /*var update = {
+                result : result,
+                date : new Date().toDateString(),
+                name : snapshot.val().name
+            }*/
+            firebase.database().ref().update(update, function(){
+                if(done != null)
+                    done();
+            });
+        });
+
+    },
+    getPasswordList: function () {
+        var ref = firebase.database().ref().child('/password/');
+        ref.once("value", function (allMSnapshot) {
+            allMSnapshot.forEach(function (snapshot) {
+                var password = {
+                    key:snapshot.key,
+                    password:snapshot.val()
+                }
+                console.log(password);
+                Password.push(password);
+            });
+
+        });
+    },
+    rateLevel: function(userid, type, level, done)
+    {
+        var ref = firebase.database().ref().child('/user/' + userid);
+        var levelRef = {};
+        if(type == 0){
+            levelRef = ref.child("speaking_level")
+        }
+        else {
+            levelRef = ref.child("pronunciation_level")
+        }
+        return levelRef.set(level, done);
+    },
+    addTotalPurchaseCost: function(userid, purchased_cost, done)
+    {
+        var ref = firebase.database().ref().child('/user/' + userid + "/remained_purchase/");
+        ref.once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                purchased_cost += snapshot.val();
+            }
+            return ref.set(purchased_cost, done);
+        });
+    },
+
+    addClassPurchaseCost: function(userid, classid, purchased_cost, done)
+    {
+        var ref = firebase.database().ref().child('/study_activity/' + userid + "/" + classid + "/purchase_cost/");
+        ref.once('value', function (snapshot) {
+            if (snapshot.exists()) {
+                purchased_cost += snapshot.val();
+            }
+            return ref.set(purchased_cost, done);
+        });
+    },
+
+    getShopItems: function (ret) {
+        var ref = firebase.database().ref().child('/shop_item/');
+        ref.once("value", function (allMessagesSnapshot) {
+            var retVal = new Array();
+
+            allMessagesSnapshot.forEach(function (snapshot) {
+                var item = {
+                    name: snapshot.key,
+                    price: snapshot.val().price,
+                    standard : snapshot.val().standard
+                };
+                retVal.push(item);
+            });
+            ret(retVal);
+        });
+    },
+    getActivityList: function (userid, done) {
+        var ref = firebase.database().ref().child('/study_activity/'+ userid);
+        ref.once("value", function (allSnapshot) {
+            var retVal = new Array();
+
+            allSnapshot.forEach(function (snapshot) {
+                var item = {
+                    classid: snapshot.key,
+                    purchase_cost: snapshot.val().purchase_cost,
+                    shop_item: new Array()
+                };
+                
+                snapshot.forEach(function (shop_snapshot) {
+                    item.shop_item.push({
+                        name:shop_snapshot.key,
+                        count:shop_snapshot.val()
+                    });
+                });
+
+                retVal.push(item);
+            });
+            if(done != null)
+                done(retVal);
+        });
     }
-    ,
-    setStudyReultItem: function(userid, studyid, name){
-        var update = {};
-        update['/study_result/' + userid + "/" + studyid] = name;
-        return firebase.database().ref().update(update);
-    }
-}
-var MyProfile = {};
+};
+
 
 Date.prototype.yyyymmdd = function() {
     var yyyy = this.getFullYear().toString();

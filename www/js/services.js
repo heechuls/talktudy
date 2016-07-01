@@ -23,7 +23,9 @@ angular.module('starter.services', [])
 .service("StudyItems", function() {
     var List = new Array();
 })
-
+.service("ShopItems", function() {
+    var List = new Array();
+})
 .service("Users", function() {
   var users = [{
     id: 0,

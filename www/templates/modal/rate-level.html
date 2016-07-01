@@ -1,0 +1,19 @@
+<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-positive">
+        <h1 class="title">{{oModal2.title}}</h1>
+        <button class="button button-clear button-primary" ng-click="oModal2.hide()">취소</button>
+    </ion-header-bar>
+    <ion-content class="padding">
+        <div class="list">
+            <label class="item item-input">
+              <span class="input-label">Level</span>
+              <input ng-model="oModal2.level" type="text">
+            </label>
+            <label class="item item-input">
+              <span class="input-label">Password</span>
+              <input ng-model="oModal2.password" type="password">
+            </label>
+            <button class="button button-full button-positive" ng-click="rateLevel(oModal2.type, oModal2.level)">변경</button>
+        </div>
+    </ion-content>
+</ion-modal-view>

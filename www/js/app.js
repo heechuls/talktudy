@@ -97,7 +97,33 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       url: '/login',
       templateUrl: 'templates/login.html',
       controller: 'LoginCtrl'
-    });
+    })
+    .state('talkguide1', {
+      url: '/talkguide1',
+      templateUrl: 'templates/guide/talk_guide1.html',
+      controller: 'TalkGuideCtrl1'
+    })
+    .state('talkguide2', {
+      url: '/talkguide2',
+      templateUrl: 'templates/guide/talk_guide2.html',
+      controller: 'TalkGuideCtrl2'
+    })
+    .state('talkguide3', {
+      url: '/talkguide3',
+      templateUrl: 'templates/guide/talk_guide3.html',
+      controller: 'TalkGuideCtrl3'
+    })
+    .state('talkguide4', {
+      url: '/talkguide4',
+      templateUrl: 'templates/guide/talk_guide4.html',
+      controller: 'TalkGuideCtrl4'
+    })
+    .state('talkguide5', {
+      url: '/talkguide5',
+      templateUrl: 'templates/guide/talk_guide5.html',
+      controller: 'TalkGuideCtrl5'
+    })
+    ;
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');
