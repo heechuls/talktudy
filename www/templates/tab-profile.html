@@ -6,14 +6,14 @@
   <ion-content>
     <div id='wrapper'>
       <div id='profile-img'>
-        <img id="profile-image" src="\img\male.png" width="100px">
+        <img id="profile-image" src="img\male.png" width="100px">
       </div>
 
       <div id='profile-name'>
         <p profile-name>{{myprofile.name}}</p>
       </div>
       <div id='profile-btn'>
-        <button class="button button-block button-calm" ng-click="history()" style="width:100px;height=50px;position:fixed;top:50px;right:50px">History</button>
+        <button class="button button-block button-calm" ng-click="history()" style="width:80px;height=50px;position:fixed;top:50px;right:50px">History</button>
       </div>
     </div>
     <div id='profile-level' class="row">
@@ -21,8 +21,8 @@
       <div class="col" width='50%' >Pronunciation</div>
     </div>
     <div id='profile-level' class="row">
-      <button  ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:20px" >{{myprofile.speaking_level}}</button>
-      <button  ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:20px" >{{myprofile.pronunciation_level}}</button>
+      <button  ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:18px" >{{myprofile.speaking_level}}</button>
+      <button  ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:18px" >{{myprofile.pronunciation_level}}</button>
     </div>
     <div id='profile-study' align='center'>
       <table class="heavyTable" id='profile-study-items ' class="tg" border="2px" align = 'center ' style="border-collapse:collapse; border:1px gray solid;">
@@ -30,7 +30,7 @@
           <tr ng-repeat="rows in study_items" ng-model="study_items">
             <td ng-repeat="item in rows" ng-click="showStudyResultModal(item)" >
               <div class="col" style="float:left">{{item.name}}</div>
-              <img id="pass_or_fail" class="col" src = {{item.path}} style="width:100px" style="float:left"></img>
+              <img id="pass_or_fail" class="col" src = {{item.path}} style="width:50px" style="float:left"></img>
             </td>
           </tr>
         </tbody>

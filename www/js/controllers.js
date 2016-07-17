@@ -5,7 +5,7 @@ angular.module('starter.controllers', [])
         $scope.myprofile = MyProfile;
 
         if(MyProfile.gender==1)
-            document.getElementById("profile-image").src = "/img/female.png";
+            document.getElementById("profile-image").src = "img/female.png";
 
         $ionicModal.fromTemplateUrl('templates/modal/rate-study-item.html', {
             id: '1',
@@ -102,10 +102,18 @@ angular.module('starter.controllers', [])
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
-  $scope.activities = Activities2;
-  $scope.myprofile = MyProfile;
+  $scope.$on('$ionicView.enter', function(){
+        DBHandler.getActivityList(MyProfile.userid, function(retval){
+            $scope.activities = retval.slice(0).reverse();
+            console.log($scope.activities);
+            $scope.myprofile = MyProfile;
+            $scope.$apply();
+            initList();
+        }, function(retval2){   
+            $scope.activities = retval2.slice(0).reverse();
+            $scope.$apply();      
+         });
+      });
 
       /*var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
       "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
@@ -141,7 +149,7 @@ angular.module('starter.controllers', [])
       participatePhoneTalk('01028225321', '2016-06-21', 0);
       participatePhoneTalk('01028225321', '2016-06-22', 0);
       participateClass('01028225321', '2016-06-22', 1);*/
-      DBHandler.participateClass('01028225321', '2016-06-22', 0);
+      //DBHandler.participateClass('01028225321', '2016-06-22', 0);
   };
   $ionicModal.fromTemplateUrl('templates/modal/purchase-item.html', {
       scope: $scope,
@@ -155,7 +163,6 @@ angular.module('starter.controllers', [])
       $scope.modal.show();
   }
   $scope.purchase_item = function(item) {
-      //function(userid, classid, shop_item_name, purchased_count)
       DBHandler.buyItem(MyProfile.userid, new Date().yyyymmdd(), item.name, 1, function(){
           //$scope.showToast($cordovaToast, "구매가 완료되었습니다.", "short", "center");
           DBHandler.addClassPurchaseCost($scope.myprofile.userid, new Date().yyyymmdd(), item.price, function(){
@@ -164,10 +171,13 @@ angular.module('starter.controllers', [])
           DBHandler.addTotalPurchaseCost($scope.myprofile.userid, item.price, function(){
               DBHandler.getUserInfo($scope.myprofile.userid, function () {
                   DBHandler.getActivityList($scope.myprofile.userid, function (retval) {
-                      Activities2 = retval.slice(0);
-                      $scope.activities = Activities2;
+                      $scope.activities = retval.slice(0).reverse();
                       $scope.$apply();
-                  });
+                      initList();
+                  }, function(retval2){
+                      $scope.activities = retval2.slice(0).reverse();                    
+                    $scope.$apply();      
+                    });
                   $scope.myprofile = MyProfile;
             });
           });
@@ -175,7 +185,69 @@ angular.module('starter.controllers', [])
       });
   }
   $scope.showToast = showToast;
+  $scope.participateInClass = function(){
+      var done = function(){
+          document.getElementById('class').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
+          DBHandler.getUserInfo($scope.myprofile.userid, function () {
+            $scope.myprofile = MyProfile;
+            $scope.$apply();
+          });          
+      }
+      if(isClassParticipate){
+        text = "스터디 참석예정";
+        DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
+      }
+      else{ 
+        text = "스터디 불참예정";
+        DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
+      }
+      isClassParticipate = !isClassParticipate;
 
+  }
+  var isClassParticipate = false;
+  var isPhoneTalkParticipate = false;  
+  /*$scope.isParticipate = function(){
+      return "하이";
+  }*/
+  $scope.participateInPhoneTalk = function(){
+      var done = function(){
+          document.getElementById('phone').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
+      }
+      if(isPhoneTalkParticipate){
+        text = "전화영어 참석예정";
+        DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, true, done);
+      }
+      else{ 
+        text = "전화영어 불참예정";
+        DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, false, done);
+      }
+      isPhoneTalkParticipate = !isPhoneTalkParticipate;
+  }
+  function initList(){
+        var class_text = "스터디 참여";
+        var phone_text = "전화영어 참여";
+        console.log($scope.activities[0]);
+
+        var class_participation = $scope.activities[0].class_participation;
+        var phonetalk_participation = $scope.activities[0].phonetalk_participation;
+        
+        if(class_participation === 0 && class_participation !== undefined)
+            class_text = "스터디 불참예정";
+        
+        else if(class_participation === 1 && class_participation !== undefined)
+            class_text = "스터디 참석예정";
+
+        if(phonetalk_participation == 0 && phonetalk_participation !== undefined)
+            phone_text = "전화영어 불참예정";
+        
+        else if(phonetalk_participation == 1 && phonetalk_participation !== undefined)
+            phone_text = "전화영어 참석예정";
+
+        document.getElementById('class').innerHTML="<b style='text-decoration:underline'>" + class_text +"</b><br>";
+        document.getElementById('phone').innerHTML="<b style='text-decoration:underline'>" + phone_text +"</b><br>";
+        document.getElementById('isClassParticipated').style.display = "none";
+        document.getElementById('isPhonetalkParticipated').style.display = "none";
+    }
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Activities) {
@@ -244,11 +316,17 @@ angular.module('starter.controllers', [])
 })
 .controller('TalkGuideCtrl5', function($scope, $state) {
     $scope.next = function(){
+        $state.go('talkmain');
+    }
+})
+.controller('TalkMainCtrl', function($scope, $state) {
+    $scope.next = function(){
         $state.go('tab.study');
     }
 })
 ;  
 function init(StudyItems, ShopItems, done) {
+    //DBHandler.createTodayClass("shin");
     DBHandler.getUserInfo("shin", function () {
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(MyProfile.userid);
@@ -263,16 +341,30 @@ function init(StudyItems, ShopItems, done) {
                 ShopItems.List = retval.slice(0);
             });
         }
-        DBHandler.getActivityList(MyProfile.userid, function(retval){
-            Activities2 = retval.slice(0);
-        });
+
+        retriveDeviceInfo();
         
-    });
+    }); 
     /*DBHandler.addShopItem2("맥주", 5000, "1병");
     DBHandler.addShopItem2("새우깡", 2000, "1봉지");
     DBHandler.addShopItem2("소주", 3000, "1병");*/
 }
+function retriveDeviceInfo(){
 
+    document.addEventListener("deviceready", onDeviceReady, false);
+    
+    function onDeviceReady() {
+        window.plugins.sim.getSimInfo(successCallback, errorCallback);
+    }
+    
+    function successCallback(result) {
+        console.log(result);
+    }
+    
+    function errorCallback(error) {
+        console.log(error);
+    }
+}
 function chunk(arr, size) {
     var newArr = [];
     for (var i = 0; i < arr.length; i += size) {

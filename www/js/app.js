@@ -20,6 +20,13 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+    var push = new Ionic.Push({
+      "debug": false
+    });
+    push.register(function(token) {
+      console.log("Device token:",token.token);
+      push.saveToken(token);  // persist the token in the Ionic Platform
+    });
   });
 })
 
@@ -122,6 +129,11 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       url: '/talkguide5',
       templateUrl: 'templates/guide/talk_guide5.html',
       controller: 'TalkGuideCtrl5'
+    })
+    .state('talkmain', {
+      url: '/talkmain',
+      templateUrl: 'templates/guide/talk_main.html',
+      controller: 'TalkMainCtrl'
     })
     ;
 

@@ -32,7 +32,7 @@ var DBHandler = {
     {
         var classRef = firebase.database().ref().child('class/');
         var update = {};
-        update['/date/'] = date;
+        update[date] = 0;
         return classRef.update(update);
     },
 
@@ -125,20 +125,6 @@ var DBHandler = {
         });
     },
 
-    //class activity record into study_activity
-    participateClass: function(classid, userid, participated)
-    {
-        var ref = firebase.database().ref().child('/study_activity/');
-        var update = {};
-        if(participated){
-            update[userid + '/' + classid] = 1;
-        }
-        else{
-            update[userid + '/' + classid] = 0;
-        }
-        return ref.update(update);
-    },
-
     buyItem: function(userid, classid, shop_item_name, purchased_count, done)
     {
         var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/shop_item/' + shop_item_name);
@@ -151,30 +137,67 @@ var DBHandler = {
         });
     },
 
-    participatedClass: function(userid, classid, participated)
-    {
+    participateInClass: function(userid, classid, isParticipate, done){
         var ref = firebase.database().ref().child('/study_activity/');
+        var listRef = firebase.database().ref('/class_participant/' + classid + '/');
+        var userRef = firebase.database().ref('/user/' + userid + '/remained_class/');
         var update = {};
-        if(participated){
-            update[userid + '/' + classid + '/' + 'class_participation'] = 1;
+        if(isParticipate){
+            update[userid + '/' + classid + '/class_participation/'] = 1;
+            var item = {
+                name : MyProfile.name
+            }
+            listRef.child(userid).update(item);
+            userRef.once('value', function (snapshot) {
+                if (snapshot.exists()) {
+                    var remained_class = snapshot.val();
+                    userRef.set(--remained_class, done);
+                    ref.child(userid + "/" + classid).update({remained_class:remained_class});
+                }
+            });
+
         }
         else{
-            update[userid + '/' + classid + '/' + 'class_participation'] = 0;
+            update[userid + '/' + classid + '/class_participation/'] = 0;
+            listRef.child(userid).remove();
+            userRef.once('value', function (snapshot) {
+                if (snapshot.exists()) {
+                    var remained_class = snapshot.val();
+                    userRef.set(++remained_class, done);
+                    ref.child(userid + "/" + classid).update({remained_class:remained_class});
+                }
+            });
         }
         return ref.update(update);
+        
     },
 
-    participatePhoneTalk: function(userid, classid, participated)
+    participateInClassToday : function(userid, isParticipate, done){
+        this.participateInClass(userid, new Date().yyyymmdd(), isParticipate, done);
+    },
+
+    participateInPhoneTalk: function(userid, classid, isParticipate, done)
     {
         var ref = firebase.database().ref().child('/study_activity/');
+        var listRef = firebase.database().ref('/phonetalk_participation/' + classid + '/');
         var update = {};
-        if(participated){
-            update[userid + '/' + classid + '/' + 'phonetalk_participation'] = 1;
+        if(isParticipate){
+            update[userid + '/' + classid + '/phonetalk_participation/'] = 1;
+            var item = {
+                name : MyProfile.name,
+                level : MyProfile.speaking_level
+            }
+            listRef.child(userid).update(item);
         }
         else{
-            update[userid + '/' + classid + '/' + 'phonetalk_participation'] = 0;
+            update[userid + '/' + classid + '/phonetalk_participation/'] = 0;
+            listRef.child(userid).remove();
         }
-        return ref.update(update);
+        return ref.update(update, done);
+    },
+
+    participateInPhoneTalkToday : function(userid, isParticipate, done){
+        this.participateInPhoneTalk(userid, new Date().yyyymmdd(), isParticipate, done);
     },
 
     getStudyItems: function (ret) {
@@ -208,11 +231,11 @@ var DBHandler = {
                     reviewedDate.setDate(reviewedDate.getDate() + 15);               
 
                     if(today < reviewedDate)
-                        val.path = "/img/pass.png";
-                    else val.path = "/img/female.png";
+                        val.path = "img/pass.png";
+                    else val.path = "img/female.png";
                 }
                 else if(val.result ==2) //Failed
-                    val.path = "/img/fail.png";
+                    val.path = "img/fail.png";
                 //if(val.result ==0) //Failed
                 //    val.path = "/img/fail.png";
                 //else Not Review is 0
@@ -346,29 +369,67 @@ var DBHandler = {
             ret(retVal);
         });
     },
-    getActivityList: function (userid, done) {
-        var ref = firebase.database().ref().child('/study_activity/'+ userid);
-        ref.once("value", function (allSnapshot) {
+    getActivityList: function (userid, done, done2) {
+        var ref = firebase.database().ref().child("/study_activity/" + userid);
+        ref.orderByValue().once("value", function (allSnapshot) {
             var retVal = new Array();
-
-            allSnapshot.forEach(function (snapshot) {
+            var bToday = false;
+            allSnapshot.forEach(function(snapshot) {
+                if(snapshot.key == new Date().yyyymmdd())
+                    isToday = true;
                 var item = {
                     classid: snapshot.key,
-                    purchase_cost: snapshot.val().purchase_cost,
-                    shop_item: new Array()
+                    purchase_cost: snapshot.val().purchase_cost === undefined ? 0 : snapshot.val().purchase_cost,
+                    remained_class: snapshot.val().remained_class,
+                    class_participation : snapshot.val().class_participation,
+                    phonetalk_participation : snapshot.val().phonetalk_participation,
+                    shop_item: new Array(),
+                    class_participation_text : snapshot.val().class_participation === 1 ? "스터디 참여" + " (" + snapshot.val().remained_class + "회 남음)" : "스터디 불참",
+                    phonetalk_participation_text : snapshot.val().phonetalk_participation === 1 ? "전화영어 참여" : "전화영어 불참"
                 };
-                
-                snapshot.forEach(function (shop_snapshot) {
-                    item.shop_item.push({
-                        name:shop_snapshot.key,
-                        count:shop_snapshot.val()
+                var itemRef = ref.child(snapshot.key + "/shop_item/");
+                itemRef.orderByValue().once("value", function (shop_snapshot) {
+                    shop_snapshot.forEach(function (shop_snapshot) {
+                        item.shop_item.push({
+                            name:shop_snapshot.key,
+                            count:shop_snapshot.val()
+                        });
+                        console.log("아이템 : " + shop_snapshot.key);
+                        console.log("카운트 : " + shop_snapshot.val());
                     });
-                });
+                    if(done2 !== null)
+                        done2(retVal);
 
+                });
+                //console.log(item);
                 retVal.push(item);
             });
-            if(done != null)
+            if(done != null){
+                if(isToday == false){
+                    var today = {
+                        classid: new Date().yyyymmdd(),
+                        purchase_cost: 0,
+                        class_participation : -1,
+                        phonetalk_participation : -1,
+                        shop_item: new Array()
+                    }
+                    retVal.push(today);
+                    console.log("added");
+                }
                 done(retVal);
+            }
+        });
+    },
+    createTodayClass: function (userid, done){
+        var ref = firebase.database().ref().child("/study_activity/" + userid + "/" + new Date().yyyymmdd());
+        ref.orderByValue().once("value", function (snapshot) {
+            if(!snapshot.exists()){
+                var update = {
+                    class_participation : 0,
+                    phonetalk_participation : 0
+                };
+                ref.update(update, done);
+            }
         });
     }
 };
