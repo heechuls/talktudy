@@ -21,8 +21,8 @@
       <div class="col" width='50%' >Pronunciation</div>
     </div>
     <div id='profile-level' class="row">
-      <button  ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:18px" >{{myprofile.speaking_level}}</button>
-      <button  ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:18px" >{{myprofile.pronunciation_level}}</button>
+      <button  class="button button-block button-positive" ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:18px" >Level : {{myprofile.speaking_level}}</button>
+      <button  class="button button-block button-positive" ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:18px" >Level : {{myprofile.pronunciation_level}}</button>
     </div>
     <div id='profile-study' align='center'>
       <table class="heavyTable" id='profile-study-items ' class="tg" border="2px" align = 'center ' style="border-collapse:collapse; border:1px gray solid;">
@@ -38,12 +38,3 @@
     </div>
   </ion-content>
 </ion-view>
-<script type="text/javascript">
-    function getPassImagePath(result){
-        if(result == 0){
-            document.getElementById('pass_or_fail').src = "/img/female.png";
-        }
-        else document.getElementById('pass_or_fail').src = "/img/male.png";
-        alert("");
-    };   
-</script>

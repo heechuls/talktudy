@@ -1,12 +1,12 @@
 <ion-view view-title="활동">
-  <ion-content style="margin-bottom:60px">
+  <ion-content>
     <div class="bar bar-header bar-energized">
       <h1 class="title">스터디 {{myprofile.remained_class}}회 남음 / {{myprofile.remained_purchase}}원 구매</h1>
     </div>
     <div class="item item-divider">
       Candy Bars
     </div>
-    <ion-list>
+    <ion-list style="margin:100px">
       <ion-item ng-repeat="activity in activities" type="item-text-wrap">
         <div style="text-align:left;width:25%;float:left">
           <text>{{activity.classid}}</text>

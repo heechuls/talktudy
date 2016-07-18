@@ -27,10 +27,12 @@ angular.module('starter.services', [])
     var List = new Array();
 })
 .service("Users", function() {
-  var users = [{
+    var list = new Array();
+
+  /*var users = [{
     id: 0,
     name: "Hee Chul",
-    gender: "/img/female.png",
+    gender: "img/female.png",
     speaking: 5,
     pronunciation: 3,
     passed: 7,
@@ -38,16 +40,25 @@ angular.module('starter.services', [])
   }, {
     id: 1,
     name: "Hee Jin",
-    gender: "/img/male.png",
+    gender: "img/male.png",
     speaking: 5,
     pronunciation: 3,
     passed: 7,
     failed: 3
-  }];
+  }];*/
     return {
+    retrieveAllUserList : function(done) {
+      DBHandler.retrieveAllUserList(function(retVal){
+        list = retVal.slice(0);
+        done();
+      });
+    },
+    get : function(userid, done){
+      DBHandler.getUserInfo2(userid, done);
+    },
     all: function() {
-      return users;
-    }
+      return list;
+      }
     };
 })
 

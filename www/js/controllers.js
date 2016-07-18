@@ -33,6 +33,7 @@ angular.module('starter.controllers', [])
                 console.log($scope.oModal1.choice);
                 DBHandler.setStudyResult($scope.myprofile.userid, $scope.oModal1.study_item_name, $scope.oModal1.choice, function () {
                     loadData();
+                    DBHandler.updateUserStudyResultStat(MyProfile.userid);
                 });
             }
             else {
@@ -102,7 +103,7 @@ angular.module('starter.controllers', [])
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   //
-  $scope.$on('$ionicView.enter', function(){
+  $scope.$on('$ionicView.loaded', function(){
         DBHandler.getActivityList(MyProfile.userid, function(retval){
             $scope.activities = retval.slice(0).reverse();
             console.log($scope.activities);
@@ -121,7 +122,17 @@ angular.module('starter.controllers', [])
       for(var i in study_items)
       {
         DBHandler.addStudyItem2(i, study_items[i]);
-      }*/
+      }
+      DBHandler.setStudyResultItems("01028225321");
+      DBHandler.setStudyResultItems("01012121212");
+      DBHandler.setStudyResultItems("01099223157");
+      
+
+      DBHandler.addShopItem2('맥주', 5000, "병");
+      DBHandler.addShopItem2('소주', 3000, "병");
+      DBHandler.addShopItem2('새우깡', 1500, "봉지");
+      DBHandler.addShopItem2('오징어칩', 1000, "봉지");
+*/
   $scope.remove = function(chat) {
       //Chats.remove(chat);
       //var refUser = firebase.database().ref('/user/');
@@ -193,7 +204,7 @@ angular.module('starter.controllers', [])
             $scope.$apply();
           });          
       }
-      if(isClassParticipate){
+      if($scope.activities[0].class_participation){
         text = "스터디 참석예정";
         DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
       }
@@ -201,19 +212,14 @@ angular.module('starter.controllers', [])
         text = "스터디 불참예정";
         DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
       }
-      isClassParticipate = !isClassParticipate;
-
+      $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
   }
-  var isClassParticipate = false;
-  var isPhoneTalkParticipate = false;  
-  /*$scope.isParticipate = function(){
-      return "하이";
-  }*/
+
   $scope.participateInPhoneTalk = function(){
       var done = function(){
           document.getElementById('phone').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
       }
-      if(isPhoneTalkParticipate){
+      if($scope.activities[0].phonetalk_participation){
         text = "전화영어 참석예정";
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, true, done);
       }
@@ -221,7 +227,7 @@ angular.module('starter.controllers', [])
         text = "전화영어 불참예정";
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, false, done);
       }
-      isPhoneTalkParticipate = !isPhoneTalkParticipate;
+      $scope.activities[0].phonetalk_participation = !$scope.activities[0].phonetalk_participation;
   }
   function initList(){
         var class_text = "스터디 참여";
@@ -263,12 +269,17 @@ angular.module('starter.controllers', [])
     };
 })
 .controller('SNSCtrl', function($scope, Users) {
-    $scope.users = Users.all(); 
+    $scope.$on('$ionicView.enter', function(){
+        Users.retrieveAllUserList(function(){
+            $scope.users = Users.all(); 
+            $scope.$apply();
+        });
+    });
 })
 .controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state) {
     $scope.data = {};
     $scope.login = function() {
-
+        MyProfile.userid = $scope.data.phonenumber;
         LoginService.loginUser($scope.data.password).success(function(data) {
             $state.go('mainguide');
             init(StudyItems, ShopItems);
@@ -324,12 +335,26 @@ angular.module('starter.controllers', [])
         $state.go('tab.study');
     }
 })
-;  
+.controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
+      $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+            viewData.enableBack = true;
+    });
+      $scope.$on('$ionicView.loaded', function(){
+            Users.get($stateParams.userid, function(profile){
+                $scope.profile = profile;
+                DBHandler.getStudyResult($stateParams.userid, function (study_result) {
+                    $scope.study_items = chunk(study_result.slice(0), 5); //Copying Array
+                    $scope.$apply();
+                });
+            });
+      });
+});  
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");
-    DBHandler.getUserInfo("shin", function () {
+    DBHandler.getUserInfo(MyProfile.userid, function () {
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(MyProfile.userid);
+        DBHandler.saveDeviceToken(MyProfile.userid, MyProfile.token);
         DBHandler.getStudyResult(MyProfile.userid, function (retval) {
             StudyItems.List = retval.slice(0); //Copying Array
             if (done != null)
@@ -342,29 +367,23 @@ function init(StudyItems, ShopItems, done) {
             });
         }
 
-        retriveDeviceInfo();
+    document.addEventListener("deviceready", onDeviceReady, false);
         
     }); 
-    /*DBHandler.addShopItem2("맥주", 5000, "1병");
-    DBHandler.addShopItem2("새우깡", 2000, "1봉지");
-    DBHandler.addShopItem2("소주", 3000, "1병");*/
 }
-function retriveDeviceInfo(){
 
-    document.addEventListener("deviceready", onDeviceReady, false);
-    
-    function onDeviceReady() {
-        window.plugins.sim.getSimInfo(successCallback, errorCallback);
-    }
-    
-    function successCallback(result) {
-        console.log(result);
-    }
-    
-    function errorCallback(error) {
-        console.log(error);
-    }
+function onDeviceReady() {
+    window.plugins.sim.getSimInfo(successCallback, errorCallback);
 }
+
+function successCallback(result) {
+    console.log("Sim Object : " + result["mcc"]);
+}
+
+function errorCallback(error) {
+    console.log(error);
+}
+
 function chunk(arr, size) {
     var newArr = [];
     for (var i = 0; i < arr.length; i += size) {

@@ -21,11 +21,12 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       StatusBar.styleDefault();
     }
     var push = new Ionic.Push({
-      "debug": false
+      "debug": true
     });
     push.register(function(token) {
       console.log("Device token:",token.token);
       push.saveToken(token);  // persist the token in the Ionic Platform
+      MyProfile.token = token;
     });
   });
 })
@@ -135,7 +136,11 @@ angular.module('starter', ['ionic','ionic.service.core', 'starter.controllers', 
       templateUrl: 'templates/guide/talk_main.html',
       controller: 'TalkMainCtrl'
     })
-    ;
+    .state('userprofile', {
+      url: '/userprofile/:userid',
+      templateUrl: 'templates/userprofile.html',
+      controller: 'UserProfileCtrl'
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/login');

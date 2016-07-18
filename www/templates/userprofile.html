@@ -1,0 +1,35 @@
+
+  <ion-view view-title="{{profile.name}}">
+  <ion-content class="padding">
+    <div id='wrapper'>
+      <div id='profile-img'>
+        <img id="profile-image" src="img\male.png" width="100px">
+      </div>
+      <div id='profile-name'>
+        <p profile-name>{{profile.name}}</p>
+      </div>
+      <div id='profile-btn'>
+      </div>
+    </div>
+    <div id='profile-level' class="row">
+      <div class="col" width='50%'>Speaking</div>
+      <div class="col" width='50%'>Pronunciation</div>
+    </div>
+    <div id='profile-level' class="row">
+      <button class="button button-block button-positive" ng-click="showLevelModal(0, profile.speaking_level)" style="width:50%;height:40px;font-size:18px">Level : {{profile.speaking_level}}</button>
+      <button class="button button-block button-positive" ng-click="showLevelModal(1, profile.pronunciation_level)" style="width:50%;height:40px;font-size:18px">Level : {{profile.pronunciation_level}}</button>
+    </div>
+      <div id='profile-study' align='center'>
+      <table class="heavyTable" id='profile-study-items ' class="tg" border="2px" align = 'center ' style="border-collapse:collapse; border:1px gray solid;">
+        <tbody>
+          <tr ng-repeat="rows in study_items" ng-model="study_items">
+            <td ng-repeat="item in rows">
+              <div class="col" style="float:left">{{item.name}}</div>
+              <img id="pass_or_fail" class="col" src = {{item.path}} style="width:50px" style="float:left"></img>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </ion-content>
+</ion-view>

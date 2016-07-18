@@ -6,7 +6,7 @@
     <ion-content class="padding">
         <div class="list">
             <div class="item item-button-right" ng-repeat="item in shop_items">
-                <h2 style="font-size=25px;margin-left:20px">{{item.name}}</h2>
+                <h2 style="font-size=25px;margin-left:20px">{{item.name}} (1{{item.standard}} {{item.price}}원)</h2>
                 <button class="button button-positive" ng-click="purchase_item(item)">
                     구매
                 </button>

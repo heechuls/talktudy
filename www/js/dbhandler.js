@@ -114,7 +114,6 @@ var DBHandler = {
     rateStudyItem: function(userid, name, rate){
         var ref = firebase.database().ref().child('/study_result/' +  userid);
 
-
         ref.orderByChild("name").equalTo(name).on("child_added", function (snapshot) {
             var study_result = firebase.database().ref().child('/study_result/');
             var update = {};
@@ -124,6 +123,38 @@ var DBHandler = {
             study_result.update(update);
         });
     },
+
+    /*
+            var userRef = firebase.database().ref('/user/' + userid);
+        userRef.child("rate_passed").once("value", function (snapshot_passed)){
+            var rate_passed = 0;
+            if(snapshot_passed.exists())
+                rate_passed = snapshot.val();
+            userRef.child("rate_failed").once("value", function (snapshot_failed)){
+                var rate_failed = 0;
+                if(snapshot_failed.exists())
+                    rate_failed = snapshot.val();
+                    if(rate === RATE_PASSED){
+                                                
+                    }
+                    else if(rate === RATE_FAILED){
+
+                    }
+
+                var update = {
+                    rate_passed : rate_passed,
+                    rate_failed : rate_failed
+                }
+                user.update(update);
+            }                        
+        }
+        if(rate === RATE_PASSED){
+            
+        }
+        else if(rate === RATE_FAILED){
+
+        }
+    */
 
     buyItem: function(userid, classid, shop_item_name, purchased_count, done)
     {
@@ -226,7 +257,7 @@ var DBHandler = {
                     result:messageSnapshot.val().result,
                     date:messageSnapshot.val().date
                 }
-                if(val.result ==1){ //Passed
+                if(val.result == RATE_PASSED){ //Passed
                     var reviewedDate = new Date(messageSnapshot.val().date)
                     reviewedDate.setDate(reviewedDate.getDate() + 15);               
 
@@ -234,17 +265,54 @@ var DBHandler = {
                         val.path = "img/pass.png";
                     else val.path = "img/female.png";
                 }
-                else if(val.result ==2) //Failed
+                else if(val.result == RATE_FAILED) //Failed
                     val.path = "img/fail.png";
-                //if(val.result ==0) //Failed
-                //    val.path = "/img/fail.png";
-                //else Not Review is 0
+
                 retVal.push(val);
             });
             if(done != null)
                 done(retVal);
         });
     },
+    getStudyResultCount: function (userid, done) {
+        var ref = firebase.database().ref().child('/study_result/' + userid);
+        var pass = 0, pass_15days = 0, fail = 0, unreview = 0;
+        ref.once("value", function (allMessagesSnapshot) {
+
+            allMessagesSnapshot.forEach(function (messageSnapshot) {
+                var today = new Date();
+                var result = messageSnapshot.val().result;
+
+                if(result == RATE_PASSED){ //Passed
+                    var reviewedDate = new Date(messageSnapshot.val().date)
+                    reviewedDate.setDate(reviewedDate.getDate() + 15);               
+
+                    if(today < reviewedDate)
+                        pass++;
+                    else pass_15days++;
+                }
+                else if(result == RATE_FAILED) //Failed
+                    fail++;
+                else if(result == RATE_UNREVIEWED)
+                    unreview++;
+
+            });
+            if(done != null)
+                done(pass, pass_15days, fail, unreview);
+        });
+    },
+    updateUserStudyResultStat : function (userid){
+        this.getStudyResultCount(userid, function(pass, pass_15days, fail, unreview){
+            var userRef = firebase.database().ref().child('/user/' + userid);
+            var update = {
+                rate_passed : pass + pass_15days,
+                rate_failed : fail,
+                rate_unreviewed : unreview
+            }
+            userRef.update(update);
+        });
+    },
+
     getUserInfo: function (userid, done) {
         var ref = firebase.database().ref().child('/user/' + userid);
         ref.once("value", function (dataSnapshop) {
@@ -263,6 +331,27 @@ var DBHandler = {
             }
             if(done != null)            
                 done();
+        });
+    },
+    getUserInfo2: function (userid, done) {
+        var ref = firebase.database().ref().child('/user/' + userid);
+        ref.once("value", function (dataSnapshop) {
+            var user = {};
+            if(dataSnapshop.exists()){
+                console.log(dataSnapshop.val());
+                user.userid = userid;
+                user.email = dataSnapshop.email;
+                user.gender = dataSnapshop.val().gender;
+                user.name = dataSnapshop.val().name;
+                user.phoneno = dataSnapshop.val().phoneno;
+                user.speaking_level = dataSnapshop.val().speaking_level;
+                user.pronunciation_level = dataSnapshop.val().pronunciation_level;
+                user.email = dataSnapshop.val().email;
+                user.remained_purchase = dataSnapshop.val().remained_purchase;
+                user.remained_class = dataSnapshop.val().remained_class;
+            }
+            if(done != null)            
+                done(user);
         });
     },
     setStudyResultItem: function(userid, studyid, name){
@@ -373,7 +462,7 @@ var DBHandler = {
         var ref = firebase.database().ref().child("/study_activity/" + userid);
         ref.orderByValue().once("value", function (allSnapshot) {
             var retVal = new Array();
-            var bToday = false;
+            var isToday = false;
             allSnapshot.forEach(function(snapshot) {
                 if(snapshot.key == new Date().yyyymmdd())
                     isToday = true;
@@ -394,8 +483,8 @@ var DBHandler = {
                             name:shop_snapshot.key,
                             count:shop_snapshot.val()
                         });
-                        console.log("아이템 : " + shop_snapshot.key);
-                        console.log("카운트 : " + shop_snapshot.val());
+                        //console.log("아이템 : " + shop_snapshot.key);
+                        //console.log("카운트 : " + shop_snapshot.val());
                     });
                     if(done2 !== null)
                         done2(retVal);
@@ -414,7 +503,6 @@ var DBHandler = {
                         shop_item: new Array()
                     }
                     retVal.push(today);
-                    console.log("added");
                 }
                 done(retVal);
             }
@@ -430,6 +518,32 @@ var DBHandler = {
                 };
                 ref.update(update, done);
             }
+        });
+    },
+    saveDeviceToken: function(userid, token){
+        var userRef = firebase.database().ref('/user/' + userid);
+        userRef.update(token);
+    },
+    retrieveAllUserList(done){
+        var ref = firebase.database().ref().child('/user/');
+        ref.once("value", function (allUserSnapshop) {
+            var retVal = new Array();
+            allUserSnapshop.forEach(function (snapshot) {
+                // Will be called with a messageSnapshot for each child under the /messages/ node
+                console.log(snapshot.val());
+                var user = {
+                    userid : snapshot.key,
+                    gender : snapshot.val().gender == 0 ? "img/male.png" : "img/femail.png",
+                    name : snapshot.val().name,
+                    speaking_level : snapshot.val().speaking_level,
+                    pronunciation_level : snapshot.val().pronunciation_level,
+                    rate_passed : snapshot.val().rate_passed == undefined ? 0 : snapshot.val().rate_passed,
+                    rate_failed : snapshot.val().rate_failed == undefined ? 0 : snapshot.val().rate_failed,
+                }
+                retVal.push(user);
+            });
+            if(done != null)            
+                done(retVal);
         });
     }
 };
