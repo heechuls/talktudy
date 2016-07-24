@@ -1,4 +1,4 @@
-angular.module('starter.controllers', [])
+angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.service.push'*/])
 
     .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
         $scope.study_items = chunk(StudyItems.List , 5);
@@ -14,6 +14,7 @@ angular.module('starter.controllers', [])
             animation: 'slide-in-up'
         }).then(function (modal) {
             $scope.oModal1 = modal;
+            $scope.oModal1.password = "";
         });
 
         $ionicModal.fromTemplateUrl('templates/modal/rate-level.html', {
@@ -65,6 +66,7 @@ angular.module('starter.controllers', [])
                 $scope.oModal1.title = item.name + " (" + item.date + " reviewed)";
             else $scope.oModal1.title = item.name;
             $scope.oModal1.study_item_name = item.name;
+            $scope.oModal1.password = "";
             $scope.oModal1.show();
         }
 
@@ -76,6 +78,7 @@ angular.module('starter.controllers', [])
 
             $scope.oModal2.type = type;
             $scope.oModal2.level = level;
+            $scope.oModal2.password = "";
             $scope.oModal2.show();
         }
 
@@ -97,7 +100,7 @@ angular.module('starter.controllers', [])
         }
     })
 
-.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems) {
+.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -197,13 +200,18 @@ angular.module('starter.controllers', [])
   }
   $scope.showToast = showToast;
   $scope.participateInClass = function(){
-      var done = function(){
+    if(MyProfile.remained_class == 0){
+        showClassExpirePopup($ionicPopup)
+        return;
+    }
+    var done = function(){
           document.getElementById('class').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
           DBHandler.getUserInfo($scope.myprofile.userid, function () {
             $scope.myprofile = MyProfile;
             $scope.$apply();
           });          
       }
+      $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
       if($scope.activities[0].class_participation){
         text = "스터디 참석예정";
         DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
@@ -212,7 +220,6 @@ angular.module('starter.controllers', [])
         text = "스터디 불참예정";
         DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
       }
-      $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
   }
 
   $scope.participateInPhoneTalk = function(){
@@ -276,13 +283,18 @@ angular.module('starter.controllers', [])
         });
     });
 })
-.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state) {
+.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce/*, $ionicPush, $ionicPlatform*/) {
     $scope.data = {};
+    //ionicSetup();
     $scope.login = function() {
         MyProfile.userid = $scope.data.phonenumber;
         LoginService.loginUser($scope.data.password).success(function(data) {
             $state.go('mainguide');
-            init(StudyItems, ShopItems);
+            init(StudyItems, ShopItems, function(){
+                if(MyProfile.remained_class == 0){
+                    showClassExpirePopup($ionicPopup);
+                }                
+            });
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
                 title: '로그인에 실패',
@@ -291,7 +303,56 @@ angular.module('starter.controllers', [])
         });
         console.log(" - PW: " + $scope.data.password);
     }
+
+    function ionicSetup(){
+        var push = new Ionic.Push({
+        "debug": false,
+        "onNotification": function (notification) {
+          var payload = notification.payload;
+          console.log(notification, payload);
+        },
+        "onRegister": function (data) {
+          console.log(data.token);
+        },
+        "pluginConfig": {
+          "ios": {
+            "badge": true,
+            "sound": true
+          },
+          "android": {
+            "iconColor": "#343434"
+          }
+        }
+      });
+      console.log("Push Register");
+      push.register(function (token) {
+        console.log("Device token:", token.token);
+        push.saveToken(token);  // persist the token in the Ionic Platform
+        MyProfile.token = token;
+      });
+    }
 })
+.controller('VersionCheckCtrl', function($scope, $state, $window, Version) {
+    $scope.text = "버전 확인중";
+    $scope.style = "none";
+
+    $scope.goupdate = function(){
+        $window.open("//lunar-pic.com:5000");
+    }
+    $scope.$on('$ionicView.beforeEnter', function(){
+        Version.isVersionMatched(function(retval){
+            if(retval == true)
+                $state.go("login");
+            else{
+                $scope.style = "show";
+                $scope.text = "현재 버전은 구 버전입니다.새 버전을 다운 받아 사용해주세요.";
+        
+            }
+        });
+    });
+
+})
+
 .controller('MainGuideCtrl', function($scope, $state) {
   $scope.ok = function() {
         $state.go('tab.activities');
@@ -343,12 +404,14 @@ angular.module('starter.controllers', [])
             Users.get($stateParams.userid, function(profile){
                 $scope.profile = profile;
                 DBHandler.getStudyResult($stateParams.userid, function (study_result) {
+                    if($scope.profile.gender == 1)
+                        document.getElementById("profile-image").src = "img/female.png";
                     $scope.study_items = chunk(study_result.slice(0), 5); //Copying Array
                     $scope.$apply();
                 });
             });
       });
-});  
+}); 
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");
     DBHandler.getUserInfo(MyProfile.userid, function () {
@@ -390,4 +453,12 @@ function chunk(arr, size) {
       newArr.push(arr.slice(i, i + size));
     }
     return newArr;
+}
+
+function showClassExpirePopup($ionicPopup){
+    var template = class_expired;
+    var alertPopup = $ionicPopup.alert({
+        title: '스터디 소진',
+        template: template
+    });
 }

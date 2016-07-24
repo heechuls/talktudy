@@ -28,24 +28,6 @@ angular.module('starter.services', [])
 })
 .service("Users", function() {
     var list = new Array();
-
-  /*var users = [{
-    id: 0,
-    name: "Hee Chul",
-    gender: "img/female.png",
-    speaking: 5,
-    pronunciation: 3,
-    passed: 7,
-    failed: 3
-  }, {
-    id: 1,
-    name: "Hee Jin",
-    gender: "img/male.png",
-    speaking: 5,
-    pronunciation: 3,
-    passed: 7,
-    failed: 3
-  }];*/
     return {
     retrieveAllUserList : function(done) {
       DBHandler.retrieveAllUserList(function(retVal){
@@ -61,7 +43,14 @@ angular.module('starter.services', [])
       }
     };
 })
-
+.service("Version", function() {
+    var version = "0.0.1";
+    return {
+      isVersionMatched : function(done) {
+        DBHandler.isVersionMatched(version, done);
+      }
+    };
+})
 .factory('Activities', function() {
   // Might use a resource here that returns a JSON array
 

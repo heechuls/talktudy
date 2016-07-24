@@ -1,7 +1,7 @@
 
 var DBHandler = {
 
-    addUser: function(userid, name, phoneno, gender, email, speaking_level, pronunciation_level) {
+    addUser: function(userid, name, phoneno, gender, email, speaking_level, pronunciation_level, remained_class) {
         var date = new Date().yyyymmdd();
         var user = {
             name : name,
@@ -10,7 +10,8 @@ var DBHandler = {
             email : email,
             speaking_level : speaking_level,
             pronunciation_level : pronunciation_level,
-            registered_date : date
+            registered_date : date,
+            remained_class : remained_class,
         }
 
         var userRef = firebase.database().ref('/user/' + userid);
@@ -62,6 +63,14 @@ var DBHandler = {
             else deferred.reject('Wrong credentials.');
 
             return false;
+        });
+    },
+    isVersionMatched: function(version, done){
+        firebase.database().ref().child('/version/').once('value', function(snapshot){
+            console.log(snapshot.val());
+            if(snapshot.val() == version)
+                done(true);
+            else done(false);
         });
     },
 
@@ -263,7 +272,7 @@ var DBHandler = {
 
                     if(today < reviewedDate)
                         val.path = "img/pass.png";
-                    else val.path = "img/female.png";
+                    else val.path = "img/passp.png";
                 }
                 else if(val.result == RATE_FAILED) //Failed
                     val.path = "img/fail.png";
@@ -521,8 +530,10 @@ var DBHandler = {
         });
     },
     saveDeviceToken: function(userid, token){
+        if(token != undefined){
         var userRef = firebase.database().ref('/user/' + userid);
         userRef.update(token);
+        }
     },
     retrieveAllUserList(done){
         var ref = firebase.database().ref().child('/user/');
@@ -533,7 +544,7 @@ var DBHandler = {
                 console.log(snapshot.val());
                 var user = {
                     userid : snapshot.key,
-                    gender : snapshot.val().gender == 0 ? "img/male.png" : "img/femail.png",
+                    gender : snapshot.val().gender == 0 ? "img/male.png" : "img/female.png",
                     name : snapshot.val().name,
                     speaking_level : snapshot.val().speaking_level,
                     pronunciation_level : snapshot.val().pronunciation_level,
