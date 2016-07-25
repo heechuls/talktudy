@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers', 'starter.services'])
+angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers', 'starter.services'/*, 'ngCordova'*/])
 
   .run(function ($ionicPlatform) {
     $ionicPlatform.ready(function () {
@@ -26,18 +26,23 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
+          alert(notification);
         },
         "onRegister": function (data) {
           console.log(data.token);
         },
         "pluginConfig": {
-          "ios": {
-            "badge": true,
-            "sound": true
-          },
-          "android": {
-            "iconColor": "#343434"
-          }
+            ios: {
+              alert: true,
+              badge: true,
+              sound: true
+            },
+            android: {
+              sound: true,
+              vibrate: true,
+              forceShow: true,
+              iconColor: "#601dc2"
+            },
         }
       });
       console.log("Push Register");

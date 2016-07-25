@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.service.push'*/])
+angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.service.push'*/])
 
     .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
         $scope.study_items = chunk(StudyItems.List , 5);
@@ -100,7 +100,7 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
         }
     })
 
-.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup) {
+.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup/*, $cordovaBadge*/) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -113,12 +113,19 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
             $scope.myprofile = MyProfile;
             $scope.$apply();
             initList();
+            //setBadge(0);
         }, function(retval2){   
             $scope.activities = retval2.slice(0).reverse();
             $scope.$apply();      
          });
       });
-
+    function setBadge(val){
+        $cordovaBadge.hasPermission().then(function(result) {
+                $cordovaBadge.set(val);
+            }, function(error) {
+                alert(error);
+            });
+    }
 /*    var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
       "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
       "스포츠", "레저/취미", "패션", "로또", "여행", "맛집", "꿈", "미드", "친구", "북한", "결혼", "연애"];
@@ -130,12 +137,9 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
       DBHandler.setStudyResultItems("01012121212");
       DBHandler.setStudyResultItems("01099223157");
       
-
-      DBHandler.addShopItem2('맥주', 5000, "병");
-      DBHandler.addShopItem2('소주', 3000, "병");
-      DBHandler.addShopItem2('새우깡', 1500, "봉지");
-      DBHandler.addShopItem2('오징어칩', 1000, "봉지");
 */
+
+
   $scope.remove = function(chat) {
       //Chats.remove(chat);
       //var refUser = firebase.database().ref('/user/');
@@ -269,7 +273,7 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
 
 .controller('StudyCtrl', function($scope, $state) {
     $scope.grammar = function(){
-        $state.go('talkguide1');
+        $state.go('talkmain');
     };
     $scope.topic = function(){
         $state.go('talkguide1');
@@ -414,6 +418,11 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
 }); 
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");
+    DBHandler.addShopItem2('맥주', 5000, "병");
+    DBHandler.addShopItem2('소주', 3000, "병");
+    DBHandler.addShopItem2('새우깡', 1500, "봉지");
+    DBHandler.addShopItem2('오징어칩', 1000, "봉지");
+
     DBHandler.getUserInfo(MyProfile.userid, function () {
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(MyProfile.userid);
