@@ -119,7 +119,7 @@ angular.module('starter.controllers', ['ionic',/*'ionic.service.core', 'ionic.se
          });
       });
 
-      /*var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
+/*    var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
       "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
       "스포츠", "레저/취미", "패션", "로또", "여행", "맛집", "꿈", "미드", "친구", "북한", "결혼", "연애"];
       for(var i in study_items)
@@ -417,7 +417,8 @@ function init(StudyItems, ShopItems, done) {
     DBHandler.getUserInfo(MyProfile.userid, function () {
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(MyProfile.userid);
-        DBHandler.saveDeviceToken(MyProfile.userid, MyProfile.token);
+        DBHandler.saveDeviceToken(MyProfile.userid, MyProfile.token, 
+            ionic.Platform.isIOS() == true || ionic.Platform.isIPad() == true ? 0 : 1 );
         DBHandler.getStudyResult(MyProfile.userid, function (retval) {
             StudyItems.List = retval.slice(0); //Copying Array
             if (done != null)

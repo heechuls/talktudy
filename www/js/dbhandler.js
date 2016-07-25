@@ -133,38 +133,6 @@ var DBHandler = {
         });
     },
 
-    /*
-            var userRef = firebase.database().ref('/user/' + userid);
-        userRef.child("rate_passed").once("value", function (snapshot_passed)){
-            var rate_passed = 0;
-            if(snapshot_passed.exists())
-                rate_passed = snapshot.val();
-            userRef.child("rate_failed").once("value", function (snapshot_failed)){
-                var rate_failed = 0;
-                if(snapshot_failed.exists())
-                    rate_failed = snapshot.val();
-                    if(rate === RATE_PASSED){
-                                                
-                    }
-                    else if(rate === RATE_FAILED){
-
-                    }
-
-                var update = {
-                    rate_passed : rate_passed,
-                    rate_failed : rate_failed
-                }
-                user.update(update);
-            }                        
-        }
-        if(rate === RATE_PASSED){
-            
-        }
-        else if(rate === RATE_FAILED){
-
-        }
-    */
-
     buyItem: function(userid, classid, shop_item_name, purchased_count, done)
     {
         var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/shop_item/' + shop_item_name);
@@ -337,6 +305,7 @@ var DBHandler = {
                 MyProfile.email = dataSnapshop.val().email;
                 MyProfile.remained_purchase = dataSnapshop.val().remained_purchase;
                 MyProfile.remained_class = dataSnapshop.val().remained_class;
+                MyProfile.device_type = dataSnapshop.val().device_type;
             }
             if(done != null)            
                 done();
@@ -529,17 +498,18 @@ var DBHandler = {
             }
         });
     },
-    saveDeviceToken: function(userid, token){
+    saveDeviceToken: function(userid, token, device_type){
         if(token != undefined){
         var userRef = firebase.database().ref('/user/' + userid);
         userRef.update(token);
+        userRef.update({device_type : device_type});
         }
     },
-    retrieveAllUserList(done){
+    retrieveAllUserList: function(done){
         var ref = firebase.database().ref().child('/user/');
-        ref.once("value", function (allUserSnapshop) {
+        ref.once("value", function(allUserSnapshop) {
             var retVal = new Array();
-            allUserSnapshop.forEach(function (snapshot) {
+            allUserSnapshop.forEach(function(snapshot) {
                 // Will be called with a messageSnapshot for each child under the /messages/ node
                 console.log(snapshot.val());
                 var user = {

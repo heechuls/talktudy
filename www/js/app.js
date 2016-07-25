@@ -24,6 +24,7 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         "debug": true,
         "onNotification": function (notification) {
           var payload = notification.payload;
+          console.log("Push Received : ");
           console.log(notification, payload);
         },
         "onRegister": function (data) {
