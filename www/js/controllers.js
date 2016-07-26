@@ -82,10 +82,6 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             $scope.oModal2.show();
         }
 
-        $scope.$on('modal.shown', function (event, modal) {
-            console.log('Modal ' + modal.id + ' is shown!');
-        });
-
         $scope.$on('$destroy', function () {
             console.log('Destroying modals...');
             $scope.oModal1.remove();
@@ -100,29 +96,27 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         }
     })
 
-.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup/*, $cordovaBadge*/) {
+.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform/*, $cordovaBadge*/) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   //
-  $scope.$on("onNotification", function (args) {
-    console.log("onNotification received (ActivityCtrl)");
+  /*
+    $ionicPlatform.registerBackButtonAction(function () {
+    if (condition) {
+        navigator.app.exitApp();
+    } else {
+        handle back action!
+    }
+    }, 100);*/
+  $scope.$on("onNotification", function(ev, args) {
+    notificationHandlerForAll(ev, args, $ionicPopup, refreshList);
   });
 
   $scope.$on('$ionicView.loaded', function(){
-        DBHandler.getActivityList(MyProfile.userid, function(retval){
-            $scope.activities = retval.slice(0).reverse();
-            console.log($scope.activities);
-            $scope.myprofile = MyProfile;
-            $scope.$apply();
-            initList();
-            //setBadge(0);
-        }, function(retval2){   
-            $scope.activities = retval2.slice(0).reverse();
-            $scope.$apply();      
-         });
-      });
+        refreshList();
+    });
     function setBadge(val){
         $cordovaBadge.hasPermission().then(function(result) {
                 $cordovaBadge.set(val);
@@ -192,15 +186,8 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
           });
           DBHandler.addTotalPurchaseCost($scope.myprofile.userid, item.price, function(){
               DBHandler.getUserInfo($scope.myprofile.userid, function () {
-                  DBHandler.getActivityList($scope.myprofile.userid, function (retval) {
-                      $scope.activities = retval.slice(0).reverse();
-                      $scope.$apply();
-                      initList();
-                  }, function(retval2){
-                      $scope.activities = retval2.slice(0).reverse();                    
-                    $scope.$apply();      
-                    });
-                  $scope.myprofile = MyProfile;
+                refreshList();
+                $scope.myprofile = MyProfile;
             });
           });
           $scope.modal.hide();
@@ -243,6 +230,18 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, false, done);
       }
       $scope.activities[0].phonetalk_participation = !$scope.activities[0].phonetalk_participation;
+  }
+  function refreshList(){
+        DBHandler.getActivityList(MyProfile.userid, function(retval){
+            $scope.activities = retval.slice(0).reverse();
+            console.log($scope.activities);
+            $scope.myprofile = MyProfile;
+            $scope.$apply();
+            initList();
+        }, function(retval2){   
+            $scope.activities = retval2.slice(0).reverse();
+            $scope.$apply();      
+        });
   }
   function initList(){
         var class_text = "스터디 참여";
@@ -291,9 +290,16 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         });
     });
 })
-.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce/*, $ionicPush, $ionicPlatform*/) {
+.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform/*, $ionicPush, $ionicPlatform*/) {
+    /*$ionicPlatform.registerBackButtonAction(function () {
+    if (condition) {
+        navigator.app.exitApp();
+    } else {
+        handle back action!
+    }
+    }, 100);*/
     $scope.$on("onNotification", function (args) {
-        console.log("onNotification received");
+        notificationHandlerForNotice();
     });
     $scope.data = {};
     //pushSetup();
@@ -304,7 +310,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             init(StudyItems, ShopItems, function(){
                 if(MyProfile.remained_class == 0){
                     showClassExpirePopup($ionicPopup);
-                }                
+                }           
             });
         }).error(function(data) {
             var alertPopup = $ionicPopup.alert({
@@ -422,7 +428,18 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
                 });
             });
       });
+})
+.controller('JoinerListCtrl', function($scope, $state) {
+    $scope.$on('$ionicView.enter', function(){
+        DBHandler.getClassParticipants(new Date().yyyymmdd(), function(retval){
+            $scope.users = retval.slice(0);
+            $scope.date = new Date().toDateString();
+            $scope.$apply();
+        });
+    });
+
 }); 
+
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");
     /*DBHandler.addShopItem2('맥주', 5000, "병");
@@ -431,7 +448,7 @@ function init(StudyItems, ShopItems, done) {
     DBHandler.addShopItem2('오징어칩', 1000, "봉지");
     */
 
-    DBHandler.getUserInfo(MyProfile.userid, function () {
+    DBHandler.getUserInfo(MyProfile.userid, function (){
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(MyProfile.userid);
         DBHandler.saveDeviceToken(MyProfile.userid, MyProfile.token, 
@@ -479,4 +496,35 @@ function showClassExpirePopup($ionicPopup){
         title: '스터디 소진',
         template: template
     });
+}
+function notificationHandlerForNotice(ev, args, $ionicPopup){
+    console.log("onNotification received");
+    if(args["code"] == "NOTICE"){
+        $ionicPopup.alert({
+                title: args["message"],
+                template: args["body"]
+            });
+    }
+}
+function notificationHandlerForAll(ev, args, $ionicPopup, refreshList){
+    notificationHandlerForNotice(ev, args, $ionicPopup);
+    if(args["code"] == "STUDY_PARTICIPATION"){
+    var confirmPopup = $ionicPopup.confirm({
+                title: args["message"],
+                template: args["body"]
+        });
+        confirmPopup.then(function(res) {
+            if(res) {
+                DBHandler.participateInClassToday(MyProfile.userid, true, function(){
+                    console.log("Participated")
+                    refreshList();
+                });    
+            } else {
+                DBHandler.participateInClassToday(MyProfile.userid, false, function(){
+                    console.log("Unparticipated")
+                    refreshList();
+                });
+            }
+        });    
+    }
 }

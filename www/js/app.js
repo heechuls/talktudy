@@ -26,13 +26,12 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
+
           if(ionic.Platform.isIOS()){
               var code = notification["_raw"]["additionalData"]["code"];
               var message = notification["_raw"]["message"];
               var body = notification["_raw"]["additionalData"]["body"];
-              $rootScope.$broadcast("onNotification", function(args){
-                  console.log("fire OnNotification");
-              });
+              $rootScope.$broadcast("onNotification", {code : code, message : message, body : body});
           }
           else {
 
@@ -92,7 +91,15 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
-
+    .state('tab.joiner', {
+      url: '/joiner',
+      views: {
+        'tab-profile': {
+          templateUrl: 'templates/admin-joiner.html',
+          controller: 'JoinerListCtrl'
+        }
+      }
+    })
       .state('tab.activities', {
         url: '/activities',
         views: {
@@ -102,16 +109,6 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
-      .state('tab.chat-detail', {
-        url: '/chats/:chatId',
-        views: {
-          'tab-chats': {
-            templateUrl: 'templates/chat-detail.html',
-            controller: 'ChatDetailCtrl'
-          }
-        }
-      })
-
       .state('tab.study', {
         url: '/study',
         views: {
@@ -129,6 +126,12 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
             controller: 'SNSCtrl'
           }
         }
+      })
+
+      .state('userprofile', {
+        url: '/userprofile/:userid',
+        templateUrl: 'templates/userprofile.html',
+        controller: 'UserProfileCtrl'
       })
       .state('mainguide', {
         url: '/mainguide',
@@ -175,11 +178,6 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         url: '/talkmain',
         templateUrl: 'templates/guide/talk_main.html',
         controller: 'TalkMainCtrl'
-      })
-      .state('userprofile', {
-        url: '/userprofile/:userid',
-        templateUrl: 'templates/userprofile.html',
-        controller: 'UserProfileCtrl'
       });
     $urlRouterProvider.otherwise('/versioncheck');
   });
