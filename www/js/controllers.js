@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.service.push'*/])
+angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.service.push'*/])
 
     .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
         $scope.study_items = chunk(StudyItems.List , 5);
@@ -106,6 +106,10 @@ angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.ser
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   //
+  $scope.$on("onNotification", function (args) {
+    console.log("onNotification received (ActivityCtrl)");
+  });
+
   $scope.$on('$ionicView.loaded', function(){
         DBHandler.getActivityList(MyProfile.userid, function(retval){
             $scope.activities = retval.slice(0).reverse();
@@ -288,8 +292,11 @@ angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.ser
     });
 })
 .controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce/*, $ionicPush, $ionicPlatform*/) {
+    $scope.$on("onNotification", function (args) {
+        console.log("onNotification received");
+    });
     $scope.data = {};
-    //ionicSetup();
+    //pushSetup();
     $scope.login = function() {
         MyProfile.userid = $scope.data.phonenumber;
         LoginService.loginUser($scope.data.password).success(function(data) {
@@ -308,7 +315,7 @@ angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.ser
         console.log(" - PW: " + $scope.data.password);
     }
 
-    function ionicSetup(){
+    function pushSetup(){
         var push = new Ionic.Push({
         "debug": false,
         "onNotification": function (notification) {
@@ -418,10 +425,11 @@ angular.module('starter.controllers', ['ionic'/*'ionic.service.core', 'ionic.ser
 }); 
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");
-    DBHandler.addShopItem2('맥주', 5000, "병");
+    /*DBHandler.addShopItem2('맥주', 5000, "병");
     DBHandler.addShopItem2('소주', 3000, "병");
     DBHandler.addShopItem2('새우깡', 1500, "봉지");
     DBHandler.addShopItem2('오징어칩', 1000, "봉지");
+    */
 
     DBHandler.getUserInfo(MyProfile.userid, function () {
         //Need to perform in Admin side when a user is registered

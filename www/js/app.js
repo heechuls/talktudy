@@ -5,9 +5,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers', 'starter.services'/*, 'ngCordova'*/])
+angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers', 'starter.services'/* , 'ngCordova'*/])
 
-  .run(function ($ionicPlatform) {
+  .run(function ($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function () {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -26,7 +26,17 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
-          alert(notification);
+          if(ionic.Platform.isIOS()){
+              var code = notification["_raw"]["additionalData"]["code"];
+              var message = notification["_raw"]["message"];
+              var body = notification["_raw"]["additionalData"]["body"];
+              $rootScope.$broadcast("onNotification", function(args){
+                  console.log("fire OnNotification");
+              });
+          }
+          else {
+
+          }
         },
         "onRegister": function (data) {
           console.log(data.token);
