@@ -73,7 +73,14 @@ var DBHandler = {
             else done(false);
         });
     },
-
+    isUserValid: function(userid, done){
+        firebase.database().ref().child('/user/'+userid).once('value', function(snapshot){
+            if(snapshot.exists()){
+                done(snapshot.val().valid);                
+            }
+            else done(USER_NONE);
+        });        
+    },
     addShopItem: function(name, price){
         var newPushKey = firebase.database().ref().child('shop_item').push().key;
         var update = {};

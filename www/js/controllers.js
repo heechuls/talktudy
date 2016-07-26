@@ -81,7 +81,12 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             $scope.oModal2.password = "";
             $scope.oModal2.show();
         }
-
+        $scope.$on('$ionicView.loaded', function() {
+            if(MyProfile.isAdmin == undefined){
+                document.getElementById('joiner-btn').style.display = "none";
+                document.getElementById('pronunciation-btn').style.display = "none";
+            }
+        });
         $scope.$on('$destroy', function () {
             console.log('Destroying modals...');
             $scope.oModal1.remove();
@@ -97,11 +102,6 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     })
 
 .controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform/*, $cordovaBadge*/) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
   /*
     $ionicPlatform.registerBackButtonAction(function () {
     if (condition) {
@@ -304,21 +304,40 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     $scope.data = {};
     //pushSetup();
     $scope.login = function() {
-        MyProfile.userid = $scope.data.phonenumber;
-        LoginService.loginUser($scope.data.password).success(function(data) {
-            $state.go('mainguide');
-            init(StudyItems, ShopItems, function(){
-                if(MyProfile.remained_class == 0){
-                    showClassExpirePopup($ionicPopup);
-                }           
-            });
-        }).error(function(data) {
-            var alertPopup = $ionicPopup.alert({
-                title: '로그인에 실패',
-                template: '비밀번호를 확인해 주세요'
-            });
+        DBHandler.isUserValid($scope.data.phonenumber, function(retVal){
+            if(retVal == USER_VALID || retVal == USER_ADMIN){
+                if(retVal == USER_ADMIN)
+                    MyProfile.isAdmin = true;
+    
+                LoginService.loginUser($scope.data.password).success(function(data) {
+                    $state.go('mainguide');
+                    MyProfile.userid = $scope.data.phonenumber;
+                    init(StudyItems, ShopItems, function(){
+                        if(MyProfile.remained_class == 0){
+                            showClassExpirePopup($ionicPopup);
+                        }           
+                    });
+                }).error(function(data) {
+                    var alertPopup = $ionicPopup.alert({
+                        title: '로그인에 실패',
+                        template: '비밀번호를 확인해 주세요'
+                    });
+                });
+                console.log(" - PW: " + $scope.data.password);
+            }
+            else if(retVal == USER_INVALID){
+                    var alertPopup = $ionicPopup.alert({
+                        title: '로그인에 실패',
+                        template: '만료된 계정입니다.'
+                    });
+            }        
+            else if(retVal == USER_NONE){
+                    var alertPopup = $ionicPopup.alert({
+                        title: '로그인에 실패',
+                        template: '등록된 계정이 없습니다.'
+                    });
+            }
         });
-        console.log(" - PW: " + $scope.data.password);
     }
 
     function pushSetup(){
