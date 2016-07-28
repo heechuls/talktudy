@@ -1,33 +1,35 @@
 <ion-view view-title="활동">
-  <ion-content>
-    <div class="bar bar-header bar-energized">
+  <ion-header-bar class="bar bar-subheader bar-stable">
       <h1 class="title">스터디 {{myprofile.remained_class}}회 남음 / {{myprofile.remained_purchase}}원 구매</h1>
-    </div>
-    <div class="item item-divider">
-      Candy Bars
-    </div>
-    <ion-list style="margin:100px">
-      <ion-item ng-repeat="activity in activities" type="item-text-wrap">
-        <div style="text-align:left;width:25%;float:left">
-          <text>{{activity.classid}}</text>
-        </div>
-        <div style="text-align:left;width:40%;float:left">
-          <b id='class' ng-click='participateInClass()'></b>                        
-          <b id='phone' ng-click='participateInPhoneTalk()'></b>
-          <div id='isClassParticipated'>
-            <b>{{activity.class_participation_text}}</b><br/>
-          </div>                        
-          <div id='isPhonetalkParticipated'>
-            <b>{{activity.phonetalk_participation_text}}</b><br/>
-          </div>                        
-          <b>구매 ({{activity.purchase_cost}}원)</b>
-          <br>
-          <i ng-repeat="item in activity.shop_item ">
+  </ion-header-bar>
+  <ion-content class="has-subheader has-footer">
+      <div class="padding">
+      <ion-list>
+        <ion-item ng-repeat="activity in activities" type="item-text-wrap">
+          <div style="text-align:left;width:25%;float:left">
+            <text>{{activity.classid}}</text>
+          </div>
+          <div style="text-align:left;width:40%;float:left">
+            <b id='class' ng-click='participateInClass()'></b>
+            <b id='phone' ng-click='participateInPhoneTalk()'></b>
+            <div id='isClassParticipated'>
+              <b>{{activity.class_participation_text}}</b><br/>
+            </div>
+            <div id='isPhonetalkParticipated'>
+              <b>{{activity.phonetalk_participation_text}}</b><br/>
+            </div>
+            <b>구매 ({{activity.purchase_cost}}원)</b>
+            <br>
+            <i ng-repeat="item in activity.shop_item ">
             {{item.name}} {{item.count}}
           </i>
-        </div>
-      </ion-item>
-    </ion-list>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
   </ion-content>
-  <button class="button button-block button-calm " ng-click="purchase() " style="position: fixed;bottom: 0px; ">구매</button>
+  <ion-footer-bar align-title="center">
+  <button class="button button-block button-calm " ng-click="purchase()">구매</button>
+  </ion-footer-bar>
 </ion-view>
+

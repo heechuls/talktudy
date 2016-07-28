@@ -71,7 +71,7 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
-    $ionicConfigProvider.tabs.position('top'); // other values: top
+    //$ionicConfigProvider.tabs.position('top'); // other values: top
     $stateProvider
 
       .state('tab', {
@@ -91,15 +91,6 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
-    .state('tab.joiner', {
-      url: '/joiner',
-      views: {
-        'tab-profile': {
-          templateUrl: 'templates/admin-joiner.html',
-          controller: 'JoinerListCtrl'
-        }
-      }
-    })
       .state('tab.activities', {
         url: '/activities',
         views: {
@@ -118,16 +109,24 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
+    .state('tab.joiner', {
+      url: '/joiner',
+      views: {
+        'tab-study': {
+          templateUrl: 'templates/admin-joiner.html',
+          controller: 'JoinerListCtrl'
+        }
+      }
+    })      
       .state('tab.sns', {
         url: '/sns',
         views: {
           'tab-sns': {
-            templateUrl: 'templates/tab-sns.html',
-            controller: 'SNSCtrl'
+            templateUrl: 'templates/tab-sns2.html',
+            controller: 'SNSCtrl2'
           }
         }
       })
-
       .state('userprofile', {
         url: '/userprofile/:userid',
         templateUrl: 'templates/userprofile.html',

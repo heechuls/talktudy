@@ -1,6 +1,4 @@
 
-
-
 <ion-view view-title="프로필">
 
   <ion-content>
@@ -8,23 +6,20 @@
       <div id='profile-img'>
         <img id="profile-image" src="img\male.png" width="100px">
       </div>
-
       <div id='profile-name'>
         <p profile-name>{{myprofile.name}}</p>
       </div>
       <div id='history-btn'>
-        <button class="button button-block button-calm" ng-click="history()" style="width:80px;height=50px;position:fixed;top:50px;right:50px">History</button>
+        <button class="button icon-left ion-mic-a" ng-click="history()" style="font-size:12px;position:fixed;top:50px;right:50px">발음 레코딩</button>
       </div>
-      <a id = "joiner-btn" class="button icon icon-right ion-chevron-right" href="#/tab/joiner" style="font-size:13px;position:fixed;top:5px;right:30px">Today Joiners</a>
-      <a id = "pronunciation-btn" class="button icon icon-right ion-chevron-right" href="#/tab/joiner" style="font-size:13px;position:fixed;top:5px;right:130px">Upload pronunciation</a>      
     </div>
-    <div id='profile-level' class="row">
+    <!--<div id='profile-level' class="row">
       <div class="col" width='50%' >Speaking</div>
       <div class="col" width='50%' >Pronunciation</div>
-    </div>
+    </div>-->
     <div id='profile-level' class="row">
-      <button  class="button button-block button-positive" ng-click="showLevelModal(0, myprofile.speaking_level)" style="width:50%;height:40px;font-size:18px" >Level : {{myprofile.speaking_level}}</button>
-      <button  class="button button-block button-positive" ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="width:50%;height:40px;font-size:18px" >Level : {{myprofile.pronunciation_level}}</button>
+      <button  class="button button-positive icon-left ion-arrow-graph-up-right" ng-click="showLevelModal(0, myprofile.speaking_level)" style="margin:10px;width:50%;height:40px;font-size:16px" >Speaking Level : {{myprofile.speaking_level}}</button>
+      <button  class="button button-positive icon-left ion-arrow-graph-up-right" ng-click="showLevelModal(1, myprofile.pronunciation_level)" style="margin:10px;width:50%;height:40px;font-size:16px" >Pronunciation Level : {{myprofile.pronunciation_level}}</button>
     </div>
     <div id='profile-study' align='center'>
       <table class="heavyTable" id='profile-study-items ' class="tg" border="2px" align = 'center ' style="border-collapse:collapse; border:1px gray solid;">

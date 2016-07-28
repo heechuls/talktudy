@@ -281,6 +281,11 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     $scope.topic = function(){
         $state.go('talkguide1');
     };
+    $scope.$on('$ionicView.loaded', function() {
+    if(MyProfile.isAdmin == undefined){
+        document.getElementById('admin-bar').style.display = "none";
+    }
+    });
 })
 .controller('SNSCtrl', function($scope, Users) {
     $scope.$on('$ionicView.enter', function(){
@@ -289,6 +294,22 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             $scope.$apply();
         });
     });
+})
+.controller('SNSCtrl2', function($scope, Users) {
+
+  $scope.demo = 'all';
+  $scope.setPlatform = function(p) {
+    document.body.classList.remove('platform-similar');
+    document.body.classList.remove('platform-all');
+    document.body.classList.add('platform-' + p);
+    $scope.demo = p;
+  }
+    $scope.$on('$ionicView.enter', function(){
+        Users.retrieveAllUserList(function(){
+            $scope.users = Users.all(); 
+            $scope.$apply();
+        });
+    });  
 })
 .controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform/*, $ionicPush, $ionicPlatform*/) {
     /*$ionicPlatform.registerBackButtonAction(function () {
@@ -428,9 +449,10 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     }
 })
 .controller('TalkMainCtrl', function($scope, $state) {
-    $scope.next = function(){
-        $state.go('tab.study');
-    }
+    $scope.$on('$ionicView.loaded', function(){
+        $scope.title = "문법";
+        $scope.address = "http://talktudy.herokuapp.com/";
+    });
 })
 .controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
       $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
