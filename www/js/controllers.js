@@ -101,7 +101,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         }
     })
 
-.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform/*, $cordovaBadge*/) {
+.controller('ActivityCtrl', function($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform, $ionicNavBarDelegate/*, $cordovaBadge*/) {
   /*
     $ionicPlatform.registerBackButtonAction(function () {
     if (condition) {
@@ -110,6 +110,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         handle back action!
     }
     }, 100);*/
+    $ionicNavBarDelegate.showBackButton(true);
   $scope.$on("onNotification", function(ev, args) {
     notificationHandlerForAll(ev, args, $ionicPopup, refreshList);
   });
@@ -195,7 +196,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
   }
   $scope.showToast = showToast;
   $scope.participateInClass = function(){
-    if(MyProfile.remained_class == 0){
+    if(MyProfile.remained_class == 0 && !$scope.activities[0].class_participation){
         showClassExpirePopup($ionicPopup)
         return;
     }
@@ -275,26 +276,34 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
 })
 
 .controller('StudyCtrl', function($scope, $state) {
-    $scope.grammar = function(){
-        $state.go('talkmain');
+/*    $scope.grammar = function(){
+        $state.go('tab.talkmain');
     };
     $scope.topic = function(){
         $state.go('talkguide1');
-    };
+    };*/
+    
     $scope.$on('$ionicView.loaded', function() {
     if(MyProfile.isAdmin == undefined){
         document.getElementById('admin-bar').style.display = "none";
     }
     });
 })
-.controller('SNSCtrl', function($scope, Users) {
+.controller('UploadCtrl', ['$scope', 'fileUpload', 'Users', function($scope, fileUpload, Users){
     $scope.$on('$ionicView.enter', function(){
         Users.retrieveAllUserList(function(){
             $scope.users = Users.all(); 
             $scope.$apply();
         });
     });
-})
+    $scope.upload = function(userid){
+        var file = $scope.myFile;
+        console.log('file is ');
+        console.dir(file);
+        var uploadUrl = "http://lunar-pic.com/";
+        fileUpload.uploadFileToUrl(userid, file, uploadUrl);
+    }
+}])
 .controller('SNSCtrl2', function($scope, Users) {
 
   $scope.demo = 'all';
@@ -311,7 +320,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         });
     });  
 })
-.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform/*, $ionicPush, $ionicPlatform*/) {
+.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform, $ionicNavBarDelegate/*, $ionicPush, $ionicPlatform*/) {
     /*$ionicPlatform.registerBackButtonAction(function () {
     if (condition) {
         navigator.app.exitApp();
@@ -319,6 +328,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         handle back action!
     }
     }, 100);*/
+    $ionicNavBarDelegate.showBackButton(false);
     $scope.$on("onNotification", function (args) {
         notificationHandlerForNotice();
     });
@@ -448,10 +458,33 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         $state.go('talkmain');
     }
 })
-.controller('TalkMainCtrl', function($scope, $state) {
-    $scope.$on('$ionicView.loaded', function(){
+.controller('TalkMainCtrl', function($scope, $state, $sce, $ionicPlatform, $stateParams) {
+ /*   document.addEventListener('deviceready', function () {
+    document.addEventListener("backbutton", function(){
+        var iframe = document.getElementById('contents');
+        iframe.contentWindow.history.go(-1);
+    }, false);
+    },false);*/
+$ionicPlatform.registerBackButtonAction(function (event) {
+    if($state.current.name=="app.home"){
+      navigator.app.exitApp();
+    }
+    else {
+      navigator.app.backHistory();
+    }
+  }, 100);
+    $scope.trustSrc = function(src) {
+        return $sce.trustAsResourceUrl(src);
+    }
+
+    $scope.$on('$ionicView.beforeEnter', function(){
         $scope.title = "문법";
-        $scope.address = "http://talktudy.herokuapp.com/";
+        if($stateParams.type == 1)
+            $scope.address = "http://talktudy.herokuapp.com/grammar";
+        else if($stateParams.type == 2)
+            $scope.address = "http://talktudy.herokuapp.com/category";
+        
+        $scope.$apply();
     });
 })
 .controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
@@ -479,7 +512,22 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
         });
     });
 
-}); 
+})
+.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+            
+            element.bind('change', function(){
+                scope.$apply(function(){
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]); 
 
 function init(StudyItems, ShopItems, done) {
     //DBHandler.createTodayClass("shin");

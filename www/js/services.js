@@ -51,6 +51,21 @@ angular.module('starter.services', [])
       }
     };
 })
+.service('fileUpload', ['$http', function ($http) {
+    this.uploadFileToUrl = function(userid, file, uploadUrl){
+        var fd = new FormData();
+        fd.append('filename', file);
+        fd.append('receiver', userid);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+        .success(function(){
+        })
+        .error(function(){
+        });
+    }
+}])
 .factory('Activities', function() {
   // Might use a resource here that returns a JSON array
 
