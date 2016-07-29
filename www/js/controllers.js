@@ -207,14 +207,23 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             $scope.$apply();
           });          
       }
-      $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
-      if($scope.activities[0].class_participation){
+      if(!$scope.activities[0].class_participation){
         text = "스터디 참석예정";
         DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
+        $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
       }
       else{ 
-        text = "스터디 불참예정";
-        DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
+        if(DBHandler.isChangableTime()){
+            text = "스터디 불참예정";
+            DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
+            $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
+        }
+        else{
+            var alertPopup = $ionicPopup.alert({
+                title: '변경 불가',
+                template: '스터디가 이미 진행되어 변경이 불가합니다.'
+            });
+        }
       }
   }
 
@@ -483,9 +492,7 @@ $ionicPlatform.registerBackButtonAction(function (event) {
             $scope.address = "http://talktudy.herokuapp.com/grammar";
         else if($stateParams.type == 2)
             $scope.address = "http://talktudy.herokuapp.com/category";
-        
-        $scope.$apply();
-    });
+        });
 })
 .controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
       $scope.$on('$ionicView.beforeEnter', function (event, viewData) {

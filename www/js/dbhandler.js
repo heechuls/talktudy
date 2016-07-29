@@ -561,6 +561,12 @@ var DBHandler = {
             if(done != null)            
                 done(retVal);
         });
+    },
+    isChangableTime: function(){
+        now = new Date();
+        if((now.getHours() == 11 && now.getMinutes() >= 30) || (now.getHours() > 12 && now.getHour()) < 0)
+            return false;
+        else return true;
     }
 };
 
