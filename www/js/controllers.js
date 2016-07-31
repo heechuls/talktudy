@@ -116,6 +116,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
   });
 
   $scope.$on('$ionicView.loaded', function(){
+        //console.log("File Transfer : " + FileTransfer);
         refreshList();
     });
     function setBadge(val){
@@ -492,7 +493,11 @@ $ionicPlatform.registerBackButtonAction(function (event) {
             $scope.address = "http://talktudy.herokuapp.com/grammar";
         else if($stateParams.type == 2)
             $scope.address = "http://talktudy.herokuapp.com/category";
-        });
+        else if($stateParams.type == 3)
+            $scope.address = "http://talktudy.herokuapp.com/grammar_kr";
+        else if($stateParams.type == 4)
+            $scope.address = "http://talktudy.herokuapp.com/category_kr";
+    });
 })
 .controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
       $scope.$on('$ionicView.beforeEnter', function (event, viewData) {

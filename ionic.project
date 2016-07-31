@@ -1,4 +1,10 @@
 {
   "name": "talktudy",
-  "app_id": "982bb28f"
+  "app_id": "982bb28f",
+  "proxies":[
+    {
+      "path":"/api",
+      "proxyUrl":"http://lunar-pic.com"
+    }
+  ]
 }

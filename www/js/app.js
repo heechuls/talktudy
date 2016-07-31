@@ -27,7 +27,7 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
-
+          alert(notification.toString());
           if(ionic.Platform.isIOS()){
               var code = notification["_raw"]["additionalData"]["code"];
               var message = notification["_raw"]["message"];
@@ -61,7 +61,6 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         push.saveToken(token);  // persist the token in the Ionic Platform
         MyProfile.token = token;
       });
-
       //if none of the above states are matched, use this as the fallback
     });
   })
