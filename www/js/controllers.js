@@ -126,60 +126,32 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
                 alert(error);
             });
     }
-/*    var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
-      "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
-      "스포츠", "레저/취미", "패션", "로또", "여행", "맛집", "꿈", "미드", "친구", "북한", "결혼", "연애"];
-      for(var i in study_items)
-      {
-        DBHandler.addStudyItem2(i, study_items[i]);
-      }
-      DBHandler.setStudyResultItems("01028225321");
-      DBHandler.setStudyResultItems("01012121212");
-      DBHandler.setStudyResultItems("01099223157");
-      
-*/
-
-
-  $scope.remove = function(chat) {
-      //Chats.remove(chat);
-      //var refUser = firebase.database().ref('/user/');
-      //refUser.push('shin');
-      //document.write('<script type="text/javascript" src="js/usermgr.js"></script>');
-      //addUser('shin', '신희철', 'heechul78@gmail.com', '010-2822-5321');
-      //addUser('shin', '신희철', '010-2822-5321', 0, 'heechul78@gmail.com', 4, 4)
-      //addClass("2016-06-25");
-      //addClassEnroll('shin', 4);
-      //isPasswordMatched(1, "12345");
-      //addShopItem("맥주", 5000);
-      //getPriceOfShopItem("소주");
-      
-      //addStudyItem("전치사");    
-      //rateStudyItem("shin", "조동사", 0);
-      //participateActivity('2016-06-21', '01022212312', true);
-      //participateActivity('2016-06-21', '01028225321', false);
-      //buyItem('2016-06-21', '01022212312', '맥주', 1);
-      //buyItem('2016-06-21', '01022212312', '소주', 2);
-      //buyItem('2016-06-21', '01022212312', '과자', 3);
-      //buyItem('2016-06-21', '01028225321', '땅콩', 1);
-      //buyItem('01028225321', '2016-06-21', '킷캣', 2);
-      /*buyItem('01028225321', '2016-06-21', '음료수', 4);
-      participateClass('01028225321', '2016-06-21', 1);
-      participatePhoneTalk('01028225321', '2016-06-21', 0);
-      participatePhoneTalk('01028225321', '2016-06-22', 0);
-      participateClass('01028225321', '2016-06-22', 1);*/
-      //DBHandler.participateClass('01028225321', '2016-06-22', 0);
-  };
   $ionicModal.fromTemplateUrl('templates/modal/purchase-item.html', {
-      scope: $scope,
-      backdropClickToClose: false,
-      animation: 'slide-in-up'
+        id: '1',
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
   }).then(function (modal) {
-      $scope.modal = modal;
+      $scope.purchase_modal = modal;
   });
+  $ionicModal.fromTemplateUrl('templates/modal/participate-phone-talk.html', {
+        id: '2',
+        scope: $scope,
+        backdropClickToClose: false,
+        animation: 'slide-in-up'
+    }).then(function (modal) {
+        $scope.phonetalk_modal = modal;
+    });
+
   $scope.purchase = function () {
       $scope.shop_items = ShopItems.List;
-      $scope.modal.show();
+      $scope.purchase_modal.show();
   }
+  
+  $scope.show_phonetalk_modal = function () {
+      $scope.phonetalk_modal.show();
+  }
+
   $scope.purchase_item = function(item) {
       DBHandler.buyItem(MyProfile.userid, new Date().yyyymmdd(), item.name, 1, function(){
           //$scope.showToast($cordovaToast, "구매가 완료되었습니다.", "short", "center");
@@ -242,6 +214,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
       }
       $scope.activities[0].phonetalk_participation = !$scope.activities[0].phonetalk_participation;
   }
+  
   function refreshList(){
         DBHandler.getActivityList(MyProfile.userid, function(retval){
             $scope.activities = retval.slice(0).reverse();
@@ -469,12 +442,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     }
 })
 .controller('TalkMainCtrl', function($scope, $state, $sce, $ionicPlatform, $stateParams) {
- /*   document.addEventListener('deviceready', function () {
-    document.addEventListener("backbutton", function(){
-        var iframe = document.getElementById('contents');
-        iframe.contentWindow.history.go(-1);
-    }, false);
-    },false);*/
+
 $ionicPlatform.registerBackButtonAction(function (event) {
     if($state.current.name=="app.home"){
       navigator.app.exitApp();
@@ -488,15 +456,14 @@ $ionicPlatform.registerBackButtonAction(function (event) {
     }
 
     $scope.$on('$ionicView.beforeEnter', function(){
-        $scope.title = "문법";
-        if($stateParams.type == 1)
-            $scope.address = "http://talktudy.herokuapp.com/grammar";
-        else if($stateParams.type == 2)
-            $scope.address = "http://talktudy.herokuapp.com/category";
-        else if($stateParams.type == 3)
-            $scope.address = "http://talktudy.herokuapp.com/grammar_kr";
-        else if($stateParams.type == 4)
-            $scope.address = "http://talktudy.herokuapp.com/category_kr";
+        if($stateParams.type == EN_GRAMMAR)
+            $scope.address = STUDY_CONTENTS_1;
+        else if($stateParams.type == EN_TOPIC)
+            $scope.address = STUDY_CONTENTS_2;
+        else if($stateParams.type == KR_GRAMMAR)
+            $scope.address = STUDY_CONTENTS_3;
+        else if($stateParams.type == KR_TOPIC)
+            $scope.address = STUDY_CONTENTS_4;
     });
 })
 .controller('UserProfileCtrl', function($scope, $state, $stateParams, Users) {
@@ -542,12 +509,6 @@ $ionicPlatform.registerBackButtonAction(function (event) {
 }]); 
 
 function init(StudyItems, ShopItems, done) {
-    //DBHandler.createTodayClass("shin");
-    /*DBHandler.addShopItem2('맥주', 5000, "병");
-    DBHandler.addShopItem2('소주', 3000, "병");
-    DBHandler.addShopItem2('새우깡', 1500, "봉지");
-    DBHandler.addShopItem2('오징어칩', 1000, "봉지");
-    */
 
     DBHandler.getUserInfo(MyProfile.userid, function (){
         //Need to perform in Admin side when a user is registered
@@ -628,4 +589,60 @@ function notificationHandlerForAll(ev, args, $ionicPopup, refreshList){
             }
         });    
     }
+}
+function testCode(){
+ /*   document.addEventListener('deviceready', function () {
+    document.addEventListener("backbutton", function(){
+        var iframe = document.getElementById('contents');
+        iframe.contentWindow.history.go(-1);
+    }, false);
+    },false);*/
+
+    //DBHandler.createTodayClass("shin");
+    /*DBHandler.addShopItem2('맥주', 5000, "병");
+    DBHandler.addShopItem2('소주', 3000, "병");
+    DBHandler.addShopItem2('새우깡', 1500, "봉지");
+    DBHandler.addShopItem2('오징어칩', 1000, "봉지");
+    */    
+
+    //Chats.remove(chat);
+      //var refUser = firebase.database().ref('/user/');
+      //refUser.push('shin');
+      //document.write('<script type="text/javascript" src="js/usermgr.js"></script>');
+      //addUser('shin', '신희철', 'heechul78@gmail.com', '010-2822-5321');
+      //addUser('shin', '신희철', '010-2822-5321', 0, 'heechul78@gmail.com', 4, 4)
+      //addClass("2016-06-25");
+      //addClassEnroll('shin', 4);
+      //isPasswordMatched(1, "12345");
+      //addShopItem("맥주", 5000);
+      //getPriceOfShopItem("소주");
+      
+      //addStudyItem("전치사");    
+      //rateStudyItem("shin", "조동사", 0);
+      //participateActivity('2016-06-21', '01022212312', true);
+      //participateActivity('2016-06-21', '01028225321', false);
+      //buyItem('2016-06-21', '01022212312', '맥주', 1);
+      //buyItem('2016-06-21', '01022212312', '소주', 2);
+      //buyItem('2016-06-21', '01022212312', '과자', 3);
+      //buyItem('2016-06-21', '01028225321', '땅콩', 1);
+      //buyItem('01028225321', '2016-06-21', '킷캣', 2);
+      /*buyItem('01028225321', '2016-06-21', '음료수', 4);
+      participateClass('01028225321', '2016-06-21', 1);
+      participatePhoneTalk('01028225321', '2016-06-21', 0);
+      participatePhoneTalk('01028225321', '2016-06-22', 0);
+      participateClass('01028225321', '2016-06-22', 1);*/
+      //DBHandler.participateClass('01028225321', '2016-06-22', 0);
+
+/*    var study_items = ["시제", "완료", "조동사", "To부정사", "동명사", "수동태", "전치사", "관계대명사",
+      "접속사", "부사", "형용사", "가정법", "비교급", "수량", "비인칭 주어", "가족", "애완동물", "도둑/강도",
+      "스포츠", "레저/취미", "패션", "로또", "여행", "맛집", "꿈", "미드", "친구", "북한", "결혼", "연애"];
+      for(var i in study_items)
+      {
+        DBHandler.addStudyItem2(i, study_items[i]);
+      }
+      DBHandler.setStudyResultItems("01028225321");
+      DBHandler.setStudyResultItems("01012121212");
+      DBHandler.setStudyResultItems("01099223157");
+      
+*/      
 }
