@@ -5,6 +5,8 @@ var STRING_CONFIRM_PASSWORD = "비밀번호를 확인해 주세요";
 var STRING_SPEAKING_LEVEL = "Speaking Level";
 var STRING_PRONUNCIATION_LEVEL = "Pronunciation Level";
 
+var STRING_STUDY_PARTICIPATION = "스터디 참석";
+var STRING_PHONETALK_PARTICIPATION = "전화영어 참석";
 var STRING_STUDY_TO_PARTICIPATE = "스터디 참석예정";
 var STRING_PHONETALK_TO_PARTICIPATE = "전화영어 참석예정";
 var STRING_STUDY_NOT_TO_PARTICIPATE = "스터디 불참예정";

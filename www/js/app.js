@@ -66,10 +66,10 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
       function markNotification(code, args){
         if(MyProfile.isLoggedIn == false){
 /*          if(code == "STUDY_PARTICIPATION")
-            isStudyConfirmReceived = true;
+            GLOBALS.isStudyConfirmReceived = true;
           else if(code == "PHONETALK_PARTICIPATION")
-            isPhoneTalkConfirmReceived = true; */
-            ReceivedNotification.put(args);
+            GLOBALS.isPhoneTalkConfirmReceived = true; */
+            GLOBALS.ReceivedNotification.put(args);
         }
       }
       //if none of the above states are matched, use this as the fallback

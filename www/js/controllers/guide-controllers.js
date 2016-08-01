@@ -52,13 +52,13 @@ $ionicPlatform.registerBackButtonAction(function (event) {
     }
 
     $scope.$on('$ionicView.beforeEnter', function(){
-        if($stateParams.type == EN_GRAMMAR)
-            $scope.address = STUDY_CONTENTS_1;
-        else if($stateParams.type == EN_TOPIC)
-            $scope.address = STUDY_CONTENTS_2;
-        else if($stateParams.type == KR_GRAMMAR)
-            $scope.address = STUDY_CONTENTS_3;
-        else if($stateParams.type == KR_TOPIC)
-            $scope.address = STUDY_CONTENTS_4;
+        if($stateParams.type == GLOBALS.EN_GRAMMAR)
+            $scope.address = GLOBALS.STUDY_CONTENTS_1;
+        else if($stateParams.type == GLOBALS.EN_TOPIC)
+            $scope.address = GLOBALS.STUDY_CONTENTS_2;
+        else if($stateParams.type == GLOBALS.KR_GRAMMAR)
+            $scope.address = GLOBALS.STUDY_CONTENTS_3;
+        else if($stateParams.type == GLOBALS.KR_TOPIC)
+            $scope.address = GLOBALS.STUDY_CONTENTS_4;
     });
 })

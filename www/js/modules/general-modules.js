@@ -1,16 +1,16 @@
 function init(StudyItems, ShopItems, done) {
 
-    DBHandler.getUserInfo(MyProfile.userid, function (){
+    DBHandler.getUserInfo(GLOBALS.MyProfile.userid, function (){
         //Need to perform in Admin side when a user is registered
-        //DBHandler.setStudyResultItems(MyProfile.userid);
-        DBHandler.saveDeviceToken(MyProfile.userid, MyProfile.token, 
+        //DBHandler.setStudyResultItems(GLOBALS.MyProfile.userid);
+        DBHandler.saveDeviceToken(GLOBALS.MyProfile.userid, GLOBALS.MyProfile.token, 
             ionic.Platform.isIOS() == true || ionic.Platform.isIPad() == true ? 0 : 1 );
-        DBHandler.getStudyResult(MyProfile.userid, function (retval) {
+        DBHandler.getStudyResult(GLOBALS.MyProfile.userid, function (retval) {
             StudyItems.List = retval.slice(0); //Copying Array
             if (done != null)
                 done();
         });
-        DBHandler.getPasswordList();
+        DBHandler.LoadPasswordList();
         if (ShopItems != null) {
             DBHandler.getShopItems(function (retval) {
                 ShopItems.List = retval.slice(0);
@@ -67,12 +67,12 @@ function notificationHandlerForAll(ev, args, $ionicPopup, refreshList){
         });
         confirmPopup.then(function(res) {
             if(res) {
-                DBHandler.participateInClassToday(MyProfile.userid, true, function(){
+                DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, true, function(){
                     console.log("Participated")
                     refreshList();
                 });    
             } else {
-                DBHandler.participateInClassToday(MyProfile.userid, false, function(){
+                DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, false, function(){
                     console.log("Unparticipated")
                     refreshList();
                 });

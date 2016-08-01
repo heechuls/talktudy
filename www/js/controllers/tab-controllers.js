@@ -2,9 +2,9 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
 
     .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
         $scope.study_items = chunk(StudyItems.List , 5);
-        $scope.myprofile = MyProfile;
+        $scope.myprofile = GLOBALS.MyProfile;
 
-        if(MyProfile.gender==1)
+        if(GLOBALS.MyProfile.gender==1)
             document.getElementById("profile-image").src = "img/female.png";
 
         $ionicModal.fromTemplateUrl('templates/modal/rate-study-item.html', {
@@ -28,24 +28,24 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
 
         $scope.rateChange = function () {
             console.log($scope.oModal1.password);
-            console.log(Password[1].password);
-            if ($scope.oModal1.password == Password[1].password) {
+            console.log(GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password);
+            if ($scope.oModal1.password == GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password) {
                 $scope.oModal1.hide();
                 console.log($scope.oModal1.choice);
                 DBHandler.setStudyResult($scope.myprofile.userid, $scope.oModal1.study_item_name, $scope.oModal1.choice, function () {
                     loadData();
-                    DBHandler.updateUserStudyResultStat(MyProfile.userid);
+                    DBHandler.updateUserStudyResultStat(GLOBALS.MyProfile.userid);
                 });
             }
             else {
                 var alertPopup = $ionicPopup.alert({
-                    title: STRING_CHANGE_FAIL,
-                    template: STRING_CONFIRM_PASSWORD
+                    title: STRING.CHANGE_FAIL,
+                    template: STRING.CONFIRM_PASSWORD
                 });
             }
         };
         $scope.rateLevel = function (type, level) {
-            if ($scope.oModal2.password == Password[1].password) {
+            if ($scope.oModal2.password == GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password) {
                 $scope.oModal2.hide();
                 DBHandler.rateLevel($scope.myprofile.userid, type, level, function () {
                     loadData();
@@ -53,8 +53,8 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             }
             else {
                 var alertPopup = $ionicPopup.alert({
-                    title: STRING_CHANGE_FAIL,
-                    template: STRING_CONFIRM_PASSWORD
+                    title: STRING.CHANGE_FAIL,
+                    template: STRING.CONFIRM_PASSWORD
                 });
             }
         }
@@ -72,9 +72,9 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
 
         $scope.showLevelModal= function(type, level){
             if(type == 0)
-                $scope.oModal2.title = STRING_SPEAKING_LEVEL;
+                $scope.oModal2.title = STRING.SPEAKING_LEVEL;
             if (type == 1)
-                $scope.oModal2.title = STRING_PRONUNCIATION_LEVEL;
+                $scope.oModal2.title = STRING.PRONUNCIATION_LEVEL;
 
             $scope.oModal2.type = type;
             $scope.oModal2.level = level;
@@ -82,7 +82,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
             $scope.oModal2.show();
         }
         $scope.$on('$ionicView.loaded', function() {
-            if(MyProfile.isAdmin == undefined){
+            if(GLOBALS.MyProfile.isAdmin == undefined){
                 document.getElementById('joiner-btn').style.display = "none";
                 document.getElementById('pronunciation-btn').style.display = "none";
             }
@@ -156,7 +156,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
           $scope.phonetalk_modal.show();
       }
       if($scope.phonetalk_modal.phonetalk_info == undefined){
-          DBHandler.getPhoneTalkInfoToday(MyProfile.userid, function(retVal){
+          DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function(retVal){
               if(retVal != undefined){
                 $scope.phonetalk_modal.phonetalk_info = retVal;
                 $scope.phonetalk_modal.time = retVal.time;
@@ -173,7 +173,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
   }
 
   $scope.purchase_item = function(item) {
-      DBHandler.buyItem(MyProfile.userid, new Date().yyyymmdd(), item.name, 1, function(){
+      DBHandler.buyItem(GLOBALS.MyProfile.userid, new Date().yyyymmdd(), item.name, 1, function(){
           //$scope.showToast($cordovaToast, "구매가 완료되었습니다.", "short", "center");
           DBHandler.addClassPurchaseCost($scope.myprofile.userid, new Date().yyyymmdd(), item.price, function(){
                 $scope.$apply();
@@ -181,7 +181,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
           DBHandler.addTotalPurchaseCost($scope.myprofile.userid, item.price, function(){
               DBHandler.getUserInfo($scope.myprofile.userid, function () {
                 refreshList();
-                $scope.myprofile = MyProfile;
+                $scope.myprofile = GLOBALS.MyProfile;
             });
           });
           $scope.modal.hide();
@@ -189,32 +189,32 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
   }
   $scope.showToast = showToast;
   $scope.participateInClass = function(){
-    if(MyProfile.remained_class == 0 && !$scope.activities[0].class_participation){
+    if(GLOBALS.MyProfile.remained_class == 0 && !$scope.activities[0].class_participation){
         showClassExpirePopup($ionicPopup)
         return;
     }
     var done = function(){
           document.getElementById('class').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
           DBHandler.getUserInfo($scope.myprofile.userid, function () {
-            $scope.myprofile = MyProfile;
+            $scope.myprofile = GLOBALS.MyProfile;
             $scope.$apply();
           });          
       }
       if(!$scope.activities[0].class_participation){
-        text = STRING_STUDY_TO_PARTICIPATE;
+        text = STRING.STUDY_TO_PARTICIPATE;
         DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
         $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
       }
       else{ 
         if(DBHandler.isChangableTime()){
-            text = STRING_STUDY_NOT_TO_PARTICIPATE;
+            text = STRING.STUDY_NOT_TO_PARTICIPATE;
             DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
             $scope.activities[0].class_participation = !$scope.activities[0].class_participation;
         }
         else{
             var alertPopup = $ionicPopup.alert({
-                title: STRING_STATUS_NOT_CHANGEBLE,
-                template: STRING_STUDY_IN_PROGRESS
+                title: STRING.STATUS_NOT_CHANGEBLE,
+                template: STRING.STUDY_IN_PROGRESS
             });
         }
       }
@@ -223,53 +223,53 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
   $scope.participateInPhoneTalk = function(){
       var done = function(){
           document.getElementById('phone').innerHTML="<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + "</b><br>";
-            DBHandler.getPhoneTalkInfoToday(MyProfile.userid, function(retVal){
+            DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function(retVal){
               $scope.phonetalk_modal.phonetalk_info = retVal;
               $scope.phonetalk_modal.hide();
           });
       }
       if($scope.phonetalk_modal.isPhoneTalkParcitipated){
-        text = STRING_PHONETALK_TO_PARTICIPATE;
+        text = STRING.PHONETALK_TO_PARTICIPATE;
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, true, $scope.phonetalk_modal.time, $scope.phonetalk_modal.duration, done);
       }
       else{ 
-        text = STRING_PHONETALK_NOT_TO_PARTICIPATE;
+        text = STRING.PHONETALK_NOT_TO_PARTICIPATE;
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, false, $scope.phonetalk_modal.time, $scope.phonetalk_modal.duration, done);
       }
       $scope.activities[0].phonetalk_participation = !$scope.activities[0].phonetalk_participation;
   }
   
   function refreshList(){
-        DBHandler.getActivityList(MyProfile.userid, function(retval){
-            $scope.activities = retval.slice(0);//.reverse();
+        DBHandler.getActivityList(GLOBALS.MyProfile.userid, function(retval){
+            $scope.activities = retval.slice(0);
             console.log($scope.activities);
-            $scope.myprofile = MyProfile;
+            $scope.myprofile = GLOBALS.MyProfile;
             $scope.$apply();
             initList();
         }, function(retval2){   
-            $scope.activities = retval2.slice(0);//.reverse();
+            $scope.activities = retval2.slice(0);
             $scope.$apply();      
         });
   }
   function initList(){
-        var class_text = "스터디 참여";
-        var phone_text = "전화영어 참여";
+        var class_text = STRING.STUDY_PARTICIPATION;
+        var phone_text = STRING.PHONETALK_PARTICIPATION;
         console.log($scope.activities[0]);
 
         var class_participation = $scope.activities[0].class_participation;
         var phonetalk_participation = $scope.activities[0].phonetalk_participation;
         
         if(class_participation === 0 && class_participation !== undefined)
-            class_text = STRING_STUDY_NOT_TO_PARTICIPATE;
+            class_text = STRING.STUDY_NOT_TO_PARTICIPATE;
         
         else if(class_participation === 1 && class_participation !== undefined)
-            class_text = STRING_STUDY_TO_PARTICIPATE;
+            class_text = STRING.STUDY_TO_PARTICIPATE;
 
         if(phonetalk_participation == 0 && phonetalk_participation !== undefined)
-            phone_text = STRING_PHONETALK_NOT_TO_PARTICIPATE;
+            phone_text = STRING.PHONETALK_NOT_TO_PARTICIPATE;
         
         else if(phonetalk_participation == 1 && phonetalk_participation !== undefined)
-            phone_text = STRING_PHONETALK_TO_PARTICIPATE;
+            phone_text = STRING.PHONETALK_TO_PARTICIPATE;
 
         document.getElementById('class').innerHTML="<b style='text-decoration:underline'>" + class_text +"</b><br>";
         document.getElementById('phone').innerHTML="<b style='text-decoration:underline'>" + phone_text +"</b><br>";
@@ -286,7 +286,7 @@ angular.module('starter.controllers', ['ionic'/*, 'ionic.service.core', 'ionic.s
     };*/
     
     $scope.$on('$ionicView.loaded', function() {
-    if(MyProfile.isAdmin == undefined){
+    if(GLOBALS.MyProfile.isAdmin == undefined){
         document.getElementById('admin-bar').style.display = "none";
     }
     });

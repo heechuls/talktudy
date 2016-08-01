@@ -15,37 +15,37 @@ angular.module('starter.controllers')
     //pushSetup();
     $scope.login = function() {
         DBHandler.isUserValid($scope.data.phonenumber, function(retVal){
-            if(retVal == USER_VALID || retVal == USER_ADMIN){
-                if(retVal == USER_ADMIN)
-                    MyProfile.isAdmin = true;
+            if(retVal == GLOBALS.USER_VALID || retVal == GLOBALS.USER_ADMIN){
+                if(retVal == GLOBALS.USER_ADMIN)
+                    GLOBALS.MyProfile.isAdmin = true;
     
                 LoginService.loginUser($scope.data.password).success(function(data) {
                     $state.go('mainguide');
-                    MyProfile.userid = $scope.data.phonenumber;
-                    MyProfile.isLoggedIn = true;
+                    GLOBALS.MyProfile.userid = $scope.data.phonenumber;
+                    GLOBALS.MyProfile.isLoggedIn = true;
                     init(StudyItems, ShopItems, function(){
-                        if(MyProfile.remained_class == 0){
+                        if(GLOBALS.MyProfile.remained_class == 0){
                             showClassExpirePopup($ionicPopup);
                         }           
                     });
                 }).error(function(data) {
                     var alertPopup = $ionicPopup.alert({
-                        title: STRING_LOGIN_FAIL,
-                        template: STRING_CONFIRM_PASSWORD
+                        title: STRING.LOGIN_FAIL,
+                        template: STRING.CONFIRM_PASSWORD
                     });
                 });
                 console.log(" - PW: " + $scope.data.password);
             }
-            else if(retVal == USER_INVALID){
+            else if(retVal == GLOBALS.USER_INVALID){
                     var alertPopup = $ionicPopup.alert({
-                        title: STRING_LOGIN_FAIL,
-                        template: STRING_EXPIRED_ACCOUNT
+                        title: STRING.LOGIN_FAIL,
+                        template: STRING.EXPIRED_ACCOUNT
                     });
             }        
-            else if(retVal == USER_NONE){
+            else if(retVal == GLOBALS.USER_NONE){
                     var alertPopup = $ionicPopup.alert({
-                        title: STRING_LOGIN_FAIL,
-                        template: STRING_NO_ACCOUNT
+                        title: STRING.LOGIN_FAIL,
+                        template: STRING.NO_ACCOUNT
                     });
             }
         });
@@ -75,16 +75,16 @@ angular.module('starter.controllers')
       push.register(function (token) {
         console.log("Device token:", token.token);
         push.saveToken(token);  // persist the token in the Ionic Platform
-        MyProfile.token = token;
+        GLOBALS.MyProfile.token = token;
       });
     }
 })
 .controller('VersionCheckCtrl', function($scope, $state, $window, Version) {
-    $scope.text = STRING_VERSION_CHECKING;
+    $scope.text = STRING.VERSION_CHECKING;
     $scope.style = "none";
 
     $scope.goupdate = function(){
-        $window.open(PAGE_UPDATE);
+        $window.open(GLOBALS.PAGE_UPDATE);
     }
     $scope.$on('$ionicView.beforeEnter', function(){
         Version.isVersionMatched(function(retval){
@@ -92,7 +92,7 @@ angular.module('starter.controllers')
                 $state.go("login");
             else{
                 $scope.style = "show";
-                $scope.text = STRING_OLD_VERSION;
+                $scope.text = STRING.OLD_VERSION;
         
             }
         });

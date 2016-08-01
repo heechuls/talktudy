@@ -160,12 +160,12 @@ var DBHandler = {
         if(isParticipate){
             update[userid + '/' + classid + '/class_participation/'] = 1;
             var item = {
-                name : MyProfile.name,
-                gender : MyProfile.gender,
-                speaking_level : MyProfile.speaking_level,
-                pronunciation_level : MyProfile.pronunciation_level,
-                rate_failed : MyProfile.rate_failed == undefined ? 0 : MyProfile.rate_failed,
-                rate_passed : MyProfile.rate_passed == undefined ? 0 : MyProfile.rate_passed
+                name : GLOBALS.MyProfile.name,
+                gender : GLOBALS.MyProfile.gender,
+                speaking_level : GLOBALS.MyProfile.speaking_level,
+                pronunciation_level : GLOBALS.MyProfile.pronunciation_level,
+                rate_failed : GLOBALS.MyProfile.rate_failed == undefined ? 0 : GLOBALS.MyProfile.rate_failed,
+                rate_passed : GLOBALS.MyProfile.rate_passed == undefined ? 0 : GLOBALS.MyProfile.rate_passed
             }
             listRef.child(userid).update(item);
             userRef.once('value', function (snapshot) {
@@ -204,8 +204,8 @@ var DBHandler = {
         if(isParticipate){
             update[userid + '/' + classid + '/phonetalk_participation/'] = 1;
             var item = {
-                name : MyProfile.name,
-                level : MyProfile.speaking_level,
+                name : GLOBALS.MyProfile.name,
+                level : GLOBALS.MyProfile.speaking_level,
                 time : time,
                 duration : duration
             }
@@ -254,7 +254,7 @@ var DBHandler = {
                     result:messageSnapshot.val().result,
                     date:messageSnapshot.val().date
                 }
-                if(val.result == RATE_PASSED){ //Passed
+                if(val.result == GLOBALS.RATE_PASSED){ //Passed
                     var reviewedDate = new Date(messageSnapshot.val().date)
                     reviewedDate.setDate(reviewedDate.getDate() + 15);               
 
@@ -262,7 +262,7 @@ var DBHandler = {
                         val.path = "img/pass.png";
                     else val.path = "img/passp.png";
                 }
-                else if(val.result == RATE_FAILED) //Failed
+                else if(val.result == GLOBALS.RATE_FAILED) //Failed
                     val.path = "img/fail.png";
 
                 retVal.push(val);
@@ -280,7 +280,7 @@ var DBHandler = {
                 var today = new Date();
                 var result = messageSnapshot.val().result;
 
-                if(result == RATE_PASSED){ //Passed
+                if(result == GLOBALS.RATE_PASSED){ //Passed
                     var reviewedDate = new Date(messageSnapshot.val().date)
                     reviewedDate.setDate(reviewedDate.getDate() + 15);               
 
@@ -288,9 +288,9 @@ var DBHandler = {
                         pass++;
                     else pass_15days++;
                 }
-                else if(result == RATE_FAILED) //Failed
+                else if(result == GLOBALS.RATE_FAILED) //Failed
                     fail++;
-                else if(result == RATE_UNREVIEWED)
+                else if(result == GLOBALS.RATE_UNREVIEWED)
                     unreview++;
 
             });
@@ -315,19 +315,19 @@ var DBHandler = {
         ref.once("value", function (dataSnapshop) {
             if(dataSnapshop.exists()){
                 console.log(dataSnapshop.val());
-                MyProfile.userid = userid;
-                MyProfile.email = dataSnapshop.email;
-                MyProfile.gender = dataSnapshop.val().gender;
-                MyProfile.name = dataSnapshop.val().name;
-                MyProfile.phoneno = dataSnapshop.val().phoneno;
-                MyProfile.speaking_level = dataSnapshop.val().speaking_level;
-                MyProfile.pronunciation_level = dataSnapshop.val().pronunciation_level;
-                MyProfile.email = dataSnapshop.val().email;
-                MyProfile.remained_purchase = dataSnapshop.val().remained_purchase;
-                MyProfile.remained_class = dataSnapshop.val().remained_class;
-                MyProfile.device_type = dataSnapshop.val().device_type;
-                MyProfile.rate_failed = dataSnapshop.val().rate_failed;
-                MyProfile.rate_passed = dataSnapshop.val().rate_passed;
+                GLOBALS.MyProfile.userid = userid;
+                GLOBALS.MyProfile.email = dataSnapshop.email;
+                GLOBALS.MyProfile.gender = dataSnapshop.val().gender;
+                GLOBALS.MyProfile.name = dataSnapshop.val().name;
+                GLOBALS.MyProfile.phoneno = dataSnapshop.val().phoneno;
+                GLOBALS.MyProfile.speaking_level = dataSnapshop.val().speaking_level;
+                GLOBALS.MyProfile.pronunciation_level = dataSnapshop.val().pronunciation_level;
+                GLOBALS.MyProfile.email = dataSnapshop.val().email;
+                GLOBALS.MyProfile.remained_purchase = dataSnapshop.val().remained_purchase;
+                GLOBALS.MyProfile.remained_class = dataSnapshop.val().remained_class;
+                GLOBALS.MyProfile.device_type = dataSnapshop.val().device_type;
+                GLOBALS.MyProfile.rate_failed = dataSnapshop.val().rate_failed;
+                GLOBALS.MyProfile.rate_passed = dataSnapshop.val().rate_passed;
             }
             if(done != null)            
                 done();
@@ -394,7 +394,7 @@ var DBHandler = {
         });
 
     },
-    getPasswordList: function () {
+    LoadPasswordList: function () {
         var ref = firebase.database().ref().child('/password/');
         ref.once("value", function (allMSnapshot) {
             allMSnapshot.forEach(function (snapshot) {
@@ -403,7 +403,7 @@ var DBHandler = {
                     password:snapshot.val()
                 }
                 console.log(password);
-                Password.push(password);
+                GLOBALS.Password.push(password);
             });
 
         });

@@ -1,5 +1,5 @@
 
-var MyProfile = {isLoggedIn : false};
+//var MyProfile = {isLoggedIn : false};
 var Password = new Array();
 var ShopItems = new Array();
 
