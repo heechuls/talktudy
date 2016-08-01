@@ -21,14 +21,19 @@
   <script src="cordova.js"></script>
   <!-- cordova script (this will be a 404 during development) -->
 
-  <!-- your app's js -->
+  <!-- Embedding JSs -->
   <script src="js/app.js"></script>
-  <script src="js/controllers.js"></script>
-  <script src="js/services.js"></script>
-  <script src="js/dbhandler.js"></script>
-  <script src="js/globals.js"></script>
+  <script src="js/controllers/tab-controllers.js"></script>
+  <script src="js/controllers/guide-controllers.js"></script>
+  <script src="js/controllers/general-controllers.js"></script>
+  <script src="js/services/services.js"></script>
+  <script src="js/modules/dbhandler.js"></script>
+  <script src="js/modules/general-modules.js"></script>
+  <script src="js/global/globals.js"></script>
+  <script src="js/global/strings.js"></script>
   <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
   <script>
+
   // Initialize Firebase
   var config = {
     apiKey: "AIzaSyAtaNqB8hTSthvqYBpuVHfDml6x-4scozQ",

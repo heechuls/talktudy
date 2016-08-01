@@ -196,16 +196,18 @@ var DBHandler = {
         this.participateInClass(userid, new Date().yyyymmdd(), isParticipate, done);
     },
 
-    participateInPhoneTalk: function(userid, classid, isParticipate, done)
+    participateInPhoneTalk: function(userid, classid, isParticipate, time, duration, done)
     {
         var ref = firebase.database().ref().child('/study_activity/');
-        var listRef = firebase.database().ref('/phonetalk_participation/' + classid + '/');
+        var listRef = firebase.database().ref('/phonetalk_participant/' + classid + '/');
         var update = {};
         if(isParticipate){
             update[userid + '/' + classid + '/phonetalk_participation/'] = 1;
             var item = {
                 name : MyProfile.name,
-                level : MyProfile.speaking_level
+                level : MyProfile.speaking_level,
+                time : time,
+                duration : duration
             }
             listRef.child(userid).update(item);
         }
@@ -216,8 +218,14 @@ var DBHandler = {
         return ref.update(update, done);
     },
 
-    participateInPhoneTalkToday : function(userid, isParticipate, done){
-        this.participateInPhoneTalk(userid, new Date().yyyymmdd(), isParticipate, done);
+    participateInPhoneTalkToday : function(userid, isParticipate, time, duration, done){
+        this.participateInPhoneTalk(userid, new Date().yyyymmdd(), isParticipate, time, duration, done);
+    },
+
+    getPhoneTalkInfoToday: function(userid, done){
+        firebase.database().ref('/phonetalk_participant/' + new Date().yyyymmdd() + '/' + userid).once('value', function (snapshot) {
+            done(snapshot.val());
+        });
     },
 
     getStudyItems: function (ret) {
@@ -483,7 +491,7 @@ var DBHandler = {
 
                 });
                 //console.log(item);
-                retVal.push(item);
+                retVal.unshift(item);
             });
             if(done != null){
                 if(isToday == false){
@@ -494,7 +502,7 @@ var DBHandler = {
                         phonetalk_participation : -1,
                         shop_item: new Array()
                     }
-                    retVal.push(today);
+                    retVal.unshift(today);
                 }
                 done(retVal);
             }

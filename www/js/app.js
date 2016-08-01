@@ -28,11 +28,13 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           console.log("Push Received : ");
           console.log(notification, payload);
           alert(notification.toString());
+          var code = "";
           if(ionic.Platform.isIOS()){
-              var code = notification["_raw"]["additionalData"]["code"];
-              var message = notification["_raw"]["message"];
-              var body = notification["_raw"]["additionalData"]["body"];
-              $rootScope.$broadcast("onNotification", {code : code, message : message, body : body});
+              var args = { code : notification["_raw"]["additionalData"]["code"], 
+                                                      message : notification["_raw"]["message"], 
+                                                      body : notification["_raw"]["additionalData"]["body"]};
+              $rootScope.$broadcast("onNotification", args);
+            markNotification(args["code"], args);        
           }
           else {
 
@@ -61,6 +63,15 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         push.saveToken(token);  // persist the token in the Ionic Platform
         MyProfile.token = token;
       });
+      function markNotification(code, args){
+        if(MyProfile.isLoggedIn == false){
+/*          if(code == "STUDY_PARTICIPATION")
+            isStudyConfirmReceived = true;
+          else if(code == "PHONETALK_PARTICIPATION")
+            isPhoneTalkConfirmReceived = true; */
+            ReceivedNotification.put(args);
+        }
+      }
       //if none of the above states are matched, use this as the fallback
     });
   })
