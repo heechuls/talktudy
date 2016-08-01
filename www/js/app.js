@@ -61,10 +61,10 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
       push.register(function (token) {
         console.log("Device token:", token.token);
         push.saveToken(token);  // persist the token in the Ionic Platform
-        MyProfile.token = token;
+        GLOBALS.MyProfile.token = token;
       });
       function markNotification(code, args){
-        if(MyProfile.isLoggedIn == false){
+        if(GLOBALS.MyProfile.isLoggedIn == false){
 /*          if(code == "STUDY_PARTICIPATION")
             GLOBALS.isStudyConfirmReceived = true;
           else if(code == "PHONETALK_PARTICIPATION")
@@ -103,6 +103,15 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
+      .state('tab.audiolist', {
+        url: '/audiolist',
+        views: {
+          'tab-profile': {
+            templateUrl: 'templates/general/audiolist.html',
+            controller: 'AudioListCtrl'
+          }
+        }
+      })
       .state('tab.activities', {
         url: '/activities',
         views: {
@@ -134,17 +143,26 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
       url: '/upload',
       views: {
         'tab-study': {
-          templateUrl: 'templates/upload.html',
+          templateUrl: 'templates/general/upload.html',
           controller: 'UploadCtrl'
         }
       }
     })           
+    .state('tab.userlist', {
+      url: '/userlist',
+      views: {
+        'tab-study': {
+          templateUrl: 'templates/general/userlist.html',
+          controller: 'UserListCtrl'
+        }
+      }
+    })    
       .state('tab.sns', {
         url: '/sns',
         views: {
           'tab-sns': {
-            templateUrl: 'templates/tabs/tab-sns2.html',
-            controller: 'SNSCtrl2'
+            templateUrl: 'templates/tabs/tab-sns.html',
+            controller: 'SNSCtrl'
           }
         }
       })

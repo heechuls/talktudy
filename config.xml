@@ -76,4 +76,5 @@
         <variable name="SENDER_ID" value="1024729850739" />
     </plugin>
     <allow-navigation href="http://talktudy.herokuapp.com/*" />
+    <allow-navigation href="http://lunar-pic.com/*" />
 </widget>
