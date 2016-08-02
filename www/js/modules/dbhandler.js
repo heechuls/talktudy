@@ -1,6 +1,5 @@
 var DBHandler = {
   addUser: function (userid, name, phoneno, gender, email, speaking_level, pronunciation_level, remained_class) {
-    var date = new Date().yyyymmdd()
     var user = {
       name: name,
       phoneno: phoneno,
@@ -8,72 +7,71 @@ var DBHandler = {
       email: email,
       speaking_level: speaking_level,
       pronunciation_level: pronunciation_level,
-      registered_date: date,
+      registered_date: new Date().yyyymmdd(),
       remained_class: remained_class,
     }
 
-    var userRef = firebase.database().ref('/user/' + userid)
-    userRef.update(user)
+    var userRef = firebase.database().ref('/user/' + userid);
+    userRef.update(user);
 
     firebase.database().ref('/user/' + userid).on('value', function (snapshot) {
-      console.log(snapshot.val())
+      console.log(snapshot.val());
     })
   },
 
   addClass2: function (date) {
-    var newPushKey = firebase.database().ref().child('class').push().key
-    var update = {}
-    update['/class/' + newPushKey] = date
-    return firebase.database().ref().update(update)
+    var newPushKey = firebase.database().ref().child('class').push().key;
+    var update = {};
+    update['/class/' + newPushKey] = date;
+    return firebase.database().ref().update(update);
   },
+
   addClass: function (classDate) {
-    var classRef = firebase.database().ref().child('class/')
-    var update = {}
-    update[date] = 0
-    return classRef.update(update)
+    var classRef = firebase.database().ref().child('class/');
+    var update = {};
+    update[date] = 0;
+    return classRef.update(update);
   },
 
   addClassEnroll: function (userid, count) {
     var classRef = firebase.database().ref().child('class_enroll_count/' + userid)
-    classRef.once('value', function (snapshot) {
-      console.log(snapshot.numChildren())
-      if (snapshot.exists()) {
-        update.count += snapshot.val().count
-      }
-      return classRef.update(update)
-    })
-
-    var date = new Date().yyyymmdd()
     var update = {
       count: count,
-      date: date
+      date: new Date().yyyymmdd()
     }
+    classRef.once('value', function (snapshot) {
+      console.log(snapshot.numChildren());
+      if (snapshot.exists()) {
+        update.count += snapshot.val().count;
+      }
+      return classRef.update(update);
+    });
   },
 
   isPasswordMatched: function (id, password, deferred) {
     firebase.database().ref().child('password/' + id).once('value', function (snapshot) {
-      console.log(snapshot.val())
+      console.log(snapshot.val());
       if (snapshot.val() == password)
-        deferred.resolve('Welcome ' + name + '!')
-      else deferred.reject('Wrong credentials.')
+        deferred.resolve('Welcome ' + name + '!');
+      else deferred.reject('Wrong credentials.');
 
-      return false
+      return false;
     })
   },
   isVersionMatched: function (version, done) {
     firebase.database().ref().child('/version/').once('value', function (snapshot) {
-      console.log(snapshot.val())
+      console.log(snapshot.val());
       if (snapshot.val() == version)
-        done(true)
-      else done(false)
+        done(true);
+      else done(false);
     })
   },
   isUserValid: function (userid, done) {
     firebase.database().ref().child('/user/' + userid).once('value', function (snapshot) {
       if (snapshot.exists()) {
-        done(snapshot.val().valid)
+        done(snapshot.val().valid);
       }
-      else done(GLOBALS.USER_NONE)
+      else done(GLOBALS.USER_NONE);
     })
   },
   addShopItem: function (name, price) {
@@ -83,54 +81,54 @@ var DBHandler = {
       name: name,
       price: price
     }
-    return firebase.database().ref().update(update)
+    return firebase.database().ref().update(update);
   },
 
   addShopItem2: function (name, price, standard) {
-    var ref = firebase.database().ref('shop_item')
+    var ref = firebase.database().ref('shop_item');
     var update = {}
     update[name] = {
       standard: standard,
       price: price
     }
-    return ref.update(update)
+    return ref.update(update);
   },
 
   getPriceOfShopItem: function (name) {
-    var ref = firebase.database().ref().child('shop_item')
+    var ref = firebase.database().ref().child('shop_item');
     ref.orderByChild('name').equalTo(name).on('child_added', function (snapshot) {
-      console.log(snapshot.val().price)
+      console.log(snapshot.val().price);
     })
   },
 
   addStudyItem2: function (studyid, name) {
-    var update = {}
-    update['/study_item/' + studyid] = name
-    return firebase.database().ref().update(update)
+    var update = {};
+    update['/study_item/' + studyid] = name;
+    return firebase.database().ref().update(update);
   },
 
   rateStudyItem2: function (userid, name, rate) {
-    var ref = firebase.database().ref().child('study_item')
+    var ref = firebase.database().ref().child('study_item');
     ref.orderByChild('name').equalTo(name).on('child_added', function (snapshot) {
-      var study_result = firebase.database().ref().child('/study_result/')
-      var update = {}
+      var study_result = firebase.database().ref().child('/study_result/');
+      var update = {};
       update[userid + '/' + snapshot.key] = {
         rate: rate
       }
-      study_result.update(update)
+      study_result.update(update);
     })
   },
 
   rateStudyItem: function (userid, name, rate) {
-    var ref = firebase.database().ref().child('/study_result/' + userid)
+    var ref = firebase.database().ref().child('/study_result/' + userid);
 
     ref.orderByChild('name').equalTo(name).on('child_added', function (snapshot) {
       var study_result = firebase.database().ref().child('/study_result/')
-      var update = {}
+      var update = {};
       update[userid + '/' + snapshot.key] = {
         rate: rate
       }
-      study_result.update(update)
+      study_result.update(update);
     })
   },
 
@@ -138,48 +136,64 @@ var DBHandler = {
     var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/shop_item/' + shop_item_name)
     ref.once('value', function (snapshot) {
       if (snapshot.exists()) {
-        console.log(snapshot.val())
-        purchased_count += snapshot.val()
+        console.log(snapshot.val());
+        purchased_count += snapshot.val();
       }
-      return ref.set(purchased_count, done)
+      return ref.set(purchased_count, done);
     })
   },
 
   participateInClass: function (userid, classid, isParticipate, done) {
-    var ref = firebase.database().ref().child('/study_activity/')
-    var listRef = firebase.database().ref('/class_participant/' + classid + '/')
-    var userRef = firebase.database().ref('/user/' + userid + '/remained_class/')
-    var update = {}
-    if (isParticipate) {
-      update[userid + '/' + classid + '/class_participation/'] = 1
-      var item = {
-        name: GLOBALS.MyProfile.name,
-        gender: GLOBALS.MyProfile.gender,
-        speaking_level: GLOBALS.MyProfile.speaking_level,
-        pronunciation_level: GLOBALS.MyProfile.pronunciation_level,
-        rate_failed: GLOBALS.MyProfile.rate_failed == undefined ? 0 : GLOBALS.MyProfile.rate_failed,
-        rate_passed: GLOBALS.MyProfile.rate_passed == undefined ? 0 : GLOBALS.MyProfile.rate_passed
+    var activityRef = firebase.database().ref().child('/study_activity/');
+    var participateListRef = firebase.database().ref('/class_participant/' + classid + '/');
+    var userRef = firebase.database().ref('/user/' + userid + '/remained_class/');
+
+    activityRef.child(userid + '/' + classid + '/class_participation/').once('value', function (snapshot) {
+      if (snapshot.exists()) {
+        if (snapshot.val() != isParticipate == true ? 1 : 0) {
+          apply(true);
+        }
       }
-      listRef.child(userid).update(item)
-      userRef.once('value', function (snapshot) {
-        if (snapshot.exists()) {
-          var remained_class = snapshot.val()
-          userRef.set(--remained_class, done)
-          ref.child(userid + '/' + classid).update({remained_class: remained_class})
+      else {
+        if (isParticipate)
+          apply(true);
+        else apply(false);
+      }
+    });
+
+    function apply(isCreditAdjust) {
+      if (isParticipate) {
+        var item = {
+          name: GLOBALS.MyProfile.name,
+          gender: GLOBALS.MyProfile.gender,
+          speaking_level: GLOBALS.MyProfile.speaking_level,
+          pronunciation_level: GLOBALS.MyProfile.pronunciation_level,
+          rate_failed: GLOBALS.MyProfile.rate_failed == undefined ? 0 : GLOBALS.MyProfile.rate_failed,
+          rate_passed: GLOBALS.MyProfile.rate_passed == undefined ? 0 : GLOBALS.MyProfile.rate_passed,
+          nationality: GLOBALS.MyProfile.nationality == undefined ? 0 : GLOBALS.MyProfile.nationality
         }
-      })
-    } else {
-      update[userid + '/' + classid + '/class_participation/'] = 0
-      listRef.child(userid).remove()
-      userRef.once('value', function (snapshot) {
-        if (snapshot.exists()) {
-          var remained_class = snapshot.val()
-          userRef.set(++remained_class, done)
-          ref.child(userid + '/' + classid).update({remained_class: remained_class})
+        participateListRef.child(userid).update(item);
+        userRef.once('value', function (snapshot) {
+          if (snapshot.exists()) {
+            var remained_class = snapshot.val();
+            userRef.set(--remained_class, done);
+            activityRef.child(userid + '/' + classid).update({ remained_class: remained_class, class_participation: 1 });
+          }
+        });
+      } else {
+        participateListRef.child(userid).remove();
+        if (isCreditAdjust) {
+          userRef.once('value', function (snapshot) {
+            if (snapshot.exists()) {
+              var remained_class = snapshot.val();
+              userRef.set(++remained_class, done);
+              activityRef.child(userid + '/' + classid).update({ remained_class: remained_class, class_participation: 0 });
+            }
+          });
         }
-      })
+        else done();
+      }
     }
-    return ref.update(update)
   },
 
   participateInClassToday: function (userid, isParticipate, done) {
@@ -187,55 +201,63 @@ var DBHandler = {
   },
 
   participateInPhoneTalk: function (userid, classid, isParticipate, time, duration, done) {
-    var ref = firebase.database().ref().child('/study_activity/')
-    var listRef = firebase.database().ref('/phonetalk_participant/' + classid + '/')
-    var update = {}
+    var ref = firebase.database().ref().child('/study_activity/');
+    var listRef = firebase.database().ref('/phonetalk_participant/' + classid + '/');
+    var update = {};
     if (isParticipate) {
-      update[userid + '/' + classid + '/phonetalk_participation/'] = 1
+      update[userid + '/' + classid + '/phonetalk_participation/'] = 1;
       var item = {
         name: GLOBALS.MyProfile.name,
         level: GLOBALS.MyProfile.speaking_level,
         time: time,
-        duration: duration
+        duration: duration,
+        _token: GLOBALS.MyProfile.token
       }
-      listRef.child(userid).update(item)
+      listRef.child(userid).update(item);
     } else {
-      update[userid + '/' + classid + '/phonetalk_participation/'] = 0
-      listRef.child(userid).remove()
+      update[userid + '/' + classid + '/phonetalk_participation/'] = 0;
+      listRef.child(userid).remove();
     }
-    return ref.update(update, done)
+    return ref.update(update, done);
   },
 
   participateInPhoneTalkToday: function (userid, isParticipate, time, duration, done) {
-    this.participateInPhoneTalk(userid, new Date().yyyymmdd(), isParticipate, time, duration, done)
+    this.participateInPhoneTalk(userid, new Date().yyyymmdd(), isParticipate, time, duration, done);
   },
 
   getPhoneTalkInfoToday: function (userid, done) {
     firebase.database().ref('/phonetalk_participant/' + new Date().yyyymmdd() + '/' + userid).once('value', function (snapshot) {
-      done(snapshot.val())
+      if(snapshot.exists()){
+        var retVal = {
+          duration: snapshot.val().duration,
+          time: snapshot.val().time,
+          isPhoneTalkParticipated: true,
+          //text : "전화영어 참석예정 (" + snapshot.val().time + "시 " + snapshot.val().duration + "분간)"
+        };
+        done(retVal);
+      }
+      else done(undefined);
     })
   },
 
   getStudyItems: function (ret) {
-    var ref = firebase.database().ref().child('/study_item/')
+    var ref = firebase.database().ref().child('/study_item/');
     ref.once('value', function (allMessagesSnapshot) {
-      var retVal = [ ]
+      var retVal = [];
 
       allMessagesSnapshot.forEach(function (messageSnapshot) {
-        // Will be called with a messageSnapshot for each child under the /messages/ node
-        retVal.push(messageSnapshot.val())
+        retVal.push(messageSnapshot.val());
       })
-      ret(retVal)
+      ret(retVal);
     })
   },
   getStudyResult: function (userid, done) {
     var ref = firebase.database().ref().child('/study_result/' + userid)
     ref.once('value', function (allMessagesSnapshot) {
-      var retVal = [ ]
+      var retVal = []
 
       allMessagesSnapshot.forEach(function (messageSnapshot) {
-        // Will be called with a messageSnapshot for each child under the /messages/ node
-        var today = new Date()
+        var today = new Date();
 
         var val = {
           name: messageSnapshot.val().name,
@@ -243,61 +265,61 @@ var DBHandler = {
           date: messageSnapshot.val().date
         }
         if (val.result == GLOBALS.RATE_PASSED) { // Passed
-          var reviewedDate = new Date(messageSnapshot.val().date)
-          reviewedDate.setDate(reviewedDate.getDate() + 15)
+          var reviewedDate = new Date(messageSnapshot.val().date);
+          reviewedDate.setDate(reviewedDate.getDate() + 15);
 
           if (today < reviewedDate)
-            val.path = 'img/pass.png'
-          else val.path = 'img/passp.png'
+            val.path = 'img/pass.png';
+          else val.path = 'img/passp.png';
         }
         else if (val.result == GLOBALS.RATE_FAILED) // Failed
-          val.path = 'img/fail.png'
+          val.path = 'img/fail.png';
 
-        retVal.push(val)
+        retVal.push(val);
       })
       if (done != null)
-        done(retVal)
+        done(retVal);
     })
   },
   getStudyResultCount: function (userid, done) {
-    var ref = firebase.database().ref().child('/study_result/' + userid)
-    var pass = 0, pass_15days = 0, fail = 0, unreview = 0
+    var ref = firebase.database().ref().child('/study_result/' + userid);
+    var pass = 0, pass_15days = 0, fail = 0, unreview = 0;
     ref.once('value', function (allMessagesSnapshot) {
       allMessagesSnapshot.forEach(function (messageSnapshot) {
-        var today = new Date()
-        var result = messageSnapshot.val().result
+        var today = new Date();
+        var result = messageSnapshot.val().result;
 
         if (result == GLOBALS.RATE_PASSED) { // Passed
           var reviewedDate = new Date(messageSnapshot.val().date)
           reviewedDate.setDate(reviewedDate.getDate() + 15)
 
           if (today < reviewedDate)
-            pass++
-          else pass_15days++
+            pass++;
+          else pass_15days++;
         }
         else if (result == GLOBALS.RATE_FAILED) // Failed
-          fail++
+          fail++;
         else if (result == GLOBALS.RATE_UNREVIEWED)
-          unreview++
+          unreview++;
       })
       if (done != null)
-        done(pass, pass_15days, fail, unreview)
+        done(pass, pass_15days, fail, unreview);
     })
   },
   updateUserStudyResultStat: function (userid) {
     this.getStudyResultCount(userid, function (pass, pass_15days, fail, unreview) {
-      var userRef = firebase.database().ref().child('/user/' + userid)
+      var userRef = firebase.database().ref().child('/user/' + userid);
       var update = {
         rate_passed: pass + pass_15days,
         rate_failed: fail,
         rate_unreviewed: unreview
-      }
-      userRef.update(update)
+      };
+      userRef.update(update);
     })
   },
 
-  getUserInfo: function (userid, done) {
-    var ref = firebase.database().ref().child('/user/' + userid)
+  loadUserInfo: function (userid, done) {
+    var ref = firebase.database().ref().child('/user/' + userid);
     ref.once('value', function (dataSnapshop) {
       if (dataSnapshop.exists()) {
         console.log(dataSnapshop.val())
@@ -314,15 +336,16 @@ var DBHandler = {
         GLOBALS.MyProfile.device_type = dataSnapshop.val().device_type
         GLOBALS.MyProfile.rate_failed = dataSnapshop.val().rate_failed
         GLOBALS.MyProfile.rate_passed = dataSnapshop.val().rate_passed
+        GLOBALS.MyProfile.nationality = dataSnapshop.val().nationality
       }
       if (done != null)
-        done()
+        done();
     })
   },
   getUserInfo2: function (userid, done) {
-    var ref = firebase.database().ref().child('/user/' + userid)
+    var ref = firebase.database().ref().child('/user/' + userid);
     ref.once('value', function (dataSnapshop) {
-      var user = {}
+      var user = {};
       if (dataSnapshop.exists()) {
         console.log(dataSnapshop.val())
         user.userid = userid
@@ -337,17 +360,17 @@ var DBHandler = {
         user.remained_class = dataSnapshop.val().remained_class
       }
       if (done != null)
-        done(user)
+        done(user);
     })
   },
   setStudyResultItem: function (userid, studyid, name) {
-    var update = {}
+    var update = {};
     update['/study_result/' + userid + '/' + studyid] = {
       name: name,
       result: 0,
       date: new Date().toDateString()
     }
-    return firebase.database().ref().update(update)
+    return firebase.database().ref().update(update);
   },
   setStudyResultItems: function (userid) {
     var study_items = ['시제', '완료', '조동사', 'To부정사', '동명사', '수동태', '전치사', '관계대명사',
@@ -375,7 +398,7 @@ var DBHandler = {
       }*/
       firebase.database().ref().update(update, function () {
         if (done != null)
-          done()
+          done();
       })
     })
   },
@@ -393,39 +416,39 @@ var DBHandler = {
     })
   },
   rateLevel: function (userid, type, level, done) {
-    var ref = firebase.database().ref().child('/user/' + userid)
-    var levelRef = {}
+    var ref = firebase.database().ref().child('/user/' + userid);
+    var levelRef = {};
     if (type == 0) {
-      levelRef = ref.child('speaking_level')
+      levelRef = ref.child('speaking_level');
     } else {
-      levelRef = ref.child('pronunciation_level')
+      levelRef = ref.child('pronunciation_level');
     }
-    return levelRef.set(level, done)
+    return levelRef.set(level, done);
   },
   addTotalPurchaseCost: function (userid, purchased_cost, done) {
-    var ref = firebase.database().ref().child('/user/' + userid + '/remained_purchase/')
+    var ref = firebase.database().ref().child('/user/' + userid + '/remained_purchase/');
     ref.once('value', function (snapshot) {
       if (snapshot.exists()) {
-        purchased_cost += snapshot.val()
+        purchased_cost += snapshot.val();
       }
-      return ref.set(purchased_cost, done)
+      return ref.set(purchased_cost, done);
     })
   },
 
   addClassPurchaseCost: function (userid, classid, purchased_cost, done) {
-    var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/purchase_cost/')
+    var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + classid + '/purchase_cost/');
     ref.once('value', function (snapshot) {
       if (snapshot.exists()) {
-        purchased_cost += snapshot.val()
+        purchased_cost += snapshot.val();
       }
-      return ref.set(purchased_cost, done)
+      return ref.set(purchased_cost, done);
     })
   },
 
   getShopItems: function (ret) {
-    var ref = firebase.database().ref().child('/shop_item/')
+    var ref = firebase.database().ref().child('/shop_item/');
     ref.once('value', function (allMessagesSnapshot) {
-      var retVal = [ ]
+      var retVal = [];
 
       allMessagesSnapshot.forEach(function (snapshot) {
         var item = {
@@ -433,9 +456,9 @@ var DBHandler = {
           price: snapshot.val().price,
           standard: snapshot.val().standard
         }
-        retVal.push(item)
+        retVal.push(item);
       })
-      ret(retVal)
+      ret(retVal);
     })
   },
   getAllAudioList: function (userid, done) {
@@ -452,38 +475,38 @@ var DBHandler = {
     });
   },
   getActivityList: function (userid, done, done2) {
-    var ref = firebase.database().ref().child('/study_activity/' + userid)
+    var ref = firebase.database().ref().child('/study_activity/' + userid);
     ref.orderByValue().once('value', function (allSnapshot) {
-      var retVal = [ ]
-      var isToday = false
+      var retVal = [];
+      var isToday = false;
       allSnapshot.forEach(function (snapshot) {
         if (snapshot.key == new Date().yyyymmdd())
-          isToday = true
+          isToday = true;
         var item = {
           classid: snapshot.key,
           purchase_cost: snapshot.val().purchase_cost === undefined ? 0 : snapshot.val().purchase_cost,
           remained_class: snapshot.val().remained_class,
           class_participation: snapshot.val().class_participation,
           phonetalk_participation: snapshot.val().phonetalk_participation,
-          shop_item: [ ],
+          shop_item: [],
           class_participation_text: snapshot.val().class_participation === 1 ? '스터디 참여' + ' (' + snapshot.val().remained_class + '회 남음)' : '스터디 불참',
           phonetalk_participation_text: snapshot.val().phonetalk_participation === 1 ? '전화영어 참여' : '전화영어 불참'
         }
-        var itemRef = ref.child(snapshot.key + '/shop_item/')
+        var itemRef = ref.child(snapshot.key + '/shop_item/');
         itemRef.orderByValue().once('value', function (shop_snapshot) {
           shop_snapshot.forEach(function (shop_snapshot) {
             item.shop_item.push({
               name: shop_snapshot.key,
               count: shop_snapshot.val()
             })
-          // console.log("아이템 : " + shop_snapshot.key)
-          // console.log("카운트 : " + shop_snapshot.val())
+            // console.log("아이템 : " + shop_snapshot.key)
+            // console.log("카운트 : " + shop_snapshot.val())
           })
           if (done2 !== null)
-            done2(retVal)
+            done2(retVal);
         })
         // console.log(item)
-        retVal.unshift(item)
+        retVal.unshift(item);
       })
       if (done != null) {
         if (isToday == false) {
@@ -492,37 +515,39 @@ var DBHandler = {
             purchase_cost: 0,
             class_participation: -1,
             phonetalk_participation: -1,
-            shop_item: [ ]
+            shop_item: []
           }
-          retVal.unshift(today)
+          retVal.unshift(today);
         }
-        done(retVal)
+        done(retVal);
       }
     })
   },
   createTodayClass: function (userid, done) {
-    var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + new Date().yyyymmdd())
+    var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + new Date().yyyymmdd());
     ref.orderByValue().once('value', function (snapshot) {
       if (!snapshot.exists()) {
         var update = {
           class_participation: 0,
           phonetalk_participation: 0
         }
-        ref.update(update, done)
+        ref.update(update, done);
       }
     })
   },
   saveDeviceToken: function (userid, token, device_type) {
     if (token != undefined) {
-      var userRef = firebase.database().ref('/user/' + userid)
-      userRef.update(token)
-      userRef.update({device_type: device_type})
+      var userRef = firebase.database().ref('/user/' + userid);
+      GLOBALS.MyProfile.token = token;
+      userRef.update(token);
+      userRef.update({ device_type: device_type });
     }
+    else GLOBALS.MyProfile.token = "WEB";
   },
   retrieveAllUserList: function (done) {
-    var ref = firebase.database().ref().child('/user/')
+    var ref = firebase.database().ref().child('/user/');
     ref.once('value', function (allUserSnapshop) {
-      var retVal = [ ]
+      var retVal = [];
       allUserSnapshop.forEach(function (snapshot) {
         // Will be called with a messageSnapshot for each child under the /messages/ node
         console.log(snapshot.val())
@@ -535,16 +560,16 @@ var DBHandler = {
           rate_passed: snapshot.val().rate_passed == undefined ? 0 : snapshot.val().rate_passed,
           rate_failed: snapshot.val().rate_failed == undefined ? 0 : snapshot.val().rate_failed,
         }
-        retVal.push(user)
+        retVal.push(user);
       })
       if (done != null)
-        done(retVal)
+        done(retVal);
     })
   },
   getClassParticipants: function (classid, done) {
-    var ref = firebase.database().ref().child('/class_participant/' + classid)
+    var ref = firebase.database().ref().child('/class_participant/' + classid);
     ref.once('value', function (allUserSnapshop) {
-      var retVal = [ ]
+      var retVal = []
       allUserSnapshop.forEach(function (snapshot) {
         console.log(snapshot.val())
         var user = {
@@ -556,16 +581,16 @@ var DBHandler = {
           rate_passed: snapshot.val().rate_passed == undefined ? 0 : snapshot.val().rate_passed,
           rate_failed: snapshot.val().rate_failed == undefined ? 0 : snapshot.val().rate_failed,
         }
-        retVal.push(user)
+        retVal.push(user);
       })
       if (done != null)
-        done(retVal)
+        done(retVal);
     })
   },
   isChangableTime: function () {
-    now = new Date()
+    now = new Date();
     if ((now.getHours() == 19 && now.getMinutes() >= 30) || (now.getHours() > 20 && now.getHour()) < 0)
-      return false
-    else return true
+      return false;
+    else return true;
   }
 }

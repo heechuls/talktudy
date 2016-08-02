@@ -1,7 +1,7 @@
 angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.service.push'*/])
 
   .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
-    $scope.study_items = chunk(StudyItems.List , 5)
+    $scope.study_items = chunk(StudyItems.List, 5)
     $scope.myprofile = GLOBALS.MyProfile
 
     if (GLOBALS.MyProfile.gender == 1)
@@ -91,14 +91,14 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
       $scope.oModal2.remove()
     })
 
-    function loadData () {
+    function loadData() {
       init(StudyItems, null, function () {
         $scope.study_items = chunk(StudyItems.List, 5)
         $scope.$apply();
       })
     }
-    $scope.audiolist = function(){
-        $state.go('tab.audiolist');
+    $scope.audiolist = function () {
+      $state.go('tab.audiolist');
     }
 
   })
@@ -109,7 +109,7 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
         $scope.$apply();
       })
     });
-    $scope.play = function(url){
+    $scope.play = function (url) {
       $window.open(url);
     }
   })
@@ -122,15 +122,19 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
           handle back action!
       }
       }, 100);*/
-    $ionicNavBarDelegate.showBackButton(true)
     $scope.$on('onNotification', function (ev, args) {
-      notificationHandlerForAll(ev, args, $ionicPopup, refreshList)
-    })
+      notificationHandlerForAll(ev, args, $ionicPopup, { refreshList: refreshList, showPhoneTalkModal: $scope.showPhoneTalkModal })
+    });
 
     $scope.$on('$ionicView.loaded', function () {
       refreshList()
-    })
-    function setBadge (val) {
+    });
+
+    $scope.$on('$ionicView.enter', function () {
+      $ionicNavBarDelegate.showBackButton(true)
+    });
+
+    function setBadge(val) {
       $cordovaBadge.hasPermission().then(function (result) {
         $cordovaBadge.set(val)
       }, function (error) {
@@ -159,25 +163,29 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
       $scope.purchase_modal.show()
     }
 
-    $scope.show_phonetalk_modal = function () {
-      function falseShow () {
+    $scope.showPhoneTalkModal = function () {
+      function initialShow() {
         $scope.phonetalk_modal.time = 1
         $scope.phonetalk_modal.duration = 1
-        $scope.phonetalk_modal.isPhoneTalkParcitipated = false
-        $scope.phonetalk_modal.show()
+        $scope.phonetalk_modal.isPhoneTalkParticipated = false
+        $scope.phonetalk_modal.show();
       }
       if ($scope.phonetalk_modal.phonetalk_info == undefined) {
         DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function (retVal) {
           if (retVal != undefined) {
-            $scope.phonetalk_modal.phonetalk_info = retVal
-            $scope.phonetalk_modal.time = retVal.time
-            $scope.phonetalk_modal.duration = retVal.duration
-            $scope.phonetalk_modal.isPhoneTalkParcitipated = true
-            $scope.phonetalk_modal.show()
+            $scope.phonetalk_modal.phonetalk_info = retVal;
+            $scope.phonetalk_modal.time = retVal.time;
+            $scope.phonetalk_modal.duration = retVal.duration;
+            $scope.phonetalk_modal.isPhoneTalkParticipated = true;
+            $scope.phonetalk_modal.show();
           }
-          else falseShow()
+          else initialShow();
         })
       } else {
+        $scope.phonetalk_modal.time = $scope.phonetalk_modal.phonetalk_info.time;
+        $scope.phonetalk_modal.duration = $scope.phonetalk_modal.phonetalk_info.duration;
+        $scope.phonetalk_modal.isPhoneTalkParticipated = $scope.phonetalk_modal.phonetalk_info.isPhoneTalkParticipated;
+        $scope.phonetalk_modal.show();
       }
     }
 
@@ -185,39 +193,39 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
       DBHandler.buyItem(GLOBALS.MyProfile.userid, new Date().yyyymmdd(), item.name, 1, function () {
         // $scope.showToast($cordovaToast, "구매가 완료되었습니다.", "short", "center")
         DBHandler.addClassPurchaseCost($scope.myprofile.userid, new Date().yyyymmdd(), item.price, function () {
-          $scope.$apply()
+          $scope.$apply();
         })
         DBHandler.addTotalPurchaseCost($scope.myprofile.userid, item.price, function () {
-          DBHandler.getUserInfo($scope.myprofile.userid, function () {
+          DBHandler.loadUserInfo($scope.myprofile.userid, function () {
             refreshList()
-            $scope.myprofile = GLOBALS.MyProfile
+            $scope.myprofile = GLOBALS.MyProfile;
           })
         })
-        $scope.purchase_modal.hide()
+        $scope.purchase_modal.hide();
       })
     }
-    $scope.showToast = showToast
+    $scope.showToast = showToast;
     $scope.participateInClass = function () {
       if (GLOBALS.MyProfile.remained_class == 0 && !$scope.activities[0].class_participation) {
-        showClassExpirePopup($ionicPopup)
-        return
+        showClassExpirePopup($ionicPopup);
+        return;
       }
       var done = function () {
         document.getElementById('class').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
-        DBHandler.getUserInfo($scope.myprofile.userid, function () {
-          $scope.myprofile = GLOBALS.MyProfile
-          $scope.$apply()
+        DBHandler.loadUserInfo($scope.myprofile.userid, function () {
+          $scope.myprofile = GLOBALS.MyProfile;
+          $scope.$apply();
         })
       }
-      if (!$scope.activities[0].class_participation) {
-        text = STRING.STUDY_TO_PARTICIPATE
-        DBHandler.participateInClassToday($scope.myprofile.userid, true, done)
-        $scope.activities[0].class_participation = !$scope.activities[0].class_participation
+      if ($scope.activities[0].class_participation == -1 || $scope.activities[0].class_participation == 0) {
+        text = STRING.STUDY_TO_PARTICIPATE;
+        DBHandler.participateInClassToday($scope.myprofile.userid, true, done);
+        $scope.activities[0].class_participation = 1;
       } else {
         if (DBHandler.isChangableTime()) {
-          text = STRING.STUDY_NOT_TO_PARTICIPATE
-          DBHandler.participateInClassToday($scope.myprofile.userid, false, done)
-          $scope.activities[0].class_participation = !$scope.activities[0].class_participation
+          text = STRING.STUDY_NOT_TO_PARTICIPATE;
+          DBHandler.participateInClassToday($scope.myprofile.userid, false, done);
+          $scope.activities[0].class_participation = 0;
         } else {
           var alertPopup = $ionicPopup.alert({
             title: STRING.STATUS_NOT_CHANGEBLE,
@@ -229,13 +237,15 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
 
     $scope.participateInPhoneTalk = function () {
       var done = function () {
+/*        document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + 
+                      $scope.phonetalk_modal.phonetalk_info == undefined ? "전화영어 불참예정" : $scope.phonetalk_modal.phonetalk_info.text + '</b><br>'*/
         document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
         DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function (retVal) {
-          $scope.phonetalk_modal.phonetalk_info = retVal
-          $scope.phonetalk_modal.hide()
+          $scope.phonetalk_modal.phonetalk_info = retVal;
+          $scope.phonetalk_modal.hide();
         })
       }
-      if ($scope.phonetalk_modal.isPhoneTalkParcitipated) {
+      if ($scope.phonetalk_modal.isPhoneTalkParticipated) {
         text = STRING.PHONETALK_TO_PARTICIPATE
         DBHandler.participateInPhoneTalkToday($scope.myprofile.userid, true, $scope.phonetalk_modal.time, $scope.phonetalk_modal.duration, done)
       } else {
@@ -245,7 +255,7 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
       $scope.activities[0].phonetalk_participation = !$scope.activities[0].phonetalk_participation
     }
 
-    function refreshList () {
+    function refreshList() {
       DBHandler.getActivityList(GLOBALS.MyProfile.userid, function (retval) {
         $scope.activities = retval.slice(0)
         console.log($scope.activities)
@@ -257,7 +267,7 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
         $scope.$apply()
       })
     }
-    function initList () {
+    function initList() {
       var class_text = STRING.STUDY_PARTICIPATION
       var phone_text = STRING.PHONETALK_PARTICIPATION
       console.log($scope.activities[0])
@@ -303,33 +313,33 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
         $scope.users = Users.all()
         $scope.$apply()
       })
-    })
+    });
     $scope.upload = function (userid) {
       fileChooser.open(function (uri) {
         uploadFile(uri)
       })
 
-      function uploadFile (uri) {
+      function uploadFile(uri) {
         console.log('file is ' + uri)
         var uploadUrl = GLOBALS.UPLOAD_SERVER;
         var options = new FileUploadOptions()
         options.fileKey = 'file'
         options.fileName = 'voice.mp3'; // fileURL.substr(fileURL.lastIndexOf('/') + 1);"
-        options.headers = {filename: options.fileName, receiver: GLOBALS.MyProfile.userid}
-        options.params = {filename: options.fileName, receiver: GLOBALS.MyProfile.userid}
-        options.mimeType="audio/mpeg3";
+        options.headers = { filename: options.fileName, receiver: GLOBALS.MyProfile.userid }
+        options.params = { filename: options.fileName, receiver: GLOBALS.MyProfile.userid }
+        options.mimeType = "audio/mpeg3";
 
         var ft = new FileTransfer()
         var win = function (r) {
-            console.log("Code = " + r.responseCode);
-            console.log("Response = " + r.response);
-            console.log("Sent = " + r.bytesSent);
+          console.log("Code = " + r.responseCode);
+          console.log("Response = " + r.response);
+          console.log("Sent = " + r.bytesSent);
         }
 
         var fail = function (error) {
-            alert("An error has occurred: Code = " + error.code);
-            console.log("upload error source " + error.source);
-            console.log("upload error target " + error.target);
+          alert("An error has occurred: Code = " + error.code);
+          console.log("upload error source " + error.source);
+          console.log("upload error target " + error.target);
         }
         ft.upload(uri, encodeURI(uploadUrl), win, fail, options)
       }
@@ -348,32 +358,32 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
         uploadFile(uri);
       })
 
-      function uploadFile (uri, userid) {
+      function uploadFile(uri, userid) {
         console.log('file is ' + uri)
         var uploadUrl = GLOBALS.UPLOAD_SERVER;
         var options = new FileUploadOptions()
         options.fileKey = 'file'
         options.fileName = 'voice.mp3';
-        options.headers = {filename: options.fileName, receiver: $scope.userid}
-        options.params = {filename: options.fileName, receiver: $scope.userid}
-        options.mimeType="audio/mpeg3";
+        options.headers = { filename: options.fileName, receiver: $scope.userid }
+        options.params = { filename: options.fileName, receiver: $scope.userid }
+        options.mimeType = "audio/mpeg3";
 
         var ft = new FileTransfer()
         var win = function (r) {
-            console.log("Code = " + r.responseCode);
-            console.log("Response = " + r.response);
-            console.log("Sent = " + r.bytesSent);
+          console.log("Code = " + r.responseCode);
+          console.log("Response = " + r.response);
+          console.log("Sent = " + r.bytesSent);
         }
 
         var fail = function (error) {
-            alert("An error has occurred: Code = " + error.code);
-            console.log("upload error source " + error.source);
-            console.log("upload error target " + error.target);
+          alert("An error has occurred: Code = " + error.code);
+          console.log("upload error source " + error.source);
+          console.log("upload error target " + error.target);
         }
         ft.upload(uri, encodeURI(uploadUrl), win, fail, options)
       }
     }
-  })  
+  })
   .controller('SNSCtrl', function ($scope, Users) {
     $scope.demo = 'all'
     $scope.setPlatform = function (p) {

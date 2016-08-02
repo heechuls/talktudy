@@ -27,7 +27,7 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
-          alert(notification.toString());
+          //alert(notification.toString());
           var code = "";
           if(ionic.Platform.isIOS()){
               var args = { code : notification["_raw"]["additionalData"]["code"], 
