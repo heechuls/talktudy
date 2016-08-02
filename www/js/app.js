@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers', 'starter.services'/* , 'ngCordova'*/])
+angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.controllers', 'starter.services'/* , 'ngCordova'*/])
 
   .run(function ($ionicPlatform, $rootScope) {
     $ionicPlatform.ready(function () {
@@ -20,41 +20,43 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
       }
-      
+
       var push = new Ionic.Push({
-        "debug": true,
+        "debug": false,
         "onNotification": function (notification) {
           var payload = notification.payload;
           console.log("Push Received : ");
           console.log(notification, payload);
           //alert(notification.toString());
           var code = "";
-          if(ionic.Platform.isIOS()){
-              var args = { code : notification["_raw"]["additionalData"]["code"], 
-                                                      message : notification["_raw"]["message"], 
-                                                      body : notification["_raw"]["additionalData"]["body"]};
-              $rootScope.$broadcast("onNotification", args);
-            markNotification(args["code"], args);        
+          if (ionic.Platform.isIOS()) {
+            var args = {
+              code: notification["_raw"]["additionalData"]["code"],
+              message: notification["_raw"]["message"],
+              body: notification["_raw"]["additionalData"]["body"]
+            };
+            $rootScope.$broadcast("onNotification", args);
+            markNotification(args["code"], args);
           }
           else {
-
+            alert("OnNotification" + payload);
           }
         },
         "onRegister": function (data) {
           console.log(data.token);
         },
         "pluginConfig": {
-            ios: {
-              alert: true,
-              badge: true,
-              sound: true
-            },
-            android: {
-              sound: true,
-              vibrate: true,
-              forceShow: true,
-              iconColor: "#601dc2"
-            },
+          ios: {
+            alert: true,
+            badge: true,
+            sound: true
+          },
+          android: {
+            sound: true,
+            vibrate: true,
+            forceShow: true,
+            iconColor: "#601dc2"
+          },
         }
       });
       console.log("Push Register");
@@ -63,26 +65,37 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
         push.saveToken(token);  // persist the token in the Ionic Platform
         GLOBALS.MyProfile.token = token;
       });
-      function markNotification(code, args){
-        if(GLOBALS.MyProfile.isLoggedIn == false){
-/*          if(code == "STUDY_PARTICIPATION")
-            GLOBALS.isStudyConfirmReceived = true;
-          else if(code == "PHONETALK_PARTICIPATION")
-            GLOBALS.isPhoneTalkConfirmReceived = true; */
-            GLOBALS.ReceivedNotification.put(args);
+      function markNotification(code, args) {
+        if (GLOBALS.MyProfile.isLoggedIn == false) {
+          /*          if(code == "STUDY_PARTICIPATION")
+                      GLOBALS.isStudyConfirmReceived = true;
+                    else if(code == "PHONETALK_PARTICIPATION")
+                      GLOBALS.isPhoneTalkConfirmReceived = true; */
+          GLOBALS.ReceivedNotification.put(args);
         }
       }
       //if none of the above states are matched, use this as the fallback
     });
   })
 
-  .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+  .config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider, $cordovaInAppBrowserProvider) {
 
     // Ionic uses AngularUI Router which uses the concept of states
     // Learn more here: https://github.com/angular-ui/ui-router
     // Set up the various states which the app can be in.
     // Each state's controller can be found in controllers.js
     //$ionicConfigProvider.tabs.position('top'); // other values: top
+    var defaultOptions = {
+      location: 'no',
+      clearcache: 'no',
+      toolbar: 'no'
+    };
+
+    document.addEventListener("deviceready", function () {
+
+      $cordovaInAppBrowserProvider.setDefaultOptions(options)
+
+    }, false);
     $ionicConfigProvider.platform.android.tabs.position("bottom");
     $stateProvider
 
@@ -130,33 +143,33 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
           }
         }
       })
-    .state('tab.joiner', {
-      url: '/joiner',
-      views: {
-        'tab-study': {
-          templateUrl: 'templates/general/admin-joiner.html',
-          controller: 'JoinerListCtrl'
+      .state('tab.joiner', {
+        url: '/joiner',
+        views: {
+          'tab-study': {
+            templateUrl: 'templates/general/admin-joiner.html',
+            controller: 'JoinerListCtrl'
+          }
         }
-      }
-    })
-    .state('tab.upload', {
-      url: '/upload',
-      views: {
-        'tab-study': {
-          templateUrl: 'templates/general/upload.html',
-          controller: 'UploadCtrl'
+      })
+      .state('tab.upload', {
+        url: '/upload',
+        views: {
+          'tab-study': {
+            templateUrl: 'templates/general/upload.html',
+            controller: 'UploadCtrl'
+          }
         }
-      }
-    })           
-    .state('tab.userlist', {
-      url: '/userlist',
-      views: {
-        'tab-study': {
-          templateUrl: 'templates/general/userlist.html',
-          controller: 'UserListCtrl'
+      })
+      .state('tab.userlist', {
+        url: '/userlist',
+        views: {
+          'tab-study': {
+            templateUrl: 'templates/general/userlist.html',
+            controller: 'UserListCtrl'
+          }
         }
-      }
-    })    
+      })
       .state('tab.sns', {
         url: '/sns',
         views: {
@@ -219,11 +232,11 @@ angular.module('starter', ['ionic', 'ionic.service.core', 'starter.controllers',
       .state('tab.talkmain', {
         url: '/talkmain/:type',
         views: {
-        'tab-study': {
-        templateUrl: 'templates/guide/talk_main.html',
-        controller: 'TalkMainCtrl'
+          'tab-study': {
+            templateUrl: 'templates/guide/talk_main.html',
+            controller: 'TalkMainCtrl'
+          }
         }
-      }
       });
     $urlRouterProvider.otherwise('/versioncheck');
   });

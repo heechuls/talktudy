@@ -20,10 +20,10 @@ var GLOBALS = {
     USER_NONE : 3,
     USER_ADMIN : 4,
 
-    STUDY_CONTENTS_1 : "http://talktudy.herokuapp.com/grammar",
-    STUDY_CONTENTS_2 : "http://talktudy.herokuapp.com/category",
-    STUDY_CONTENTS_3 : "http://talktudy.herokuapp.com/grammar_kr",
-    STUDY_CONTENTS_4 : "http://talktudy.herokuapp.com/category_kr",
+    STUDY_CONTENTS_1 : "http://talktudy.cafe24app.com/grammar",
+    STUDY_CONTENTS_2 : "http://talktudy.cafe24app.com/category",
+    STUDY_CONTENTS_3 : "http://talktudy.cafe24app.com/grammar_kr",
+    STUDY_CONTENTS_4 : "http://talktudy.cafe24app.com/category_kr",
 
     EN_GRAMMAR : 1,
     EN_TOPIC : 2,
@@ -40,6 +40,10 @@ var GLOBALS = {
     isStudyConfirmReceived : false,
 
     ReceivedNotifications : {},
+
+    //FOR STORING IN LOCAL STORAGE
+    STORAGE_USERID : "STORAGE_USERID",
+    STORAGE_PASSWORD : "STORAGE_PASSWORD",    
 
     class_expired : '<p style:"text-align:center;font-size:16px">스터디가 모두 소진되었습니다.</p><p style="text-align:center;font-size:16px">아래의 계좌로 입금 부탁드립니다.</p><br/><br/><p style="text-align:center;font-size:16px;">국민은행<br/>642601-01-571098<br/>이성암</p></p></div>'
 };

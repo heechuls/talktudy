@@ -75,6 +75,7 @@
     <plugin name="phonegap-plugin-push" spec="~1.6.4">
         <variable name="SENDER_ID" value="1024729850739" />
     </plugin>
-    <allow-navigation href="http://talktudy.herokuapp.com/*" />
+    <allow-navigation href="http://talktudy.cafe24app.com/*" />
+    <allow-navigation href="http://www.naver.com/*" />
     <allow-navigation href="http://lunar-pic.com/*" />
 </widget>

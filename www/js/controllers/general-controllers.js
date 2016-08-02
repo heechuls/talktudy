@@ -1,5 +1,5 @@
 angular.module('starter.controllers')
-.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform, $ionicNavBarDelegate/*, $ionicPush, $ionicPlatform*/) {
+.controller('LoginCtrl', function($scope, LoginService, StudyItems, ShopItems, $ionicPopup, $state, $sce, $ionicPlatform, $ionicNavBarDelegate, $window/*, $ionicPush, $ionicPlatform*/) {
     /*$ionicPlatform.registerBackButtonAction(function () {
     if (condition) {
         navigator.app.exitApp();
@@ -10,6 +10,11 @@ angular.module('starter.controllers')
     $ionicNavBarDelegate.showBackButton(false);
     $scope.$on("onNotification", function (args) {
         notificationHandlerForNotice();
+    });
+    $scope.$on('$ionicView.loaded', function(){
+        //load credential from local storage
+        $scope.data.phonenumber = $window.localStorage.getItem(GLOBALS.STORAGE_USERID);
+        $scope.data.password = $window.localStorage.getItem(GLOBALS.STORAGE_PASSWORD);
     });
     $scope.data = {};
     //pushSetup();
@@ -27,6 +32,9 @@ angular.module('starter.controllers')
                         if(GLOBALS.MyProfile.remained_class == 0){
                             showClassExpirePopup($ionicPopup);
                         }           
+                        //save credential in local storage
+                        $window.localStorage.setItem(GLOBALS.STORAGE_USERID, GLOBALS.MyProfile.userid);
+                        $window.localStorage.setItem(GLOBALS.STORAGE_PASSWORD, $scope.data.password);
                     });
                 }).error(function(data) {
                     var alertPopup = $ionicPopup.alert({
@@ -79,12 +87,20 @@ angular.module('starter.controllers')
       });
     }
 })
-.controller('VersionCheckCtrl', function($scope, $state, $window, Version) {
+.controller('VersionCheckCtrl', function($scope, $state, $window, $cordovaInAppBrowser, Version) {
     $scope.text = STRING.VERSION_CHECKING;
     $scope.style = "none";
 
     $scope.goupdate = function(){
-        $window.open(GLOBALS.PAGE_UPDATE);
+        //$window.open(GLOBALS.PAGE_UPDATE);
+        $cordovaInAppBrowser.open('GLOBALS.PAGE_UPDATE', '_blank', options)
+            .then(function (event) {
+                // success
+            })
+            .catch(function (event) {
+                // error
+            });
+
     }
     $scope.$on('$ionicView.beforeEnter', function(){
         Version.isVersionMatched(function(retval){

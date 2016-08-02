@@ -2,7 +2,7 @@
 1 verbose cli [ '/usr/local/bin/node',
 1 verbose cli   '/usr/local/bin/npm',
 1 verbose cli   'install',
-1 verbose cli   'angular-file-upload' ]
+1 verbose cli   'ngCordova' ]
 2 info using npm@2.15.5
 3 info using node@v4.4.5
 4 verbose install initial load of /Users/heechuls/Project/talktudy/package.json
@@ -26,259 +26,103 @@
 22 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/rxjs/package.json
 23 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/shelljs/package.json
 24 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/zone.js/package.json
-25 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@angular/core/package.json
-26 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@ionic/cloud-angular/package.json
-27 info package.json angular-file-upload@2.3.4 No license field.
-28 info package.json ios-deploy@1.8.6 license should be a valid SPDX license expression
-29 info package.json shelljs@0.3.0 license should be a valid SPDX license expression
-30 info package.json @angular/core@2.0.0-rc.4 No description
-31 info package.json @angular/core@2.0.0-rc.4 No README data
-32 info package.json gulp-rename@1.2.2 No license field.
-33 info package.json gulp-minify-css@0.3.13 No license field.
-34 info package.json plugin@0.3.3 No license field.
-35 verbose readDependencies loading dependencies from /Users/heechuls/Project/talktudy/package.json
-36 verbose install angular-file-upload is installed as 2.3.4
-37 silly cache add args [ 'angular-file-upload', null ]
-38 verbose cache add spec angular-file-upload
-39 silly cache add parsed spec Result {
-39 silly cache add   raw: 'angular-file-upload',
-39 silly cache add   scope: null,
-39 silly cache add   name: 'angular-file-upload',
-39 silly cache add   rawSpec: '',
-39 silly cache add   spec: 'latest',
-39 silly cache add   type: 'tag' }
-40 silly addNamed angular-file-upload@latest
-41 verbose addNamed "latest" is being treated as a dist-tag for angular-file-upload
-42 info addNameTag [ 'angular-file-upload', 'latest' ]
-43 silly mapToRegistry name angular-file-upload
-44 silly mapToRegistry using default registry
-45 silly mapToRegistry registry https://registry.npmjs.org/
-46 silly mapToRegistry data Result {
-46 silly mapToRegistry   raw: 'angular-file-upload',
-46 silly mapToRegistry   scope: null,
-46 silly mapToRegistry   name: 'angular-file-upload',
-46 silly mapToRegistry   rawSpec: '',
-46 silly mapToRegistry   spec: 'latest',
-46 silly mapToRegistry   type: 'tag' }
-47 silly mapToRegistry uri https://registry.npmjs.org/angular-file-upload
-48 verbose addNameTag registry:https://registry.npmjs.org/angular-file-upload not in flight; fetching
-49 verbose request uri https://registry.npmjs.org/angular-file-upload
-50 verbose request no auth needed
-51 info attempt registry request try #1 at 1:58:55 PM
-52 verbose request id f55a829a11ac567b
-53 verbose etag "AHWTEIIV26HIHE3KFW695LTH3"
-54 http request GET https://registry.npmjs.org/angular-file-upload
-55 http 304 https://registry.npmjs.org/angular-file-upload
-56 verbose headers { date: 'Thu, 28 Jul 2016 04:58:55 GMT',
+25 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@angular/.DS_Store/package.json
+26 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@angular/core/package.json
+27 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@ionic/.DS_Store/package.json
+28 verbose installManyTop reading scoped package data from /Users/heechuls/Project/talktudy/node_modules/@ionic/cloud-angular/package.json
+29 info package.json ios-deploy@1.8.6 license should be a valid SPDX license expression
+30 info package.json angular-file-upload@2.3.4 No license field.
+31 info package.json shelljs@0.3.0 license should be a valid SPDX license expression
+32 info package.json @angular/core@2.0.0-rc.4 No description
+33 info package.json @angular/core@2.0.0-rc.4 No README data
+34 info package.json gulp-rename@1.2.2 No license field.
+35 info package.json gulp-minify-css@0.3.13 No license field.
+36 info package.json plugin@0.3.3 No license field.
+37 verbose readDependencies loading dependencies from /Users/heechuls/Project/talktudy/package.json
+38 silly cache add args [ 'ngCordova', null ]
+39 verbose cache add spec ngCordova
+40 silly cache add parsed spec Result {
+40 silly cache add   raw: 'ngCordova',
+40 silly cache add   scope: null,
+40 silly cache add   name: 'ngCordova',
+40 silly cache add   rawSpec: '',
+40 silly cache add   spec: 'latest',
+40 silly cache add   type: 'tag' }
+41 silly addNamed ngCordova@latest
+42 verbose addNamed "latest" is being treated as a dist-tag for ngCordova
+43 info addNameTag [ 'ngCordova', 'latest' ]
+44 silly mapToRegistry name ngCordova
+45 silly mapToRegistry using default registry
+46 silly mapToRegistry registry https://registry.npmjs.org/
+47 silly mapToRegistry data Result {
+47 silly mapToRegistry   raw: 'ngCordova',
+47 silly mapToRegistry   scope: null,
+47 silly mapToRegistry   name: 'ngCordova',
+47 silly mapToRegistry   rawSpec: '',
+47 silly mapToRegistry   spec: 'latest',
+47 silly mapToRegistry   type: 'tag' }
+48 silly mapToRegistry uri https://registry.npmjs.org/ngCordova
+49 verbose addNameTag registry:https://registry.npmjs.org/ngCordova not in flight; fetching
+50 verbose request uri https://registry.npmjs.org/ngCordova
+51 verbose request no auth needed
+52 info attempt registry request try #1 at 6:07:55 PM
+53 verbose request id e9ee4f1bd3dbecaa
+54 http request GET https://registry.npmjs.org/ngCordova
+55 http 404 https://registry.npmjs.org/ngCordova
+56 verbose headers { 'content-type': 'application/json',
+56 verbose headers   'cache-control': 'max-age=0',
+56 verbose headers   'content-length': '2',
+56 verbose headers   'accept-ranges': 'bytes',
+56 verbose headers   date: 'Tue, 02 Aug 2016 09:07:56 GMT',
 56 verbose headers   via: '1.1 varnish',
-56 verbose headers   'cache-control': 'max-age=300',
-56 verbose headers   etag: '"AHWTEIIV26HIHE3KFW695LTH3"',
 56 verbose headers   age: '0',
 56 verbose headers   connection: 'keep-alive',
-56 verbose headers   'x-served-by': 'cache-hkg6821-HKG',
-56 verbose headers   'x-cache': 'HIT',
-56 verbose headers   'x-cache-hits': '1',
-56 verbose headers   'x-timer': 'S1469681935.695720,VS0,VE893',
+56 verbose headers   'x-served-by': 'cache-hkg6826-HKG',
+56 verbose headers   'x-cache': 'MISS',
+56 verbose headers   'x-cache-hits': '0',
+56 verbose headers   'x-timer': 'S1470128875.954429,VS0,VE888',
 56 verbose headers   vary: 'Accept-Encoding' }
-57 silly get cb [ 304,
-57 silly get   { date: 'Thu, 28 Jul 2016 04:58:55 GMT',
+57 silly get cb [ 404,
+57 silly get   { 'content-type': 'application/json',
+57 silly get     'cache-control': 'max-age=0',
+57 silly get     'content-length': '2',
+57 silly get     'accept-ranges': 'bytes',
+57 silly get     date: 'Tue, 02 Aug 2016 09:07:56 GMT',
 57 silly get     via: '1.1 varnish',
-57 silly get     'cache-control': 'max-age=300',
-57 silly get     etag: '"AHWTEIIV26HIHE3KFW695LTH3"',
 57 silly get     age: '0',
 57 silly get     connection: 'keep-alive',
-57 silly get     'x-served-by': 'cache-hkg6821-HKG',
-57 silly get     'x-cache': 'HIT',
-57 silly get     'x-cache-hits': '1',
-57 silly get     'x-timer': 'S1469681935.695720,VS0,VE893',
+57 silly get     'x-served-by': 'cache-hkg6826-HKG',
+57 silly get     'x-cache': 'MISS',
+57 silly get     'x-cache-hits': '0',
+57 silly get     'x-timer': 'S1470128875.954429,VS0,VE888',
 57 silly get     vary: 'Accept-Encoding' } ]
-58 verbose etag https://registry.npmjs.org/angular-file-upload from cache
-59 verbose get saving angular-file-upload to /Users/heechuls/.npm/registry.npmjs.org/angular-file-upload/.cache.json
-60 verbose correctMkdir /Users/heechuls/.npm correctMkdir not in flight; initializing
-61 silly addNameTag next cb for angular-file-upload with tag latest
-62 silly addNamed angular-file-upload@2.3.4
-63 verbose addNamed "2.3.4" is a plain semver version for angular-file-upload
-64 silly cache afterAdd angular-file-upload@2.3.4
-65 verbose afterAdd /Users/heechuls/.npm/angular-file-upload/2.3.4/package/package.json not in flight; writing
-66 verbose correctMkdir /Users/heechuls/.npm correctMkdir not in flight; initializing
-67 verbose afterAdd /Users/heechuls/.npm/angular-file-upload/2.3.4/package/package.json written
-68 silly install resolved [ { name: 'angular-file-upload',
-68 silly install resolved     version: '2.3.4',
-68 silly install resolved     homepage: 'https://github.com/nervgh/angular-file-upload',
-68 silly install resolved     description: 'Angular File Upload is a module for the AngularJS framework',
-68 silly install resolved     author: { name: 'nerv', url: 'https://github.com/nervgh' },
-68 silly install resolved     repository:
-68 silly install resolved      { type: 'git',
-68 silly install resolved        url: 'git+https://github.com/nervgh/angular-file-upload.git' },
-68 silly install resolved     main: 'dist/angular-file-upload.min.js',
-68 silly install resolved     engines: { node: '>=4.0.0' },
-68 silly install resolved     devDependencies:
-68 silly install resolved      { 'babel-core': '~6.8.0',
-68 silly install resolved        'babel-loader': '~6.2.4',
-68 silly install resolved        'babel-preset-es2015': '~6.6.0',
-68 silly install resolved        gulp: '~3.9.1',
-68 silly install resolved        'json-loader': '~0.5.4',
-68 silly install resolved        'raw-loader': '~0.5.1',
-68 silly install resolved        'webpack-stream': '~3.2.0' },
-68 silly install resolved     gitHead: '4589f9b6a1c5cc4948755a74d9ef6a78e80eea52',
-68 silly install resolved     bugs: { url: 'https://github.com/nervgh/angular-file-upload/issues' },
-68 silly install resolved     _id: 'angular-file-upload@2.3.4',
-68 silly install resolved     scripts: {},
-68 silly install resolved     _shasum: '2f953d01701d6b875e2666d24184de2e8f6e14bc',
-68 silly install resolved     _from: 'angular-file-upload@latest',
-68 silly install resolved     _npmVersion: '3.9.3',
-68 silly install resolved     _nodeVersion: '6.2.1',
-68 silly install resolved     _npmUser: { name: 'nerv', email: 'nervgh@gmail.com' },
-68 silly install resolved     dist:
-68 silly install resolved      { shasum: '2f953d01701d6b875e2666d24184de2e8f6e14bc',
-68 silly install resolved        tarball: 'https://registry.npmjs.org/angular-file-upload/-/angular-file-upload-2.3.4.tgz' },
-68 silly install resolved     maintainers: [ [Object] ],
-68 silly install resolved     _npmOperationalInternal:
-68 silly install resolved      { host: 'packages-12-west.internal.npmjs.com',
-68 silly install resolved        tmp: 'tmp/angular-file-upload-2.3.4.tgz_1465805520783_0.21065900987014174' },
-68 silly install resolved     directories: {},
-68 silly install resolved     _resolved: 'https://registry.npmjs.org/angular-file-upload/-/angular-file-upload-2.3.4.tgz',
-68 silly install resolved     readme: 'ERROR: No README data found!' } ]
-69 info install angular-file-upload@2.3.4 into /Users/heechuls/Project/talktudy
-70 info installOne angular-file-upload@2.3.4
-71 verbose installOne of angular-file-upload to /Users/heechuls/Project/talktudy not in flight; installing
-72 verbose correctMkdir /Users/heechuls/.npm/_locks correctMkdir not in flight; initializing
-73 verbose lock using /Users/heechuls/.npm/_locks/angular-file-upload-187c3a92a2fe7105.lock for /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-74 silly install write writing angular-file-upload 2.3.4 to /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-75 verbose unbuild node_modules/angular-file-upload
-76 info preuninstall angular-file-upload@2.3.4
-77 info uninstall angular-file-upload@2.3.4
-78 verbose unbuild rmStuff angular-file-upload@2.3.4 from /Users/heechuls/Project/talktudy/node_modules
-79 info postuninstall angular-file-upload@2.3.4
-80 silly gentlyRm /Users/heechuls/Project/talktudy/node_modules/angular-file-upload is being purged from base /Users/heechuls/Project/talktudy
-81 verbose gentlyRm don't care about contents; nuking /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-82 silly vacuum-fs purging /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-83 silly vacuum-fs quitting because other entries in /Users/heechuls/Project/talktudy/node_modules
-84 verbose tar unpack /Users/heechuls/.npm/angular-file-upload/2.3.4/package.tgz
-85 verbose tar unpacking to /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-86 silly gentlyRm /Users/heechuls/Project/talktudy/node_modules/angular-file-upload is being purged
-87 verbose gentlyRm don't care about contents; nuking /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-88 silly gunzTarPerm modes [ '755', '644' ]
-89 silly gunzTarPerm extractEntry package.json
-90 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
-91 silly gunzTarPerm extractEntry .npmignore
-92 silly gunzTarPerm modified mode [ '.npmignore', 511, 493 ]
-93 silly gunzTarPerm extractEntry README.md
-94 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
-95 silly gunzTarPerm extractEntry WebpackConfig.js
-96 silly gunzTarPerm modified mode [ 'WebpackConfig.js', 436, 420 ]
-97 silly gunzTarPerm extractEntry gulpfile.js
-98 silly gunzTarPerm modified mode [ 'gulpfile.js', 436, 420 ]
-99 silly gunzTarPerm extractEntry bower.json
-100 silly gunzTarPerm modified mode [ 'bower.json', 511, 493 ]
-101 silly gunzTarPerm extractEntry dist/angular-file-upload.js
-102 silly gunzTarPerm modified mode [ 'dist/angular-file-upload.js', 436, 420 ]
-103 silly gunzTarPerm extractEntry dist/angular-file-upload.min.js
-104 silly gunzTarPerm modified mode [ 'dist/angular-file-upload.min.js', 436, 420 ]
-105 silly gunzTarPerm extractEntry dist/angular-file-upload.js.map
-106 silly gunzTarPerm modified mode [ 'dist/angular-file-upload.js.map', 436, 420 ]
-107 silly gunzTarPerm extractEntry dist/angular-file-upload.min.js.map
-108 silly gunzTarPerm modified mode [ 'dist/angular-file-upload.min.js.map', 436, 420 ]
-109 silly gunzTarPerm extractEntry examples/console-sham.js
-110 silly gunzTarPerm modified mode [ 'examples/console-sham.js', 511, 493 ]
-111 silly gunzTarPerm extractEntry examples/console-sham.min.js
-112 silly gunzTarPerm modified mode [ 'examples/console-sham.min.js', 511, 493 ]
-113 silly gunzTarPerm extractEntry examples/image-preview/controllers.js
-114 silly gunzTarPerm modified mode [ 'examples/image-preview/controllers.js', 511, 493 ]
-115 silly gunzTarPerm extractEntry examples/image-preview/directives.js
-116 silly gunzTarPerm modified mode [ 'examples/image-preview/directives.js', 511, 493 ]
-117 silly gunzTarPerm extractEntry examples/image-preview/index.html
-118 silly gunzTarPerm modified mode [ 'examples/image-preview/index.html', 511, 493 ]
-119 silly gunzTarPerm extractEntry examples/image-preview/upload.php
-120 silly gunzTarPerm modified mode [ 'examples/image-preview/upload.php', 511, 493 ]
-121 silly gunzTarPerm extractEntry examples/image-preview/uploads/gap.txt
-122 silly gunzTarPerm modified mode [ 'examples/image-preview/uploads/gap.txt', 511, 493 ]
-123 silly gunzTarPerm extractEntry examples/simple/controllers.js
-124 silly gunzTarPerm modified mode [ 'examples/simple/controllers.js', 436, 420 ]
-125 silly gunzTarPerm extractEntry examples/simple/index.html
-126 silly gunzTarPerm modified mode [ 'examples/simple/index.html', 511, 493 ]
-127 silly gunzTarPerm extractEntry examples/simple/upload.php
-128 silly gunzTarPerm modified mode [ 'examples/simple/upload.php', 511, 493 ]
-129 silly gunzTarPerm extractEntry examples/simple/uploads/gap.txt
-130 silly gunzTarPerm modified mode [ 'examples/simple/uploads/gap.txt', 511, 493 ]
-131 silly gunzTarPerm extractEntry examples/without-bootstrap/controllers.js
-132 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/controllers.js', 511, 493 ]
-133 silly gunzTarPerm extractEntry examples/without-bootstrap/directives.js
-134 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/directives.js', 511, 493 ]
-135 silly gunzTarPerm extractEntry examples/without-bootstrap/index.html
-136 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/index.html', 436, 420 ]
-137 silly gunzTarPerm extractEntry examples/without-bootstrap/style.css
-138 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/style.css', 511, 493 ]
-139 silly gunzTarPerm extractEntry examples/without-bootstrap/upload.php
-140 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/upload.php', 511, 493 ]
-141 silly gunzTarPerm extractEntry examples/without-bootstrap/uploads/gap.txt
-142 silly gunzTarPerm modified mode [ 'examples/without-bootstrap/uploads/gap.txt', 511, 493 ]
-143 silly gunzTarPerm extractEntry .jshintrc
-144 silly gunzTarPerm modified mode [ '.jshintrc', 511, 493 ]
-145 silly gunzTarPerm extractEntry license.txt
-146 silly gunzTarPerm modified mode [ 'license.txt', 511, 493 ]
-147 silly gunzTarPerm extractEntry .babelrc
-148 silly gunzTarPerm modified mode [ '.babelrc', 436, 420 ]
-149 silly gunzTarPerm extractEntry src/index.js
-150 silly gunzTarPerm modified mode [ 'src/index.js', 511, 493 ]
-151 silly gunzTarPerm extractEntry src/config.json
-152 silly gunzTarPerm modified mode [ 'src/config.json', 511, 493 ]
-153 silly gunzTarPerm extractEntry src/directives/FileDrop.js
-154 silly gunzTarPerm modified mode [ 'src/directives/FileDrop.js', 436, 420 ]
-155 silly gunzTarPerm extractEntry src/directives/FileOver.js
-156 silly gunzTarPerm modified mode [ 'src/directives/FileOver.js', 436, 420 ]
-157 silly gunzTarPerm extractEntry src/directives/FileSelect.js
-158 silly gunzTarPerm modified mode [ 'src/directives/FileSelect.js', 436, 420 ]
-159 silly gunzTarPerm extractEntry src/services/FileDirective.js
-160 silly gunzTarPerm modified mode [ 'src/services/FileDirective.js', 436, 420 ]
-161 silly gunzTarPerm extractEntry src/services/FileDrop.js
-162 silly gunzTarPerm modified mode [ 'src/services/FileDrop.js', 436, 420 ]
-163 silly gunzTarPerm extractEntry src/services/FileItem.js
-164 silly gunzTarPerm modified mode [ 'src/services/FileItem.js', 436, 420 ]
-165 silly gunzTarPerm extractEntry src/services/FileLikeObject.js
-166 silly gunzTarPerm modified mode [ 'src/services/FileLikeObject.js', 436, 420 ]
-167 silly gunzTarPerm extractEntry src/services/FileOver.js
-168 silly gunzTarPerm modified mode [ 'src/services/FileOver.js', 436, 420 ]
-169 silly gunzTarPerm extractEntry src/services/FileSelect.js
-170 silly gunzTarPerm modified mode [ 'src/services/FileSelect.js', 436, 420 ]
-171 silly gunzTarPerm extractEntry src/services/FileUploader.js
-172 silly gunzTarPerm modified mode [ 'src/services/FileUploader.js', 436, 420 ]
-173 silly gunzTarPerm extractEntry src/values/options.js
-174 silly gunzTarPerm modified mode [ 'src/values/options.js', 436, 420 ]
-175 verbose write writing to /Users/heechuls/Project/talktudy/node_modules/angular-file-upload/package.json
-176 info preinstall angular-file-upload@2.3.4
-177 verbose readDependencies loading dependencies from /Users/heechuls/Project/talktudy/node_modules/angular-file-upload/package.json
-178 verbose readDependencies loading dependencies from /Users/heechuls/Project/talktudy/node_modules/angular-file-upload/package.json
-179 silly install resolved []
-180 verbose about to build /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-181 info build /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-182 info linkStuff angular-file-upload@2.3.4
-183 silly linkStuff angular-file-upload@2.3.4 has /Users/heechuls/Project/talktudy/node_modules as its parent node_modules
-184 verbose linkBins angular-file-upload@2.3.4
-185 verbose linkMans angular-file-upload@2.3.4
-186 verbose rebuildBundles angular-file-upload@2.3.4
-187 info install angular-file-upload@2.3.4
-188 info postinstall angular-file-upload@2.3.4
-189 verbose unlock done using /Users/heechuls/.npm/_locks/angular-file-upload-187c3a92a2fe7105.lock for /Users/heechuls/Project/talktudy/node_modules/angular-file-upload
-190 verbose validateInstall loading /Users/heechuls/Project/talktudy/package.json for validation
-191 verbose stack Error: The package rxjs@5.0.0-beta.10 does not satisfy its siblings' peerDependencies requirements!
-191 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:125:32
-191 verbose stack     at /usr/local/lib/node_modules/npm/lib/install.js:268:7
-191 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:142:5
-191 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-191 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-191 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-191 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-191 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-191 verbose stack     at cb (/usr/local/lib/node_modules/npm/node_modules/slide/lib/async-map.js:47:24)
-191 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-installed/read-installed.js:263:14
-192 verbose cwd /Users/heechuls/Project/talktudy
-193 error Darwin 15.5.0
-194 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "angular-file-upload"
-195 error node v4.4.5
-196 error npm  v2.15.5
-197 error code EPEERINVALID
-198 error peerinvalid The package rxjs@5.0.0-beta.10 does not satisfy its siblings' peerDependencies requirements!
-198 error peerinvalid Peer @angular/core@2.0.0-rc.4 wants rxjs@5.0.0-beta.6
-198 error peerinvalid Peer @ionic/cloud-angular@0.0.15 wants rxjs@^5.0.0-beta.6
-199 verbose exit [ 1, true ]
+58 verbose stack Error: Registry returned 404 for GET on https://registry.npmjs.org/ngCordova
+58 verbose stack     at makeError (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:264:12)
+58 verbose stack     at CachingRegistryClient.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:242:14)
+58 verbose stack     at Request._callback (/usr/local/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:172:14)
+58 verbose stack     at Request.self.callback (/usr/local/lib/node_modules/npm/node_modules/request/request.js:200:22)
+58 verbose stack     at emitTwo (events.js:87:13)
+58 verbose stack     at Request.emit (events.js:172:7)
+58 verbose stack     at Request.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:1067:10)
+58 verbose stack     at emitOne (events.js:82:20)
+58 verbose stack     at Request.emit (events.js:169:7)
+58 verbose stack     at IncomingMessage.<anonymous> (/usr/local/lib/node_modules/npm/node_modules/request/request.js:988:12)
+59 verbose statusCode 404
+60 verbose pkgid ngCordova
+61 verbose cwd /Users/heechuls/Project/talktudy
+62 error Darwin 15.6.0
+63 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "ngCordova"
+64 error node v4.4.5
+65 error npm  v2.15.5
+66 error code E404
+67 error 404 Registry returned 404 for GET on https://registry.npmjs.org/ngCordova
+67 error 404
+67 error 404 'ngCordova' is not in the npm registry.
+67 error 404 Your package name is not valid, because
+67 error 404
+67 error 404  1. name can no longer contain capital letters
+67 error 404 It was specified as a dependency of 'talktudy'
+67 error 404
+67 error 404 Note that you can also install from a
+67 error 404 tarball, folder, http url, or git url.
+68 verbose exit [ 1, true ]

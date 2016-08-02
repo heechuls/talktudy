@@ -1,7 +1,7 @@
 <ion-view view-title="발음 녹음 목록">
   <ion-content>
     <ion-list>
-      <ion-item class = "item-avatar item-icon-right" ng-repeat="file in files" type="item-text-wrap" href="{{file.url}}">
+      <ion-item class = "item-avatar item-icon-right" ng-repeat="file in files" type="item-text-wrap" ng-click="play(file.url)">
             <img ng-src="img/audio.jpeg">
             <div style="text-align:left;width:80%;float:left">
               <h2>{{file.filename}}</h2>

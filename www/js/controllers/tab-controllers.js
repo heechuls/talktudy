@@ -1,6 +1,6 @@
-angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.service.push'*/])
+angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.core', 'ionic.service.push'*/])
 
-  .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup) {
+  .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup, $cordovaInAppBrowser) {
     $scope.study_items = chunk(StudyItems.List, 5)
     $scope.myprofile = GLOBALS.MyProfile
 
@@ -102,7 +102,7 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
     }
 
   })
-  .controller('AudioListCtrl', function ($scope, Users, $window) {
+  .controller('AudioListCtrl', function ($scope, Users, $window, $cordovaInAppBrowser) {
     $scope.$on('$ionicView.enter', function () {
       DBHandler.getAllAudioList(GLOBALS.MyProfile.userid, function (retVal) {
         $scope.files = retVal.slice(0);
@@ -110,7 +110,18 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
       })
     });
     $scope.play = function (url) {
-      $window.open(url);
+      var options = {
+        location: 'yes',
+        clearcache: 'yes',
+        toolbar: 'yes'
+      };
+      $cordovaInAppBrowser.open(url, '_blank', options)
+        .then(function (event) {
+          // success
+        })
+        .catch(function (event) {
+          // error
+        });
     }
   })
   .controller('ActivityCtrl', function ($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform, $ionicNavBarDelegate /*, $cordovaBadge*/) {
@@ -237,8 +248,8 @@ angular.module('starter.controllers', ['ionic' /*, 'ionic.service.core', 'ionic.
 
     $scope.participateInPhoneTalk = function () {
       var done = function () {
-/*        document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + 
-                      $scope.phonetalk_modal.phonetalk_info == undefined ? "전화영어 불참예정" : $scope.phonetalk_modal.phonetalk_info.text + '</b><br>'*/
+        /*        document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + 
+                              $scope.phonetalk_modal.phonetalk_info == undefined ? "전화영어 불참예정" : $scope.phonetalk_modal.phonetalk_info.text + '</b><br>'*/
         document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
         DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function (retVal) {
           $scope.phonetalk_modal.phonetalk_info = retVal;
