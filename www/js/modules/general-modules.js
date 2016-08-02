@@ -43,9 +43,9 @@ function chunk(arr, size) {
 }
 
 function showClassExpirePopup($ionicPopup){
-    var template = class_expired;
+    var template = GLOBALS.class_expired;
     var alertPopup = $ionicPopup.alert({
-        title: STRING_STUDY_CREDIT_CONSUMED,
+        title: STRING.STRING_STUDY_CREDIT_CONSUMED,
         template: template
     });
 }
