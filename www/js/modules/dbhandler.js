@@ -542,7 +542,7 @@ var DBHandler = {
       userRef.update(token);
       userRef.update({ device_type: device_type });
     }
-    else GLOBALS.MyProfile.token = "WEB";
+    else GLOBALS.MyProfile.token = {_token: "WEB"};
   },
   retrieveAllUserList: function (done) {
     var ref = firebase.database().ref().child('/user/');

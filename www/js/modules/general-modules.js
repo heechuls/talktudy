@@ -1,20 +1,22 @@
-function init(StudyItems, ShopItems, done) {
+function init(StudyItems, ShopItems, isFirst, done) {
 
     DBHandler.loadUserInfo(GLOBALS.MyProfile.userid, function () {
         //Need to perform in Admin side when a user is registered
         //DBHandler.setStudyResultItems(GLOBALS.MyProfile.userid);
-        DBHandler.saveDeviceToken(GLOBALS.MyProfile.userid, GLOBALS.MyProfile.token,
-            ionic.Platform.isIOS() == true || ionic.Platform.isIPad() == true ? 0 : 1);
         DBHandler.getStudyResult(GLOBALS.MyProfile.userid, function (retval) {
             StudyItems.List = retval.slice(0); //Copying Array
             if (done != null)
                 done();
         });
-        DBHandler.LoadPasswordList();
-        if (ShopItems != null) {
-            DBHandler.getShopItems(function (retval) {
-                ShopItems.List = retval.slice(0);
-            });
+        if(isFirst){
+            DBHandler.saveDeviceToken(GLOBALS.MyProfile.userid, GLOBALS.MyProfile.token,
+                ionic.Platform.isIOS() == true || ionic.Platform.isIPad() == true ? 0 : 1);
+            DBHandler.LoadPasswordList();
+            if (ShopItems != null) {
+                DBHandler.getShopItems(function (retval) {
+                    ShopItems.List = retval.slice(0);
+                });
+            }
         }
 
         document.addEventListener("deviceready", onDeviceReady, false);
@@ -82,6 +84,20 @@ function notificationHandlerForAll(ev, args, $ionicPopup, handlers) {
     if (args["code"] == "PHONETALK_PARTICIPATION") {
         handlers["showPhoneTalkModal"]();
     }
+}
+function openInAppBrowser(url, $cordovaInAppBrowser){
+    var options = {
+        location: 'no',
+        clearcache: 'yes',
+        toolbar: 'yes'
+      };
+      $cordovaInAppBrowser.open(url, '_blank', options)
+        .then(function (event) {
+          // success
+        })
+        .catch(function (event) {
+          // error
+        });
 }
 function testCode() {
     /*   document.addEventListener('deviceready', function () {

@@ -92,7 +92,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
     })
 
     function loadData() {
-      init(StudyItems, null, function () {
+      init(StudyItems, null, false, function () {
         $scope.study_items = chunk(StudyItems.List, 5)
         $scope.$apply();
       })
@@ -110,18 +110,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       })
     });
     $scope.play = function (url) {
-      var options = {
-        location: 'yes',
-        clearcache: 'yes',
-        toolbar: 'yes'
-      };
-      $cordovaInAppBrowser.open(url, '_blank', options)
-        .then(function (event) {
-          // success
-        })
-        .catch(function (event) {
-          // error
-        });
+      openInAppBrowser(url, $cordovaInAppBrowser);
     }
   })
   .controller('ActivityCtrl', function ($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform, $ionicNavBarDelegate /*, $cordovaBadge*/) {
@@ -304,7 +293,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       document.getElementById('isPhonetalkParticipated').style.display = 'none'
     }
   })
-  .controller('StudyCtrl', function ($scope, $state) {
+  .controller('StudyCtrl', function ($scope, $state, $cordovaInAppBrowser) {
     /*    $scope.grammar = function(){
             $state.go('tab.talkmain')
         }
@@ -316,7 +305,18 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       if (GLOBALS.MyProfile.isAdmin == undefined) {
         document.getElementById('admin-bar').style.display = 'none'
       }
-    })
+    });
+
+    $scope.openUrl = function(type) {
+        if(type == GLOBALS.EN_GRAMMAR)
+            openInAppBrowser(GLOBALS.STUDY_CONTENTS_1, $cordovaInAppBrowser);
+        else if(type == GLOBALS.EN_TOPIC)
+            openInAppBrowser(GLOBALS.STUDY_CONTENTS_2, $cordovaInAppBrowser);
+        else if(type == GLOBALS.KR_GRAMMAR)
+            openInAppBrowser(GLOBALS.STUDY_CONTENTS_3, $cordovaInAppBrowser);
+        else if(type == GLOBALS.KR_TOPIC)
+            openInAppBrowser(GLOBALS.STUDY_CONTENTS_4, $cordovaInAppBrowser);
+    }
   })
   .controller('UploadCtrl', ['$scope', 'fileUpload', 'Users', function ($scope, fileUpload, Users) {
     $scope.$on('$ionicView.enter', function () {
