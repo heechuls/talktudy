@@ -51,7 +51,7 @@ function showClassExpirePopup($ionicPopup) {
         template: template
     });
 }
-function notificationHandlerForNotice(ev, args, $ionicPopup) {
+function notificationHandlerForNotice(args, $ionicPopup) {
     console.log("onNotification received");
     if (args["code"] == "NOTICE") {
         $ionicPopup.alert({
@@ -60,23 +60,40 @@ function notificationHandlerForNotice(ev, args, $ionicPopup) {
         });
     }
 }
-function notificationHandlerForAll(ev, args, $ionicPopup, handlers) {
-    notificationHandlerForNotice(ev, args, $ionicPopup);
+function notificationHandlerForAll(args, $ionicPopup, handlers) {
+    notificationHandlerForNotice(args, $ionicPopup);
     if (args["code"] == "STUDY_PARTICIPATION") {
         var confirmPopup = $ionicPopup.confirm({
             title: args["message"],
-            template: args["body"]
+            template: args["body"],
+            buttons:[{
+                text: '불참',
+                type: 'button-default',
+                onTap: function(e) {
+                    return false;
+                    }
+                },
+                {
+                text: '참여',
+                type: 'button-positive',
+                onTap: function(e) {
+                    return true;
+                }
+            }
+            ]
         });
         confirmPopup.then(function (res) {
             if (res) {
                 DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, true, function () {
                     console.log("Participated")
                     handlers["refreshList"]();
+                    handlers["refreshTitleBar"]();
                 });
             } else {
                 DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, false, function () {
                     console.log("Unparticipated")
                     handlers["refreshList"]();
+                    handlers["refreshTitleBar"]();
                 });
             }
         });

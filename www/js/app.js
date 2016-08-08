@@ -25,8 +25,7 @@ angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.c
         "debug": false,
         "onNotification": function (notification) {
           var payload = notification.payload;
-          console.log("Push Received : ");
-          console.log(notification, payload);
+          console.log("Push Received : " + notification.toString());
           //alert(notification.toString());
           var code = "";
           if (ionic.Platform.isIOS()) {
@@ -36,10 +35,25 @@ angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.c
               body: notification["_raw"]["additionalData"]["body"]
             };
             $rootScope.$broadcast("onNotification", args);
-            markNotification(args["code"], args);
+            markNotification(args);
           }
           else {
-            alert("OnNotification" + payload);
+            //alert("OnNotification" + payload);
+              /*var args = {
+              code: payload["additionalData"]["code"],
+              message: payload["title"],
+              body: payload["message"]
+            };*/
+              var args = {
+              code: notification["additionalData"]["code"],
+              message: notification["title"],
+              body: notification["message"]
+            };
+            console.log(args);
+            console.log(args2);
+
+            $rootScope.$broadcast("onNotification", args);
+            markNotification(args);
           }
         },
         "onRegister": function (data) {
@@ -65,13 +79,15 @@ angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.c
         push.saveToken(token);  // persist the token in the Ionic Platform
         GLOBALS.MyProfile.token = token;
       });
-      function markNotification(code, args) {
+      function markNotification(args) {
         if (GLOBALS.MyProfile.isLoggedIn == false) {
           /*          if(code == "STUDY_PARTICIPATION")
                       GLOBALS.isStudyConfirmReceived = true;
                     else if(code == "PHONETALK_PARTICIPATION")
                       GLOBALS.isPhoneTalkConfirmReceived = true; */
-          GLOBALS.ReceivedNotification.put(args);
+          //alert("First");
+          console.log("Notification Added");
+          GLOBALS.ReceivedNotifications.push(args);
         }
       }
       //if none of the above states are matched, use this as the fallback

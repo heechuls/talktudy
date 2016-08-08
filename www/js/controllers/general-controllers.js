@@ -9,7 +9,7 @@ angular.module('starter.controllers')
         }, 100);*/
         $ionicNavBarDelegate.showBackButton(false);
         $scope.$on("onNotification", function (args) {
-            notificationHandlerForNotice();
+            notificationHandlerForNotice(args, $ionicPopup);
         });
         $scope.$on('$ionicView.loaded', function () {
             //load credential from local storage

@@ -113,7 +113,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       openInAppBrowser(url, $cordovaInAppBrowser);
     }
   })
-  .controller('ActivityCtrl', function ($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform, $ionicNavBarDelegate /*, $cordovaBadge*/) {
+  .controller('ActivityCtrl', function ($scope, $ionicModal, Activities, ShopItems, $ionicPopup, $ionicPlatform, $ionicNavBarDelegate, $cordovaBadge) {
     /*
       $ionicPlatform.registerBackButtonAction(function () {
       if (condition) {
@@ -123,15 +123,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       }
       }, 100);*/
     $scope.$on('onNotification', function (ev, args) {
-      notificationHandlerForAll(ev, args, $ionicPopup, { refreshList: refreshList, showPhoneTalkModal: $scope.showPhoneTalkModal })
+      notificationHandlerForAll(args, $ionicPopup, { refreshList: refreshList, showPhoneTalkModal: $scope.showPhoneTalkModal, refreshTitleBar : refreshTitleBar });
     });
 
     $scope.$on('$ionicView.loaded', function () {
-      refreshList()
+      refreshList();
+      for(var i in GLOBALS.ReceivedNotifications){
+        console.log("Notification Processed");
+        notificationHandlerForAll(GLOBALS.ReceivedNotifications[i], $ionicPopup, { refreshList: refreshList, showPhoneTalkModal: $scope.showPhoneTalkModal });
+      }
     });
 
     $scope.$on('$ionicView.enter', function () {
-      $ionicNavBarDelegate.showBackButton(true)
+      $ionicNavBarDelegate.showBackButton(true);
+      setBadge(0);
+      console.log("Badge Cleared");
     });
 
     function setBadge(val) {
@@ -139,7 +145,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
         $cordovaBadge.set(val)
       }, function (error) {
         alert(error)
-      })
+      });
     }
     $ionicModal.fromTemplateUrl('templates/modal/purchase-item.html', {
       id: '1',
@@ -212,10 +218,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       }
       var done = function () {
         document.getElementById('class').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
-        DBHandler.loadUserInfo($scope.myprofile.userid, function () {
-          $scope.myprofile = GLOBALS.MyProfile;
-          $scope.$apply();
-        })
+        refreshTitleBar();
       }
       if ($scope.activities[0].class_participation == -1 || $scope.activities[0].class_participation == 0) {
         text = STRING.STUDY_TO_PARTICIPATE;
@@ -257,15 +260,21 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
 
     function refreshList() {
       DBHandler.getActivityList(GLOBALS.MyProfile.userid, function (retval) {
-        $scope.activities = retval.slice(0)
-        console.log($scope.activities)
-        $scope.myprofile = GLOBALS.MyProfile
-        $scope.$apply()
-        initList()
+        $scope.activities = retval.slice(0);
+        console.log($scope.activities);
+        $scope.myprofile = GLOBALS.MyProfile;
+        $scope.$apply();
+        initList();
       }, function (retval2) {
-        $scope.activities = retval2.slice(0)
-        $scope.$apply()
-      })
+        $scope.activities = retval2.slice(0);
+        $scope.$apply();
+      });
+    }
+    function refreshTitleBar() {
+        DBHandler.loadUserInfo($scope.myprofile.userid, function () {
+          $scope.myprofile = GLOBALS.MyProfile;
+          $scope.$apply();
+        });
     }
     function initList() {
       var class_text = STRING.STUDY_PARTICIPATION
@@ -401,14 +410,26 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       document.body.classList.remove('platform-similar')
       document.body.classList.remove('platform-all')
       document.body.classList.add('platform-' + p)
-      $scope.demo = p
+      $scope.demo = p;
+      if($scope.demo == "all"){
+          Users.retrieveAllUserList(function () {
+            $scope.users = Users.all();
+            $scope.$apply();
+          });
+      }
+      else{
+        Users.retrieveUserListNearRegisteredDate(function () {
+          $scope.users = Users.all();
+          $scope.$apply();
+        });
+      }
     }
-    $scope.$on('$ionicView.enter', function () {
+    $scope.$on('$ionicView.loaded', function () {
       Users.retrieveAllUserList(function () {
-        $scope.users = Users.all()
-        $scope.$apply()
-      })
-    })
+        $scope.users = Users.all();
+        $scope.$apply();
+      });
+    });
   })
 
   .directive('fileModel', ['$parse', function ($parse) {

@@ -35,6 +35,12 @@ angular.module('starter.services', [])
         done();
       });
     },
+    retrieveUserListNearRegisteredDate : function(done) {
+      DBHandler.retrieveUserListNearRegisteredDate(function(retVal){
+        list = retVal.slice(0);
+        done();
+      });
+    },
     get : function(userid, done){
       DBHandler.getUserInfo2(userid, done);
     },

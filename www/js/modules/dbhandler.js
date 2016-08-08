@@ -266,7 +266,7 @@ var DBHandler = {
         }
         if (val.result == GLOBALS.RATE_PASSED) { // Passed
           var reviewedDate = new Date(messageSnapshot.val().date);
-          reviewedDate.setDate(reviewedDate.getDate() + 15);
+          reviewedDate.setDate(reviewedDate.getDate() + GLOBALS.PASS_EXPIRTED_DAYS);
 
           if (today < reviewedDate)
             val.path = 'img/pass.png';
@@ -337,6 +337,7 @@ var DBHandler = {
         GLOBALS.MyProfile.rate_failed = dataSnapshop.val().rate_failed
         GLOBALS.MyProfile.rate_passed = dataSnapshop.val().rate_passed
         GLOBALS.MyProfile.nationality = dataSnapshop.val().nationality
+        GLOBALS.MyProfile.registered_date = dataSnapshop.val().registered_date
       }
       if (done != null)
         done();
@@ -547,6 +548,34 @@ var DBHandler = {
   retrieveAllUserList: function (done) {
     var ref = firebase.database().ref().child('/user/');
     ref.once('value', function (allUserSnapshop) {
+      var retVal = [];
+      allUserSnapshop.forEach(function (snapshot) {
+        // Will be called with a messageSnapshot for each child under the /messages/ node
+        console.log(snapshot.val())
+        var user = {
+          userid: snapshot.key,
+          gender: snapshot.val().gender == 0 ? 'img/male.png' : 'img/female.png',
+          name: snapshot.val().name,
+          speaking_level: snapshot.val().speaking_level,
+          pronunciation_level: snapshot.val().pronunciation_level,
+          rate_passed: snapshot.val().rate_passed == undefined ? 0 : snapshot.val().rate_passed,
+          rate_failed: snapshot.val().rate_failed == undefined ? 0 : snapshot.val().rate_failed,
+        }
+        retVal.push(user);
+      })
+      if (done != null)
+        done(retVal);
+    })
+  },
+  retrieveUserListNearRegisteredDate: function (done) {
+    var ref = firebase.database().ref().child('/user/');
+    var start = new Date(GLOBALS.MyProfile.registered_date);
+    var end = new Date(GLOBALS.MyProfile.registered_date);
+
+    start.setDate(start.getDate() - GLOBALS.REGISTERED_START_DAYS);
+    end.setDate(end.getDate() + GLOBALS.REGISTERED_END_DAYS);
+
+    ref.startAt(start.yyyymmdd()).endAt(end.yyyymmdd()).once('value', function (allUserSnapshop) {
       var retVal = [];
       allUserSnapshop.forEach(function (snapshot) {
         // Will be called with a messageSnapshot for each child under the /messages/ node
