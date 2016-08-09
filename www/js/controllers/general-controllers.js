@@ -172,7 +172,17 @@ angular.module('starter.controllers')
             _.each(arr, function(id, idx) {
                 ret[idx] = _.find($scope.users, function(user) { return user.userid == id}).name;
             });
-            return ret;
+            
+            var str = "";
+
+            _.each(ret, function(name, idx) {
+                if (idx != 0) {
+                    str += " - "
+                }
+                str += name;
+            });
+
+            return str;
         }
 
         var getUser = function(id) {
