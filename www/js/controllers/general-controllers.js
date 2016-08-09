@@ -155,7 +155,7 @@ angular.module('starter.controllers')
         function classifyUsers() {
             _.each($scope.users, function(user, id) {
                 user.matched = [];
-                if (user.userid > "01028225330") {
+                if (user.nationality != 0) {
                     $scope.natives.push(user);
                 } else {
                     user.matched_native = false;
