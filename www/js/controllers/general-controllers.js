@@ -149,6 +149,7 @@ angular.module('starter.controllers')
                 $scope.date = new Date().toDateString();
                 $scope.$apply();
                 classifyUsers();
+                $scope.$apply();
             });
         });
 
@@ -163,8 +164,6 @@ angular.module('starter.controllers')
                     $scope.koreans.push(user);
                 }
             });
-
-            $scope.$apply();
         }
 
         $scope.getNames = function(arr) {
@@ -259,7 +258,7 @@ angular.module('starter.controllers')
 
         $scope.match = function() {
             if (rotate) { rotate_match() }
-            if (reset) { reset_match() }
+            if (reset) { $scope.reset_match() }
 
             _.each($scope.natives, function(native) {
                 korean = findNativeMatch(native, $scope.koreans);
@@ -293,7 +292,7 @@ angular.module('starter.controllers')
 
                     if (!match) {
                         $scope.unmatched.push(user.userid);
-                    } else if (match.useridid == user.userid) {
+                    } else if (match.userid == user.userid) {
                         
                     } else {
                         user.matched.push(match.userid);
@@ -346,13 +345,22 @@ angular.module('starter.controllers')
             $scope.unmatched = [];
         }
 
-        function reset_match() {
+        $scope.reset_match = function() {
             rotate_match();
+
+            $scope.natives = [];
+            $scope.koreans = [];
+
+            levels = { "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [] };
 
             classifyUsers();
 
+            /**
             $scope.users = _.shuffle($scope.users);
+            **/
             $scope.natives = _.shuffle($scope.natives);
             $scope.koreans = _.shuffle($scope.koreans);
+
+            $scope.done_matching = false;
         }
     });

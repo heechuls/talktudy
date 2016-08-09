@@ -1,4 +1,13 @@
 <ion-view view-title="Today({{date}}) Joiners">
+
+  <div class="bar bar-subheader bar-stable" ng-show="done_matching">
+    <div class="button-bar">
+      <button class="button button-light button-android" ng-click="reset_match()">
+        토픽 변경
+      </button>
+    </div>
+  </div>
+
   <ion-content>
 
     <div class="list" style="text-align:center;" ng-show="!done_matching">
@@ -29,7 +38,7 @@
       <div class="item item-divider" ng-show="unmatched.length != 0">
         매칭 실패
       </div>
-      <ion-item class="item" ng-repeat="id in unmatched">{{ getNames([id]) }}</ion-item>
+      <ion-item class="item" ng-repeat="id in unmatched track by $index">{{ getNames([id]) }}</ion-item>
     </div>
 
 
@@ -52,6 +61,6 @@
       -->
   </ion-content>
   <ion-footer-bar align-title="center">
-    <button class="button button-block button-calm " ng-click="match()">매칭하기</button>
+    <button class="button button-block button-calm" ng-click="match()">매칭하기</button>
   </ion-footer-bar>
 </ion-view>
