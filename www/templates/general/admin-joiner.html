@@ -1,7 +1,50 @@
-<ion-view view-title="Today({{date}}) Joiners">
+<ion-view view-title="Today's ({{date}}) Joiners">
+
+  <div class="bar bar-subheader bar-stable" ng-show="done_matching">
+    <div class="button-bar">
+      <button class="button button-light button-android" ng-click="reset_match()">
+        토픽 변경
+      </button>
+    </div>
+  </div>
+
   <ion-content>
+
+    <div class="list" style="text-align:center;" ng-show="!done_matching">
+
+      <div class="item item-divider" ng-show="natives.length != 0">
+        외국인
+      </div>
+      <ion-item class="item" ng-repeat="user in natives">{{ user.name }}</ion-item>
+
+      <div class="item item-divider" ng-show="koreans.length != 0">
+        한국인
+      </div>
+      <ion-item class="item" ng-repeat="user in koreans">{{ user.name }}</ion-item>
+
+    </div>
+
+    <div class="list" style="text-align:center;" ng-show="done_matching">
+      <div class="item item-divider" ng-show="matches.natives.length != 0">
+        외국인
+      </div>
+      <ion-item class="item" ng-repeat="match in matches.natives">{{ getNames(match) }}</ion-item>
+
+      <div class="item item-divider" ng-show="matches.koreans.length != 0">
+        한국인
+      </div>
+      <ion-item class="item" ng-repeat="match in matches.koreans">{{ getNames(match) }}</ion-item>
+
+      <div class="item item-divider" ng-show="unmatched.length != 0">
+        매칭 실패
+      </div>
+      <ion-item class="item" ng-repeat="id in unmatched track by $index">{{ getNames([id]) }}</ion-item>
+    </div>
+
+
+    <!-- 
     <ion-list>
-      <ion-item class = "item-avatar item-icon-right" ng-repeat="user in users" type="item-text-wrap" href="#/userprofile/{{user.userid}}">
+      <ion-item class = "item-avatar item-icon-right" ng-repeat="user in natives" type="item-text-wrap" href="#/userprofile/{{user.userid}}">
             <img ng-src="{{user.gender}}">
             <div style="text-align:left;width:30%;float:left">
               <h2>{{user.name}}</h2>
@@ -15,5 +58,9 @@
             <i class="icon ion-chevron-right icon-accessory"></i>
       </ion-item>
     </ion-list>
+      -->
   </ion-content>
+  <ion-footer-bar align-title="center">
+    <button class="button button-block button-calm" ng-click="match()">매칭하기</button>
+  </ion-footer-bar>
 </ion-view>

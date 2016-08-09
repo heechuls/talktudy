@@ -609,6 +609,7 @@ var DBHandler = {
           pronunciation_level: snapshot.val().pronunciation_level,
           rate_passed: snapshot.val().rate_passed == undefined ? 0 : snapshot.val().rate_passed,
           rate_failed: snapshot.val().rate_failed == undefined ? 0 : snapshot.val().rate_failed,
+          nationality: snapshot.val().nationality,
         }
         retVal.push(user);
       })

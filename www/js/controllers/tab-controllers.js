@@ -1,4 +1,4 @@
-angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.core', 'ionic.service.push'*/])
+angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'ionic.service.core', 'ionic.service.push'*/])
 
   .controller('ProfileCtrl', function ($scope, StudyItems, ShopItems, $ionicModal, $state, $ionicPopup, $cordovaInAppBrowser) {
     $scope.study_items = chunk(StudyItems.List, 5)
@@ -430,6 +430,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
         $scope.$apply();
       });
     });
+
   })
 
   .directive('fileModel', ['$parse', function ($parse) {

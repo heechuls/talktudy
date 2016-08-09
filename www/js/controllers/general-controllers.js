@@ -124,13 +124,243 @@ angular.module('starter.controllers')
             });
         });
     })
-    .controller('JoinerListCtrl', function ($scope, $state) {
+    .controller('JoinerListCtrl', function ($scope, $state, _) {
+        var rotate = false;
+        var reset = false;
+        $scope.done_matching = false;
+
+        $scope.matches = {
+            "natives" : [],
+            "koreans" : []
+        };
+
+        $scope.matched = [];
+        $scope.unmatched = [];
+
+        $scope.natives = [];
+        $scope.koreans = [];
+
+        var levels = { "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [] };
+        var range = { "1": ["2"], "2": ["1"], "3": ["4"], "4": ["3", "5", "6"], "5": ["4", "6", "7"], "6": ["4", "5", "7"], "7": ["5", "6"] };
+
         $scope.$on('$ionicView.enter', function () {
             DBHandler.getClassParticipants(new Date().yyyymmdd(), function (retval) {
                 $scope.users = retval.slice(0);
                 $scope.date = new Date().toDateString();
                 $scope.$apply();
+                classifyUsers();
+                $scope.$apply();
             });
         });
 
-    })
+        function classifyUsers() {
+            _.each($scope.users, function(user, id) {
+                user.matched = [];
+                if (user.nationality != 0) {
+                    $scope.natives.push(user);
+                } else {
+                    user.matched_native = false;
+                    levels[user.speaking_level].push(user);
+                    $scope.koreans.push(user);
+                }
+            });
+        }
+
+        $scope.getNames = function(arr) {
+            var ret = [];
+            _.each(arr, function(id, idx) {
+                ret[idx] = _.find($scope.users, function(user) { return user.userid == id}).name;
+            });
+            
+            var str = "";
+
+            _.each(ret, function(name, idx) {
+                if (idx != 0) {
+                    str += " - "
+                }
+                str += name;
+            });
+
+            return str;
+        }
+
+        var getUser = function(id) {
+            return _.find($scope.users, function(user) { return user.userid == id });
+        }
+
+        var getGender = function(id) {
+            return getUser(id).gender;
+        }
+
+        var getSpeakingLevel = function(user) {
+            return parseInt(user.speaking_level);
+        }
+
+        var findNativeMatch = function(user, list) {
+            var match = _.find(list, function(candidate) {
+                return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && candidate.gender != user.gender && !candidate.matched_native && getSpeakingLevel(candidate) >= 4;
+            });
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && candidate.gender != user.gender && getSpeakingLevel(candidate) >= 4;
+                });
+            }
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && getSpeakingLevel(candidate) >= 4;
+                });
+            }
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && getSpeakingLevel(candidate) >= 4;
+                });
+            }
+
+            if (!match) {
+                // console.log('undefined');
+            }
+
+            return match;
+        }
+
+        var findMatch = function(user, list) {
+            var match = _.find(list, function(candidate) {
+                return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && candidate.gender != user.gender && user.speaking_level != candidate.speaking_level && candidate.userid != user.userid;
+            });
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && user.speaking_level != candidate.speaking_level && candidate.userid != user.userid;
+                });
+            }
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && !(_.contains(user.matched, candidate.userid)) && candidate.userid != user.userid;
+                });
+            }
+
+            if (!match) {
+                match = _.find(list, function(candidate) {
+                    return !(_.contains($scope.matched, candidate.userid)) && candidate.userid != user.userid;
+                })
+            }
+
+            if (!match) {
+                // console.log('undefined');
+            }
+
+            return match;
+        }
+
+        $scope.match = function() {
+            if (rotate) { rotate_match() }
+            if (reset) { $scope.reset_match() }
+
+            _.each($scope.natives, function(native) {
+                korean = findNativeMatch(native, $scope.koreans);
+                if (!korean) {
+
+                }
+
+                native.matched.push(korean.userid);
+                korean.matched.push(native.userid);
+                korean.matched_native = true;
+
+                $scope.matched.push(native.userid);
+                $scope.matched.push(korean.userid);
+                
+                $scope.matches.natives.push([native.userid, korean.userid]);
+            });
+
+            for (var i = 7; i > 0; i--) {
+                var key = i.toString();
+
+                _.each(levels[key], function(user) {
+                    if (_.contains($scope.matched, user.userid)) { return; }
+                    var list = [];
+                    _.each(range[key], function(users) {
+                        list = list.concat(levels[users]);
+                    });
+
+                    list = list.concat(levels[key]);
+
+                    var match = findMatch(user, list);
+
+                    if (!match) {
+                        $scope.unmatched.push(user.userid);
+                    } else if (match.userid == user.userid) {
+                        
+                    } else {
+                        user.matched.push(match.userid);
+                        match.matched.push(user.userid);
+
+                        $scope.matched.push(user.userid);
+                        $scope.matched.push(match.userid);
+
+                        $scope.matches.koreans.push([user.userid, match.userid]);
+                    }
+                });
+            }
+
+            if ($scope.unmatched.length != 0) {
+                _.each($scope.unmatched, function(user_id) {
+                    var user = getUser(user_id);
+                    var user_range = range[user.speaking_level].concat(user.speaking_level);
+                    var match = _.find($scope.matches.koreans, function(match) {
+                        if (match.length != 2) return false;
+                        var users = [match[0], match[1]];
+                        users[0] = getUser(users[0]);
+                        users[1] = getUser(users[1]);
+                        return _.contains(user_range, users[0].speaking_level) || _.contains(user_range, users[1].speaking_level);
+                    });
+                    if (match) {
+                        $scope.matches.koreans = _.without($scope.matches.koreans, match);
+
+                        match.push(user_id);
+
+                        $scope.matches.koreans.push(match);
+
+                        $scope.unmatched = _.without($scope.unmatched, user_id);
+                    }
+                });
+            }
+
+
+            rotate = true;
+
+            $scope.done_matching = true;
+        }
+
+        function rotate_match() {
+            $scope.matches = {
+                "natives" : [],
+                "koreans" : []
+            };
+
+            $scope.matched = [];
+            $scope.unmatched = [];
+        }
+
+        $scope.reset_match = function() {
+            rotate_match();
+
+            $scope.natives = [];
+            $scope.koreans = [];
+
+            levels = { "1": [], "2": [], "3": [], "4": [], "5": [], "6": [], "7": [] };
+
+            classifyUsers();
+
+            /**
+            $scope.users = _.shuffle($scope.users);
+            **/
+            $scope.natives = _.shuffle($scope.natives);
+            $scope.koreans = _.shuffle($scope.koreans);
+
+            $scope.done_matching = false;
+        }
+    });
