@@ -5,7 +5,7 @@ angular.module('starter.services', [])
             var deferred = $q.defer();
             var promise = deferred.promise;
  
-            DBHandler.isPasswordMatched(1, pw, deferred);
+            DBHandler.isPasswordMatched(GLOBALS.PWD_USER, pw, deferred);
 
             promise.success = function(fn) {
                 promise.then(fn);

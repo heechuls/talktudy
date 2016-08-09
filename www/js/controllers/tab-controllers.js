@@ -28,8 +28,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
 
     $scope.rateChange = function () {
       console.log($scope.oModal1.password)
-      console.log(GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password)
-      if ($scope.oModal1.password == GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password) {
+      console.log(GLOBALS.Password[GLOBALS.PWD_ADMIN].password)
+      if ($scope.oModal1.password == GLOBALS.Password[GLOBALS.PWD_ADMIN].password) {
         $scope.oModal1.hide()
         console.log($scope.oModal1.choice)
         DBHandler.setStudyResult($scope.myprofile.userid, $scope.oModal1.study_item_name, $scope.oModal1.choice, function () {
@@ -44,7 +44,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova' /*, 'ionic.service.c
       }
     }
     $scope.rateLevel = function (type, level) {
-      if ($scope.oModal2.password == GLOBALS.Password[GLOBALS.PASSWORD_ADMIN].password) {
+      if ($scope.oModal2.password == GLOBALS.Password[GLOBALS.PWD_ADMIN].password) {
         $scope.oModal2.hide()
         DBHandler.rateLevel($scope.myprofile.userid, type, level, function () {
           loadData()

@@ -30,8 +30,6 @@ var GLOBALS = {
     KR_GRAMMAR : 3,
     KR_TOPIC : 4,
 
-    PASSWORD_ADMIN : 1,
-
     PAGE_UPDATE : "http://lunar-pic.com:6500/download",
     UPLOAD_SERVER : "http://lunar-pic.com:6500/upload",
 
@@ -50,5 +48,8 @@ var GLOBALS = {
     REGISTERED_START_DAYS : 7,
     REGISTERED_END_DAYS : 7,
 
-    PASS_EXPIRTED_DAYS : 7    
+    PASS_EXPIRTED_DAYS : 15,
+
+    PWD_USER : 0,
+    PWD_ADMIN : 1    
 };
