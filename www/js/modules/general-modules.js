@@ -84,6 +84,10 @@ function notificationHandlerForAll(args, $ionicPopup, handlers) {
         });
         confirmPopup.then(function (res) {
             if (res) {
+                if (GLOBALS.MyProfile.remained_class == 0) {
+                    showClassExpirePopup($ionicPopup);
+                    return;
+                }
                 DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, true, function () {
                     console.log("Participated")
                     handlers["refreshList"]();

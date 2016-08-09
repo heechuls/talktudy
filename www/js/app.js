@@ -26,7 +26,7 @@ angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.c
         "onNotification": function (notification) {
           var payload = notification.payload;
           console.log("Push Received : " + notification.toString());
-          //alert(notification.toString());
+          console.log(notification);
           var code = "";
           if (ionic.Platform.isIOS()) {
             var args = {
@@ -45,14 +45,24 @@ angular.module('starter', ['ionic','ngCordova', 'ionic.service.core', 'starter.c
               body: payload["message"]
             };*/
               var args = {
-              code: notification["additionalData"]["code"],
-              message: notification["title"],
-              body: notification["message"]
+              code: notification["payload"]["code"],
+              message: notification["message"],
+              body: notification["payload"]["title"]
             };
-            console.log(args);
-            console.log(args2);
-
-            $rootScope.$broadcast("onNotification", args);
+            var args2 = {
+              code: notification["_raw"]["additionalData"]["code"],
+              message: notification["_raw"]["message"],
+              body: notification["_raw"]["title"]
+            };
+            console.log(args["code"]);
+            console.log(args2["code"]);
+            console.log(args.code);
+            console.log(args2.code);
+            console.log(args.message);
+            console.log(args2.message);
+            console.log(args.body);
+            console.log(args2.body);
+            $rootScope.$broadcast("onNotification", args2);
             markNotification(args);
           }
         },
