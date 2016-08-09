@@ -312,6 +312,7 @@ angular.module('starter.controllers')
                     var user = getUser(user_id);
                     var user_range = range[user.speaking_level].concat(user.speaking_level);
                     var match = _.find($scope.matches.koreans, function(match) {
+                        if (match.length != 2) return false;
                         var users = [match[0], match[1]];
                         users[0] = getUser(users[0]);
                         users[1] = getUser(users[1]);
@@ -329,19 +330,6 @@ angular.module('starter.controllers')
                 });
             }
 
-            _.each($scope.matches, function(group) {
-                _.each(group, function(match) {
-                    var genders = [-1, -1];
-                    genders[0] = getGender(match[0]);
-                    genders[1] = getGender(match[1]);
-                    var levels = [-1, -1];
-                    levels[0] = getUser(match[0]).speaking_level;
-                    levels[1] = getUser(match[1]).speaking_level;
-                });
-            });
-
-        //    console.log($scope.matches);
-        //    console.log($scope.unmatched);
 
             rotate = true;
 
@@ -360,6 +348,8 @@ angular.module('starter.controllers')
 
         function reset_match() {
             rotate_match();
+
+            classifyUsers();
 
             $scope.users = _.shuffle($scope.users);
             $scope.natives = _.shuffle($scope.natives);

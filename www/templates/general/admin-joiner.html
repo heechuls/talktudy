@@ -7,7 +7,7 @@
         외국인
       </div>
       <ion-item class="item" ng-repeat="user in natives">{{ user.name }}</ion-item>
-      <br>
+
       <div class="item item-divider" ng-show="koreans.length != 0">
         한국인
       </div>
@@ -20,11 +20,16 @@
         외국인
       </div>
       <ion-item class="item" ng-repeat="match in matches.natives">{{ getNames(match) }}</ion-item>
-      <br>
+
       <div class="item item-divider" ng-show="matches.koreans.length != 0">
         한국인
       </div>
       <ion-item class="item" ng-repeat="match in matches.koreans">{{ getNames(match) }}</ion-item>
+
+      <div class="item item-divider" ng-show="unmatched.length != 0">
+        매칭 실패
+      </div>
+      <ion-item class="item" ng-repeat="id in unmatched">{{ getNames([id]) }}</ion-item>
     </div>
 
 
