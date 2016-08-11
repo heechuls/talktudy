@@ -105,6 +105,12 @@ function notificationHandlerForAll(args, $ionicPopup, handlers) {
     if (args["code"] == "PHONETALK_PARTICIPATION") {
         handlers["showPhoneTalkModal"]();
     }
+    if (args["code"] == "PHONETALK_MATCHED" || args["code"] == "PHONETALK_ENDED" || args["code"] == "PHONETALK_NOT_MATCHED") {
+        $ionicPopup.alert({
+            title: args["message"],
+            template: args["body"]
+        });
+    }
 }
 function openInAppBrowser(url, $cordovaInAppBrowser){
     var options = {
