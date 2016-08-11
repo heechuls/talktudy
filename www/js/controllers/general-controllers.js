@@ -261,9 +261,14 @@ angular.module('starter.controllers')
             if (reset) { $scope.reset_match() }
 
             _.each($scope.natives, function(native) {
+                if ($scope.koreans.length == 0) {
+                    $scope.unmatched.push(user.userid);
+                    return;
+                }
                 korean = findNativeMatch(native, $scope.koreans);
                 if (!korean) {
-
+                    $scope.unmatched.push(user.userid);
+                    return;
                 }
 
                 native.matched.push(korean.userid);
