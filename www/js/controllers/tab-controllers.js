@@ -212,12 +212,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
     }
     $scope.showToast = showToast;
     $scope.participateInClass = function () {
-      if (GLOBALS.MyProfile.remained_class == 0 && !$scope.activities[0].class_participation) {
+      if (GLOBALS.MyProfile.remained_class == 0 && (!$scope.activities[0].class_participation || $scope.activities[0].class_participation == -1)) {
         showClassExpirePopup($ionicPopup);
         return;
       }
       var done = function () {
-        document.getElementById('class').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
+        document.getElementById('class').innerHTML = "<button style='text-decoration: underline;font-size:25px; margin:10px' type='submit' ng-click='participate()'>" + text + '</button><br>'
         refreshTitleBar();
       }
       if ($scope.activities[0].class_participation == -1 || $scope.activities[0].class_participation == 0) {
@@ -296,8 +296,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       else if (phonetalk_participation == 1 && phonetalk_participation !== undefined)
         phone_text = STRING.PHONETALK_TO_PARTICIPATE
 
-      document.getElementById('class').innerHTML = "<b style='text-decoration:underline'>" + class_text + '</b><br>'
-      document.getElementById('phone').innerHTML = "<b style='text-decoration:underline'>" + phone_text + '</b><br>'
+      document.getElementById('class').innerHTML = "<button style='font-size:20px'>" + class_text + '</button><br>'
+      document.getElementById('phone').innerHTML = "<button style='font-size:20px'>" + phone_text + '</button><br>'
       document.getElementById('isClassParticipated').style.display = 'none'
       document.getElementById('isPhonetalkParticipated').style.display = 'none'
     }

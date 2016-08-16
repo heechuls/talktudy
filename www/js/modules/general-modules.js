@@ -86,16 +86,19 @@ function notificationHandlerForAll(args, $ionicPopup, handlers) {
             if (res) {
                 if (GLOBALS.MyProfile.remained_class == 0) {
                     showClassExpirePopup($ionicPopup);
+                    confirmPopup.close();
+                    console.log(GLOBALS.MyProfile);
+                    console.log(GLOBALS.MyProfile.remained_class);
                     return;
                 }
                 DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, true, function () {
-                    console.log("Participated")
+                    console.log("Participated");
                     handlers["refreshList"]();
                     handlers["refreshTitleBar"]();
                 });
             } else {
                 DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, false, function () {
-                    console.log("Unparticipated")
+                    console.log("Unparticipated");
                     handlers["refreshList"]();
                     handlers["refreshTitleBar"]();
                 });
