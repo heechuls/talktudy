@@ -217,7 +217,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
         return;
       }
       var done = function () {
-        document.getElementById('class').innerHTML = "<button style='text-decoration: underline;font-size:25px; margin:10px' type='submit' ng-click='participate()'>" + text + '</button><br>'
+        document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px' type='submit' ng-click='participate()'>" + text + '</button><br>'
         refreshTitleBar();
       }
       if ($scope.activities[0].class_participation == -1 || $scope.activities[0].class_participation == 0) {
@@ -242,7 +242,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       var done = function () {
         /*        document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + 
                               $scope.phonetalk_modal.phonetalk_info == undefined ? "전화영어 불참예정" : $scope.phonetalk_modal.phonetalk_info.text + '</b><br>'*/
-        document.getElementById('phone').innerHTML = "<b style='text-decoration: underline' type='submit' ng-click='participate()'>" + text + '</b><br>'
+        document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px' type='submit' ng-click='participate()'>" + text + '</button><br>'
         DBHandler.getPhoneTalkInfoToday(GLOBALS.MyProfile.userid, function (retVal) {
           $scope.phonetalk_modal.phonetalk_info = retVal;
           $scope.phonetalk_modal.hide();
@@ -296,8 +296,8 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       else if (phonetalk_participation == 1 && phonetalk_participation !== undefined)
         phone_text = STRING.PHONETALK_TO_PARTICIPATE
 
-      document.getElementById('class').innerHTML = "<button style='font-size:20px'>" + class_text + '</button><br>'
-      document.getElementById('phone').innerHTML = "<button style='font-size:20px'>" + phone_text + '</button><br>'
+      document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br>'
+      document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br>'
       document.getElementById('isClassParticipated').style.display = 'none'
       document.getElementById('isPhonetalkParticipated').style.display = 'none'
     }
