@@ -13,7 +13,8 @@ var STRING = {
     STUDY_NOT_TO_PARTICIPATE : "스터디 불참예정",
     PHONETALK_NOT_TO_PARTICIPATE : "전화영어 불참예정",
     STATUS_NOT_CHANGEBLE : "변경 불가",
-    STUDY_IN_PROGRESS : "스터디가 이미 진행되어 변경이 불가합니다.",
+    STUDY_IN_PROGRESS : "금일 스터디가 이미 진행되어 변경이 불가합니다.",
+    PHONETALK_IN_PROGRESS : "금일 전화영어가 이미 진행되어 변경이 불가합니다.",
 
     LOGIN_FAIL : "로그인에 실패",
     EXPIRED_ACCOUNT : "만료된 계정입니다.",

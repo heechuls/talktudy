@@ -211,7 +211,9 @@ var DBHandler = {
         level: GLOBALS.MyProfile.speaking_level,
         time: time,
         duration: duration,
-        _token: GLOBALS.MyProfile.token
+        _token: GLOBALS.MyProfile.token._token,
+        gender: GLOBALS.MyProfile.gender,
+        device_type: GLOBALS.MyProfile.device_type,        
       }
       listRef.child(userid).update(item);
     } else {
@@ -491,8 +493,15 @@ var DBHandler = {
           phonetalk_participation: snapshot.val().phonetalk_participation,
           shop_item: [],
           class_participation_text: snapshot.val().class_participation === 1 ? '스터디 참여' + ' (' + snapshot.val().remained_class + '회 남음)' : '스터디 불참',
-          phonetalk_participation_text: snapshot.val().phonetalk_participation === 1 ? '전화영어 참여' : '전화영어 불참'
+          phonetalk_participation_text: snapshot.val().phonetalk_participation === 1 ? '전화영어 참여' : '전화영어 불참',
+          matched : snapshot.val().matched
         }
+        if(item.matched != undefined){
+          if(item.matched == "unmatched")
+            item.phonetalk_participation_text = '전화영어 매치 안됨';
+          else item.phonetalk_participation_text = '전화영어 매치 (' + item.matched + ')';
+        }
+
         var itemRef = ref.child(snapshot.key + '/shop_item/');
         itemRef.orderByValue().once('value', function (shop_snapshot) {
           shop_snapshot.forEach(function (shop_snapshot) {
@@ -618,9 +627,16 @@ var DBHandler = {
     })
   },
   isChangableTime: function () {
-    now = new Date();
-    if ((now.getHours() == 19 && now.getMinutes() >= 30) || (now.getHours() > 20 && now.getHour()) < 0)
+    var now = new Date();
+    if (now.getHours() >= 20 && (now.getHours() <= 23 && now.getMinutes() <= 59))
+      return false;
+    else return true;
+  },
+  isPhonetalkChangableTime: function () {
+    var now = new Date();
+    if ((now.getHours() >= 22  && now.getHour() > 48) && (now.getHour() <= 23 && now.getMinutes() < 59))
       return false;
     else return true;
   }
+
 }

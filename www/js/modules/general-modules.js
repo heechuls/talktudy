@@ -109,6 +109,7 @@ function notificationHandlerForAll(args, $ionicPopup, handlers) {
         handlers["showPhoneTalkModal"]();
     }
     if (args["code"] == "PHONETALK_MATCHED" || args["code"] == "PHONETALK_ENDED" || args["code"] == "PHONETALK_NOT_MATCHED") {
+        handlers["refreshList"]();
         $ionicPopup.alert({
             title: args["message"],
             template: args["body"]

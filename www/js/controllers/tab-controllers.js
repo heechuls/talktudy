@@ -170,6 +170,13 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
     }
 
     $scope.showPhoneTalkModal = function () {
+      if(DBHandler.isPhonetalkChangableTime() == false || $scope.activities[0].matched != undefined){
+/*          var alertPopup = $ionicPopup.alert({
+            title: STRING.STATUS_NOT_CHANGEBLE,
+            template: STRING.PHONETALK_IN_PROGRESS
+          });
+*/        return;
+      }
       function initialShow() {
         $scope.phonetalk_modal.time = 1
         $scope.phonetalk_modal.duration = 1
@@ -233,7 +240,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
           var alertPopup = $ionicPopup.alert({
             title: STRING.STATUS_NOT_CHANGEBLE,
             template: STRING.STUDY_IN_PROGRESS
-          })
+          });
         }
       }
     }
@@ -293,11 +300,20 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       if (phonetalk_participation == 0 && phonetalk_participation !== undefined)
         phone_text = STRING.PHONETALK_NOT_TO_PARTICIPATE
 
-      else if (phonetalk_participation == 1 && phonetalk_participation !== undefined)
-        phone_text = STRING.PHONETALK_TO_PARTICIPATE
+      else if (phonetalk_participation == 1 && phonetalk_participation !== undefined){
+        if($scope.activities[0].matched != undefined)
+          phone_text = $scope.activities[0].phonetalk_participation_text;
+        else phone_text = STRING.PHONETALK_TO_PARTICIPATE;
 
-      document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br>'
-      document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br>'
+      }
+
+      document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
+      if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched")
+        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + phone_text + "</a><br/>"
+      else {
+        document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br/>';
+      }
+//    document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br>';
       document.getElementById('isClassParticipated').style.display = 'none'
       document.getElementById('isPhonetalkParticipated').style.display = 'none'
     }
