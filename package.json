@@ -21,6 +21,15 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
+    "cordova-plugin-inappbrowser",
+    "cordoba-plugin-dialogs",
+    "cordova-plugin-file-transfer",
+    "cordoba-plugin-file",
+    "cordoba-plugin-x-toast",
+    "cordoba-plugin-badge",
+    "cordova-plugin-app-event",
+    "com.megster.cordova.FileChooser",
+    "cordoba-plugin-sim",
     {
       "variables": {
         "SENDER_ID": "1024729850739"

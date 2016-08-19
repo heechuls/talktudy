@@ -310,9 +310,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
       if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched")
         document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + phone_text + "</a><br/>"
-      else {
-        document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br/>';
-      }
+      else if($scope.activities[0].matched == "unmatched")
+        document.getElementById('phone').innerHTML = "<b style='font-size:16px;margin-bottom:3px'>" + phone_text + '</b><br/>';
+      else
+        document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br>';
+      
 //    document.getElementById('phone').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + phone_text + '</button><br>';
       document.getElementById('isClassParticipated').style.display = 'none'
       document.getElementById('isPhonetalkParticipated').style.display = 'none'

@@ -108,8 +108,14 @@ function notificationHandlerForAll(args, $ionicPopup, handlers) {
     if (args["code"] == "PHONETALK_PARTICIPATION") {
         handlers["showPhoneTalkModal"]();
     }
-    if (args["code"] == "PHONETALK_MATCHED" || args["code"] == "PHONETALK_ENDED" || args["code"] == "PHONETALK_NOT_MATCHED") {
+    if (args["code"] == "PHONETALK_MATCHED" || args["code"] == "PHONETALK_NOT_MATCHED") {
         handlers["refreshList"]();
+        $ionicPopup.alert({
+            title: args["message"],
+            template: args["body"]
+        });
+    }
+    if (args["code"] == "PHONETALK_ENDED" || args["code"] == "PHONETALK_STARTED" ) {
         $ionicPopup.alert({
             title: args["message"],
             template: args["body"]

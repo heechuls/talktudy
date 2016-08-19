@@ -494,12 +494,13 @@ var DBHandler = {
           shop_item: [],
           class_participation_text: snapshot.val().class_participation === 1 ? '스터디 참여' + ' (' + snapshot.val().remained_class + '회 남음)' : '스터디 불참',
           phonetalk_participation_text: snapshot.val().phonetalk_participation === 1 ? '전화영어 참여' : '전화영어 불참',
-          matched : snapshot.val().matched
+          matched : snapshot.val().matched,
+          matched_name : snapshot.val().matched_name
         }
         if(item.matched != undefined){
           if(item.matched == "unmatched")
-            item.phonetalk_participation_text = '전화영어 매치 안됨';
-          else item.phonetalk_participation_text = '전화영어 매치 (' + item.matched + ')';
+            item.phonetalk_participation_text = '전화영어가 매치되지 않았습니다.';
+          else item.phonetalk_participation_text = '전화영어 매치 (' + item.matched_name + "님 : " + item.matched + ')';
         }
 
         var itemRef = ref.child(snapshot.key + '/shop_item/');
