@@ -135,9 +135,17 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
     });
 
     $scope.$on('$ionicView.enter', function () {
-      $ionicNavBarDelegate.showBackButton(true);
-      setBadge(0);
-      console.log("Badge Cleared");
+      try{
+        $ionicNavBarDelegate.showBackButton(true);
+        setBadge(0);
+      }catch(e)
+      {
+        console.log(e);
+      }
+      if(GLOBALS.MyProfile.lastViewed != new Date().yyyymmdd()){ //Refresh the list when users enter after a day that they initially launched the app
+        GLOBALS.MyProfile.lastViewed = new Date().yyyymmdd();
+        refreshList();
+      } 
     });
 
     function setBadge(val) {

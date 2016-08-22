@@ -28,6 +28,7 @@ angular.module('starter.controllers')
                         $state.go('mainguide');
                         GLOBALS.MyProfile.userid = $scope.data.phonenumber;
                         GLOBALS.MyProfile.isLoggedIn = true;
+                        GLOBALS.MyProfile.lastViewed = new Date().yyyymmdd();
                         init(StudyItems, ShopItems, true, function () {
                             if (GLOBALS.MyProfile.remained_class == 0) {
                                 showClassExpirePopup($ionicPopup);

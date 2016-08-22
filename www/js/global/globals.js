@@ -8,7 +8,9 @@ var showToast = function ($cordovaToast, message, duration, location) {
 };
 
 var GLOBALS = {
-    MyProfile : {isLoggedIn : false},
+    MyProfile : {
+        isLoggedIn : false,
+    },
     Password : new Array(),
 
     RATE_PASSED : 1,
