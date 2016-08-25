@@ -15,7 +15,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
     }).then(function (modal) {
       $scope.oModal1 = modal
       $scope.oModal1.password = ''
-    })
+    });
 
     $ionicModal.fromTemplateUrl('templates/modal/rate-level.html', {
       id: '2',
@@ -227,13 +227,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
     }
     $scope.showToast = showToast;
     $scope.participateInClass = function () {
-      if (GLOBALS.MyProfile.remained_class == 0 && (!$scope.activities[0].class_participation || $scope.activities[0].class_participation == -1)) {
-        showClassExpirePopup($ionicPopup);
-        return;
-      }
       var done = function () {
         document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px' type='submit' ng-click='participate()'>" + text + '</button><br>'
         refreshTitleBar();
+      }
+
+ /*   if (GLOBALS.MyProfile.remained_class == 0 && (!$scope.activities[0].class_participation || $scope.activities[0].class_participation == -1)) {
+        showClassExpirePopup($ionicPopup);
+        return;
       }
       if ($scope.activities[0].class_participation == -1 || $scope.activities[0].class_participation == 0) {
         text = STRING.STUDY_TO_PARTICIPATE;
@@ -250,7 +251,60 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
             template: STRING.STUDY_IN_PROGRESS
           });
         }
-      }
+      }*/
+      var confirmPopup = $ionicPopup.confirm({
+            title: "금일 스터디에 참여하시겠습니까?",
+            template: "금일 스터디 참석 여부를 알려주세요.",
+            buttons:[{
+                text: '불참',
+                type: 'button-default',
+                onTap: function(e) {
+                    return false;
+                    }
+                },
+                {
+                text: '참여',
+                type: 'button-positive',
+                onTap: function(e) {
+                    return true;
+                }
+            }
+            ]
+        });
+        confirmPopup.then(function (res) {
+            if (res) {
+                if (GLOBALS.MyProfile.remained_class == 0) {
+                    showClassExpirePopup($ionicPopup);
+                    confirmPopup.close();
+                    console.log(GLOBALS.MyProfile);
+                    console.log(GLOBALS.MyProfile.remained_class);
+                    return;
+                }
+                    DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, true, function () {
+                        console.log("Participated");
+                        refreshList();
+                        refreshTitleBar();
+                    });
+            } else {
+                if (DBHandler.isChangableTime()) {
+                    DBHandler.participateInClassToday(GLOBALS.MyProfile.userid, false, function () {
+                        console.log("Unparticipated");
+                        text = STRING.STUDY_NOT_TO_PARTICIPATE;
+                        $scope.activities[0].class_participation = 0;
+                        done();
+                        refreshList();
+                        refreshTitleBar();
+                    });
+                }
+                else {
+                  var alertPopup = $ionicPopup.alert({
+                    title: STRING.STATUS_NOT_CHANGEBLE,
+                    template: STRING.STUDY_IN_PROGRESS
+                  });
+              }
+            }
+        });
+
     }
 
     $scope.participateInPhoneTalk = function () {
@@ -317,7 +371,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
 
       document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
       if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched")
-        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + phone_text + "</a><br/>"
+        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + "전화영어 매치<br/>(" + $scope.activities[0].matched_name+  + "</a><br/>"
       else if($scope.activities[0].matched == "unmatched")
         document.getElementById('phone').innerHTML = "<b style='font-size:16px;margin-bottom:3px'>" + phone_text + '</b><br/>';
       else

@@ -191,7 +191,14 @@ var DBHandler = {
             }
           });
         }
-        else done();
+        else {
+          userRef.once('value', function (snapshot) {
+            if (snapshot.exists()) {
+              var remained_class = snapshot.val();
+              activityRef.child(userid + '/' + classid).update({ remained_class: remained_class, class_participation: 0 }, done);
+            }
+          });
+        }
       }
     }
   },
@@ -629,13 +636,17 @@ var DBHandler = {
   },
   isChangableTime: function () {
     var now = new Date();
-    if (now.getHours() >= 20 && (now.getHours() <= 23 && now.getMinutes() <= 59))
+    var min = now.getMinutes();
+    var hour = now.getHours();
+    if (hour >= 20 && (hour <= 23 && min <= 59))
       return false;
     else return true;
   },
   isPhonetalkChangableTime: function () {
     var now = new Date();
-    if ((now.getHours() >= 22  && now.getHour() > 48) && (now.getHour() <= 23 && now.getMinutes() < 59))
+    var min = now.getMinutes();
+    var hour = now.getHours();
+    if ((hour >= 22  && min > 48) && (hour <= 23 && min <= 59))
       return false;
     else return true;
   }
