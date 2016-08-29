@@ -22,10 +22,10 @@ var GLOBALS = {
     USER_NONE : 3,
     USER_ADMIN : 4,
 
-    STUDY_CONTENTS_1 : "http://talktudy.cafe24app.com/grammar",
-    STUDY_CONTENTS_2 : "http://talktudy.cafe24app.com/category",
-    STUDY_CONTENTS_3 : "http://talktudy.cafe24app.com/grammar_kr",
-    STUDY_CONTENTS_4 : "http://talktudy.cafe24app.com/category_kr",
+    STUDY_CONTENTS_1 : "http://talktudy.cafe24app.com/category?id=0",
+    STUDY_CONTENTS_2 : "http://talktudy.cafe24app.com/category?id=1",
+    STUDY_CONTENTS_3 : "http://talktudy.cafe24app.com/category?id=2",
+    STUDY_CONTENTS_4 : "http://talktudy.cafe24app.com/category?id=3",
 
     EN_GRAMMAR : 1,
     EN_TOPIC : 2,
