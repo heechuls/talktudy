@@ -371,7 +371,7 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
 
       document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
       if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched")
-        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + "전화영어 매치<br/>(" + $scope.activities[0].matched_name+  + "</a><br/>"
+        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + phone_text  + "</a><br/>"
       else if($scope.activities[0].matched == "unmatched")
         document.getElementById('phone').innerHTML = "<b style='font-size:16px;margin-bottom:3px'>" + phone_text + '</b><br/>';
       else
