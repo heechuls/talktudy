@@ -79,6 +79,8 @@
   </plugin>
   <allow-navigation href="http://talktudy.cafe24app.com/*"/>
   <allow-navigation href="http://lunar-pic.com/*"/>
+  <allow-navigation href="http://lunar-pic.com:6500/*"/>
   <allow-navigation href="tel:*"/>
+  <allow-navigation href="  https://googledrive.com/*"/>
   <icon src="resources/android/icon/drawable-xhdpi-icon.png"/>
 </widget>

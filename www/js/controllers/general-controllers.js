@@ -94,7 +94,15 @@ angular.module('starter.controllers')
 
         $scope.goupdate = function () {
             //$window.open(GLOBALS.PAGE_UPDATE);
-            openInAppBrowser(GLOBALS.PAGE_UPDATE, $cordovaInAppBrowser);
+            //openInAppBrowser(GLOBALS.PAGE_UPDATE, $cordovaInAppBrowser);
+            if(ionic.Platform.isIOS()){
+                console.log("IOS Update");
+                $window.open(GLOBALS.IOS_UPDATE,"_system","location=yes,enableViewportScale=yes,hidden=no");
+            }
+            else{
+                console.log("Android Update");
+                $window.open(GLOBALS.ANDROID_UPDATE,"_system","location=yes,enableViewportScale=yes,hidden=no");
+            }
         }
         $scope.$on('$ionicView.beforeEnter', function () {
             Version.isVersionMatched(function (retval) {

@@ -33,6 +33,8 @@ var GLOBALS = {
     KR_TOPIC : 4,
 
     PAGE_UPDATE : "http://lunar-pic.com:6500/download",
+    ANDROID_UPDATE : "http://lunar-pic.com:6500/download/android-debug.apk",
+    IOS_UPDATE : "itms-services://?action=download-manifest&amp;url=https://googledrive.com/host/0B5n3__u6lB96QldFNF9tcml3a0k/talktudy.plist",
     UPLOAD_SERVER : "http://lunar-pic.com:6500/upload",
 
     isNoticeReceived : false,
