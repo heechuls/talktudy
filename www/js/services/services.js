@@ -50,7 +50,7 @@ angular.module('starter.services', [])
     };
 })
 .service("Version", function() {
-    var version = "0.0.2";
+    var version = "0.0.3";
     return {
       isVersionMatched : function(done) {
         DBHandler.isVersionMatched(version, done);

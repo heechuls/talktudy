@@ -122,6 +122,9 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
           handle back action!
       }
       }, 100);*/
+    $ionicPlatform.on('resume', function() {
+      refreshList();
+    });
     $scope.$on('onNotification', function (ev, args) {
       notificationHandlerForAll(args, $ionicPopup, { refreshList: refreshList, showPhoneTalkModal: $scope.showPhoneTalkModal, refreshTitleBar : refreshTitleBar });
     });
@@ -176,6 +179,12 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       $scope.shop_items = ShopItems.List
       $scope.purchase_modal.show()
     }
+    /*
+    $scope.purchase = function ( ) {
+      var call = "tel:" + "01028225321";
+      alert('Calling ' + call ); //Alert notification is displayed on mobile, so function is triggered correctly!
+      document.location.href = call;
+    }*/
 
     $scope.showPhoneTalkModal = function () {
       if(DBHandler.isPhonetalkChangableTime() == false || $scope.activities[0].matched != undefined){
@@ -370,8 +379,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       }
 
       document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
-      if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched")
-        document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px'>" + phone_text  + "</a><br/>"
+      if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched"){
+        if(ionic.Platform.isIOS()){
+            document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px;font-color'>" + phone_text  + "</a><br/>"
+        }
+        else {
+            document.getElementById('phone').innerHTML = "<b style='font-size:12px;margin-bottom:3px'>" + phone_text  + "</b><br/>"
+        }
+      }
       else if($scope.activities[0].matched == "unmatched")
         document.getElementById('phone').innerHTML = "<b style='font-size:16px;margin-bottom:3px'>" + phone_text + '</b><br/>';
       else
