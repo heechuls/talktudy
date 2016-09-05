@@ -47,7 +47,7 @@ var GLOBALS = {
     STORAGE_USERID : "STORAGE_USERID",
     STORAGE_PASSWORD : "STORAGE_PASSWORD",    
 
-    class_expired : '<p style:"text-align:center;font-size:16px">스터디가 모두 소진되었습니다.</p><p style="text-align:center;font-size:16px">아래의 계좌로 입금 부탁드립니다.</p><br/><br/><p style="text-align:center;font-size:16px;">국민은행<br/>642601-01-571098<br/>이성암</p></p></div>',
+    class_expired : '<p style:"text-align:center;font-size:16px">스터디가 모두 소진되었습니다.</p><p style="text-align:center;font-size:16px">아래의 계좌로 입금 부탁드립니다.</p><br/><br/><p style="text-align:center;font-size:16px;">국민은행<br/>642602-01-207934<br/>이성암</p></p></div>',
 
     REGISTERED_START_DAYS : 7,
     REGISTERED_END_DAYS : 7,
