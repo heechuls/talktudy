@@ -346,6 +346,11 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       }, function (retval2) {
         $scope.activities = retval2.slice(0);
         $scope.$apply();
+      },
+      function (retval3) {
+        $scope.activities = retval3.slice(0);
+        $scope.$apply();
+        initList();
       });
     }
     function refreshTitleBar() {
@@ -381,10 +386,14 @@ angular.module('starter.controllers', ['ionic', 'ngCordova', 'underscore' /*, 'i
       document.getElementById('class').innerHTML = "<button style='font-size:16px;margin-bottom:3px'>" + class_text + '</button><br/>';
       if($scope.activities[0].matched != undefined && $scope.activities[0].matched != "unmatched"){
         if(ionic.Platform.isIOS()){
-            document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px;font-color'>" + phone_text  + "</a><br/>"
+            //'전화영어 매치 (' + item.matched_name + "님 : " + item.matched + ')';
+
+            document.getElementById('phone').innerHTML = '<a href="tel:' +  $scope.activities[0].matched + '"' + "style='margin-bottom:3px;font-size:16px;font-color'>전화 영어 매치 완료<br/>" 
+            + $scope.activities[0].matched_name + "님 : " + $scope.activities[0].matched + "<br/>금일 주제 : " + $scope.activities[0].phonetalk_topic + "</a><br/>"
         }
         else {
-            document.getElementById('phone').innerHTML = "<b style='font-size:12px;margin-bottom:3px'>" + phone_text  + "</b><br/>"
+            document.getElementById('phone').innerHTML = "<b style='color:blue;margin-bottom:3px;font-size:16px;font-color'>전화 영어 매치 완료<br/>" 
+            + $scope.activities[0].matched_name + "님 : " + $scope.activities[0].matched + "<br/>금일 주제 : " + $scope.activities[0].phonetalk_topic + "</b><br/>"
         }
       }
       else if($scope.activities[0].matched == "unmatched")

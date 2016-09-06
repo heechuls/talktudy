@@ -223,6 +223,7 @@ var DBHandler = {
         device_type: GLOBALS.MyProfile.device_type,        
       }
       listRef.child(userid).update(item);
+      listRef.child(userid).setPriority(10-item.level);
     } else {
       update[userid + '/' + classid + '/phonetalk_participation/'] = 0;
       listRef.child(userid).remove();
@@ -484,7 +485,7 @@ var DBHandler = {
       done(retVal);
     });
   },
-  getActivityList: function (userid, done, done2) {
+  getActivityList: function (userid, done, done2, done3) {
     var ref = firebase.database().ref().child('/study_activity/' + userid);
     ref.orderByValue().once('value', function (allSnapshot) {
       var retVal = [];
@@ -502,30 +503,45 @@ var DBHandler = {
           class_participation_text: snapshot.val().class_participation === 1 ? '스터디 참여' + ' (' + snapshot.val().remained_class + '회 남음)' : '스터디 불참',
           phonetalk_participation_text: snapshot.val().phonetalk_participation === 1 ? '전화영어 참여' : '전화영어 불참',
           matched : snapshot.val().matched,
-          matched_name : snapshot.val().matched_name
+          matched_name : snapshot.val().matched_name,
+          phonetalk_topic : ""
         }
         if(item.matched != undefined){
           if(item.matched == "unmatched")
             item.phonetalk_participation_text = '전화영어가 매치되지 않았습니다.';
           else item.phonetalk_participation_text = '전화영어 매치 (' + item.matched_name + "님 : " + item.matched + ')';
         }
-
+        
         var itemRef = ref.child(snapshot.key + '/shop_item/');
         itemRef.orderByValue().once('value', function (shop_snapshot) {
           shop_snapshot.forEach(function (shop_snapshot) {
             item.shop_item.push({
               name: shop_snapshot.key,
               count: shop_snapshot.val()
-            })
+            });
             // console.log("아이템 : " + shop_snapshot.key)
             // console.log("카운트 : " + shop_snapshot.val())
           })
+          if(item.matched != "unmatched" && item.matched != undefined && snapshot.key == new Date().yyyymmdd()){
+            var topicRef = firebase.database().ref().child('/phonetalk_topic/');
+            topicRef.once('value', function (topic_snapshot) {
+            if(topic_snapshot.exists())
+              item.phonetalk_topic = topic_snapshot.val();
+            if (done3 !== null)
+              done3(retVal);
+            }
+            );
+          }
+          else{
+            if (done3 !== null)
+              done3(retVal);
+          }
           if (done2 !== null)
             done2(retVal);
-        })
+        });
         // console.log(item)
         retVal.unshift(item);
-      })
+      });
       if (done != null) {
         if (isToday == false) {
           var today = {
@@ -537,9 +553,8 @@ var DBHandler = {
           }
           retVal.unshift(today);
         }
-        done(retVal);
       }
-    })
+    });
   },
   createTodayClass: function (userid, done) {
     var ref = firebase.database().ref().child('/study_activity/' + userid + '/' + new Date().yyyymmdd());
