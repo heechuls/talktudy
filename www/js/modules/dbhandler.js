@@ -553,6 +553,7 @@ var DBHandler = {
           }
           retVal.unshift(today);
         }
+        done(retVal);
       }
     });
   },
